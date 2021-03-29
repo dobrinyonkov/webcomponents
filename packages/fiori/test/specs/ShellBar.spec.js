@@ -410,4 +410,23 @@ describe("Component Behavior", () => {
 			});
 		});
 	});
+
+	describe("Accessibility", () => {
+		before(() => {
+			browser.url("http://localhost:8081/test-resources/pages/ShellBar.html");
+		});
+	
+		describe("ui5-shellbar-item", () => {
+			it("tests text property set to aria-label", () => {
+				const shellbar = browser.$("#shellbarwithitems");
+				const firstCustomItem = browser.$("#shellbarwithitems > ui5-shellbar-item");
+				const customActionIcon1 = shellbar.shadow$(".ui5-shellbar-custom-item");
+
+				const actualLabel = customActionIcon1.getAttribute("aria-label")
+				const expectedLabel = firstCustomItem.getAttribute("text")
+
+				assert.strictEqual(actualLabel, expectedLabel, "Text property propagates to ui5-button aria-label");
+			});
+		});
+	});
 });
