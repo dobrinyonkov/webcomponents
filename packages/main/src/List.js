@@ -352,7 +352,21 @@ const metadata = {
  * <code>SingleSelect</code>, <code>MultiSelect</code> and <code>Delete</code>.
  * <br><br>
  * Additionally, the <code>ui5-list</code> provides header, footer, and customization for the list item separators.
- *
+ *  
+ * <h3>Keyboard Handling</h3>
+ * The <code>ui5-list</code> provides advanced keyboard handling.
+ * When a list is focused the user can use the following keyboard
+ * shortcuts in order to perform a navigation:
+ * <br>
+ * <ul>
+ * <li>[UP] - Navigate one item up</li>
+ * <li>[DOWN] - Navigate one item down</li>
+ * <li>[HOME] - Navigate to first item</li>
+ * <li>[END] - Navigate to the last item</li>
+ * <li>[SPACE] - Select an item (type 'Active') when in selection mode</li>
+ * </ul>
+ * <br>
+ * 
  * <h3>ES6 Module Import</h3>
  *
  * <code>import "@ui5/webcomponents/dist/List.js";</code>
