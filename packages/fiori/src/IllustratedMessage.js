@@ -25,7 +25,7 @@ const metadata = {
 	properties: /** @lends sap.ui.webcomponents.fiori.IllustratedMessage.prototype */ {
 		/**
 		 * Defines the title of the component.
-		 * <br><br>
+		 * <br /><br />
 		 * <b>Note:</b> Using this property, the default title text of illustration will be overwritten.
 		 * @type {string}
 		 * @defaultvalue ""
@@ -36,9 +36,9 @@ const metadata = {
 		},
 		/**
 		 * Defines the subtitle of the component.
-		 * <br><br>
+		 * <br /><br />
 		 * <b>Note:</b> Using this property, the default subtitle text of illustration will be overwritten.
-		 * <br><br>
+		 * <br /><br />
 		 * <b>Note:</b> Using <code>subtitle</code> slot, the default of this property will be overwritten.
 		 * @type {string}
 		 * @defaultvalue ""
@@ -63,7 +63,7 @@ const metadata = {
 		},
 		/**
 		 * Defines the illustration name that will be displayed in the component.
-		 * <br><br>
+		 * <br /><br />
 		 * Available illustrations are:
 		 * <ul>
 		 * <li><code>AddColumn</code></li>
@@ -155,16 +155,16 @@ const metadata = {
 		 * <li><code>TntUnsuccessfulAuth</code></li>
 		 * <li><code>TntUser2</code></li>
 		 * </ul>
-		 * <br><br>
+		 * <br /><br />
 		 * <b>Note:</b> By default the <code>BeforeSearch</code> illustration is loaded.
-		 * <br>
+		 * <br />
 		 * When using an illustration type, other than the default, it should be loaded in addition:
-		 * <br>
+		 * <br />
 		 * <code>import "@ui5/webcomponents-fiori/dist/illustrations/NoData.js";</code>
-		 * <br><br>
+		 * <br /><br />
 		 * <b>Note:</b> TNT illustrations cointain <code>Tnt</code> prefix in their name.
 		 * You can import them removing the <code>Tnt</code> prefix like this:
-		 * <br>
+		 * <br />
 		 * <code>import "@ui5/webcomponents-fiori/dist/illustrations/tnt/SessionExpired.js";</code>
 		 * @type {IllustrationMessageType}
 		 * @defaultvalue "BeforeSearch"
@@ -212,7 +212,7 @@ const metadata = {
 		},
 		/**
 		 * Defines the subtitle of the component.
-		 * <br><br>
+		 * <br /><br />
 		 * <b>Note:</b> Using this slot, the default subtitle text of illustration and the value of <code>subtitleText</code> property will be overwritten.
 		 * @type {HTMLElement}
 		 * @slot subtitle
@@ -240,18 +240,18 @@ const metadata = {
  * <code>titleText</code> and <code>subtitleText</code> properties.
  *
  * To display the desired illustration, use the <code>name</code> property, where you can find the list of all available illustrations.
- * <br><br>
+ * <br /><br />
  * <b>Note:</b> By default the “BeforeSearch” illustration is loaded. To use other illustrations, make sure you import them in addition, for example:
- * <br>
+ * <br />
  * <code>import "@ui5/webcomponents-fiori/dist/illustrations/NoData.js"</code>
- * <br>
+ * <br />
  * <b>Note:</b> Illustrations starting with the “Tnt” prefix are part of another illustration set. For example to use the “TntSuccess” illustration, add the following import::
- * <br>
+ * <br />
  * <code>import "@ui5/webcomponents-fiori/dist/illustrations/tnt/Success.js"</code>
  *
  * <h3>Structure</h3>
  * The IllustratedMessage consists of the following elements, which are displayed below each other in the following order:
- * <br>
+ * <br />
  * <ul>
  * <li>Illustration</li>
  * <li>Title</li>
