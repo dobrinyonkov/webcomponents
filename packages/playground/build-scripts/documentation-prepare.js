@@ -27,50 +27,36 @@ files.forEach((file, fileIndex) => {
 			let articleContent = `${fs.readFileSync(articlePath)}`;
 
 			if (article.endsWith("README.md")) { // Create a top-level item
+				articleContent = `
+import { Meta } from '@storybook/addon-docs';
 
-				articleContent = `---
-layout: default
-title: ${humanReadableName}
-has_children: true
-nav_order: ${fileIndex + 1}
-permalink: /playground/${technicalName}
----
+<Meta title="${humanReadableName}" />
 
 ${articleContent}
 
 {:toc}`;
-
 			} else { // Create a nested item
 
 				const articleHumanReadableName = capitalizeFirst(article.replace(/^[0-9\-\.]+/, "").replace(/\.md$/, "").replace(/-/g, " "));
-				const articleTechnicalName = article.replace(/^[0-9\-\.]+/, "").replace(/ /g, "-").replace(/\.md$/, "").toLowerCase();
-				articleContent = `---
-layout: docs
-title: ${articleHumanReadableName}
-parent: ${humanReadableName}
-nav_order: ${articleIndex + 1}
-permalink: /playground/${technicalName}/${articleTechnicalName}/
----
+				articleContent = `
+import { Meta } from '@storybook/addon-docs';
+
+<Meta title="${technicalName}/${articleHumanReadableName}" />
 
 ${articleContent}`;
-
 			}
-
-			fs.writeFileSync(path.join(sectionDir, article), articleContent);
+			fs.writeFileSync(path.join(sectionDir, article.replace(/\.md$/, ".stories.mdx")), articleContent);
 
 		});
 	} else { // create a standalone article outside the directory structure (f.e. FAQ)
 		let articleContent = `${fs.readFileSync(srcFilePath)}`;
-		const shortName = file.replace(/^[0-9\-\.]+/, "").replace(/ /g, "-").replace(/\.md$/, "").toLowerCase();
 		const cleanName = file.replace(/^[0-9\-\.]+/, "");
-		articleContent = `---
-layout: docs
-title: ${cleanName.replace(/\.md$/, "")}
-nav_order: ${fileIndex + 1}
-permalink: /playground/${shortName}
----
+		articleContent = `
+import { Meta } from '@storybook/addon-docs';
+
+<Meta title="${cleanName.replace(/\.md$/, "")}" />
 
 ${articleContent}`;
-		fs.writeFileSync(path.join(destPath, cleanName), articleContent);
+		fs.writeFileSync(path.join(destPath, cleanName.replace(/\.md$/, ".stories.mdx")), articleContent);
 	}
 });

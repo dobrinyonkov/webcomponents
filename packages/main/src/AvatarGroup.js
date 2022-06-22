@@ -64,7 +64,7 @@ const metadata = {
 
 		/**
 	 	 * Defines the mode of the <code>AvatarGroup</code>.
-		 * <br><br>
+		 * <br /><br />
 		 * Available options are:
 		 * <ul>
 		 * <li><code>Group</code></li>
@@ -81,12 +81,12 @@ const metadata = {
 
 		/**
 		 * Defines the aria-haspopup value of the component on:
-		 * <br><br>
+		 * <br /><br />
 		 * <ul>
 		 * <li> the whole container when <code>type</code> property is <code>Group</code></li>
 		 * <li> the default "More" overflow button when <code>type</code> is <code>Individual</code></li>
 		 * </ul>
-		 * <br><br>
+		 * <br /><br />
 		 * @type String
 		 * @since 1.0.0-rc.15
 		 * @protected
@@ -106,7 +106,7 @@ const metadata = {
 	slots: /** @lends sap.ui.webcomponents.main.AvatarGroup.prototype */ {
 		/**
 		 * Defines the items of the component. Use the <code>ui5-avatar</code> component as an item.
-		 * <br><br>
+		 * <br /><br />
 		 * <b>Note:</b> The UX guidelines recommends using avatars with "Circle" shape.
 		 * Moreover, if you use avatars with "Square" shape, there will be visual inconsistency
 		 * as the built-in overflow action has "Circle" shape.
@@ -121,7 +121,7 @@ const metadata = {
 		/**
 		 * Defines the overflow button of the component.
 		 * <b>Note:</b> We recommend using the <code>ui5-button</code> component.
-		 * <br><br>
+		 * <br /><br />
 		 * <b>Note:</b> If this slot is not used, the component will
 		 * display the built-in overflow button.
 		 * @type {HTMLElement}
@@ -205,9 +205,9 @@ const metadata = {
  * The component provides advanced keyboard handling.
  * When focused, the user can use the following keyboard
  * shortcuts in order to perform a navigation:
- * <br>
+ * <br />
  * - <code>type</code> Individual:
- * <br>
+ * <br />
  * <ul>
  * <li>[TAB] - Move focus to the overflow button</li>
  * <li>[LEFT] - Navigate one avatar to the left</li>
@@ -216,14 +216,14 @@ const metadata = {
  * <li>[END] - Navigate to the last avatar</li>
  * <li>[SPACE],[ENTER],[RETURN] - Trigger <code>ui5-click</code> event</li>
  * </ul>
- * <br>
+ * <br />
  * - <code>type</code> Group:
- * <br>
+ * <br />
  * <ul>
  * <li>[TAB] - Move focus to the next interactive element after the component</li>
  * <li>[SPACE],[ENTER],[RETURN] - Trigger <code>ui5-click</code> event</li>
  * </ul>
- * <br>
+ * <br />
  *
  * @constructor
  * @author SAP SE
