@@ -2,7 +2,42 @@ const fs = require('fs/promises');
 const path = require('path');
 const cheerio = require('cheerio');
 
-(async () => {
+const EXCLUDE_LIST = [
+	"AvatarGroup.sample.html",
+	"BarcodeScannerDialog.sample.html",
+	"BusyIndicator.sample.html",
+	"Button.sample.html",
+	"Card.sample.html",
+	"Carousel.sample.html",
+	"CheckBox.sample.html",
+	"ComboBox.sample.html",
+	"DateTimePicker.sample.html",
+	"Dialog.sample.html",
+	"FileUploader.sample.html",
+	"FlexibleColumnLayout.sample.html",
+	"IllustratedMessage.sample.html",
+	"Input.sample.html",
+	"List.sample.html",
+	"MultiInput.sample.html",
+	"MessageStrip.sample.html",
+	"NotificationListGroupItem.sample.html",
+	"Page.sample.html",
+	"NotificationListItem.sample.html",
+	"Panel.sample.html",
+	"Popover.sample.html",
+	"ProductSwitch.sample.html",
+	"ResponsivePopover.sample.html",
+	"ShellBar.sample.html",
+	"SideNavigation.sample.html",
+	"TabContainer.sample.html",
+	"Table.sample.html",
+	"Toast.sample.html",
+	"Tree.sample.html",
+	"UploadCollection.sample.html",
+	"Wizard.sample.html",
+]
+
+const main = async () => {
 	const template = await fs.readFile(path.join(__dirname, '../stories/template.mdx'), 'utf8');
 	const packages = [
 		"fiori",
@@ -42,6 +77,9 @@ const cheerio = require('cheerio');
 		const files = await fs.readdir(samplesPath);
 
 		files.forEach(async (file) => {
+			if (EXCLUDE_LIST.includes(file)) {
+				return;
+			}
 			console.error('Preparing samples...', file);
 
 			//Copy samples
@@ -114,12 +152,16 @@ const cheerio = require('cheerio');
 
 	function snippetsToStories(snippets) {
 		return snippets.map((snippet, index) => {
+			let content = snippet
+				.replaceAll('\`', '\\`')
 			return `
 <Preview>
 	<Story name="default-${index}">
-		{html\`${snippet}\`}
+		{html\`${content}\`}
 	</Story>
 </Preview>`
 		});
 	}
-})();
+};
+
+main();
