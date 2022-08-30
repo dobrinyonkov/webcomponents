@@ -14,11 +14,11 @@ export const globalTypes = {
   theme: {
     name: 'Toggle theme',
     description: 'Global theme for components',
-    defaultValue: 'sap_horizon',
+    defaultValue: false,
     toolbar: {
       icon: '',
-      items: ['sap_fiori_3', 'sap_fiori_3_dark',"sap_fiori_3_hcb",
-      "sap_fiori_3_hcw", "sap_horizon", "sap_horizon_dark", "sap_horizon_hcb", "sap_horizon_hcw"],
+      items: ['Quartz Light', 'Quartz Dark', "Quartz High Contrast Black",
+      "Quartz High Contrast White", "Morning Horizon", "Evening Horizon", "Horizon High Contrast Black", "Horizon High Contrast White"],
       showName: true,
       dynamicTitle: true
     }
@@ -29,7 +29,7 @@ export const globalTypes = {
     defaultValue: false,
     toolbar: {
       icon: '',
-      items: ['ltr', 'rtl'],
+      items: ['LTR', 'RTL'],
       showName: true,
       dynamicTitle: true
     }
@@ -37,7 +37,7 @@ export const globalTypes = {
   density: {
     name: 'Content Density',
     description: 'Global content density mode for components',
-    defaultValue: "Cozy",
+    defaultValue: false,
     toolbar: {
       icon: '',
       items: ['Cozy', 'Compact'],
