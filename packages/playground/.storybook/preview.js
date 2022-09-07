@@ -1,12 +1,18 @@
-import {useOptions} from './useOptions';
+import { useOptions } from './useOptions';
 
 export const parameters = {
-  actions: { argTypesRegex: "^on[A-Z].*" },
+  actions: { argTypesRegex: "^ui5-[a-z].*" },
   controls: {
     matchers: {
       color: /(background|color)$/i,
       date: /Date$/,
     },
+  },
+  docs: {
+    transformSource: source =>
+      source
+        // Clean empty boolean attribute values
+        .replace(/=\"\"/g, ''),
   },
 }
 
@@ -18,7 +24,7 @@ export const globalTypes = {
     toolbar: {
       icon: '',
       items: ['Quartz Light', 'Quartz Dark', "Quartz High Contrast Black",
-      "Quartz High Contrast White", "Morning Horizon", "Evening Horizon", "Horizon High Contrast Black", "Horizon High Contrast White"],
+        "Quartz High Contrast White", "Morning Horizon", "Evening Horizon", "Horizon High Contrast Black", "Horizon High Contrast White"],
       showName: true,
       dynamicTitle: true
     }
