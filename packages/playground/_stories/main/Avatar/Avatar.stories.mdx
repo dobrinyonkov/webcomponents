@@ -16,7 +16,7 @@ export const Template = (args) =>
       ?interactive="${args.interactive}"
       .shape="${args.shape}"
       .size="${args.size}"
-      @click="${args["ui5-click"]}"
+      @ui5-click="${args["ui5-click"]}"
       >${args.defaultSlot}</ui5-avatar
     >
   `;
@@ -65,7 +65,7 @@ export const StyledAvatar = (args) =>
           "accessibleName",
           "interactive",
         ],
-      }, 
+      },
     }}
     args={{
       defaultSlot: html`
