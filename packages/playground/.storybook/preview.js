@@ -1,4 +1,5 @@
 import { useOptions } from './useOptions';
+import getEffectiveContentDensity from "@ui5/webcomponents-base/dist/util/getEffectiveContentDensity.js";
 
 export const parameters = {
   actions: { argTypesRegex: "^ui5-[a-z].*" },
@@ -20,7 +21,7 @@ export const globalTypes = {
   theme: {
     name: 'Toggle theme',
     description: 'Global theme for components',
-    defaultValue: false,
+    defaultValue: window["sap-ui-webcomponents-bundle"].configuration.getTheme(),
     toolbar: {
       icon: '',
       items: ['Quartz Light', 'Quartz Dark', "Quartz High Contrast Black",
@@ -32,7 +33,7 @@ export const globalTypes = {
   rtl: {
     name: 'Direction',
     description: 'Global rtl mode for components',
-    defaultValue: false,
+    defaultValue: window["sap-ui-webcomponents-bundle"].configuration.getRTL(),
     toolbar: {
       icon: '',
       items: ['LTR', 'RTL'],
@@ -43,7 +44,7 @@ export const globalTypes = {
   density: {
     name: 'Content Density',
     description: 'Global content density mode for components',
-    defaultValue: false,
+    defaultValue: getEffectiveContentDensity(document.body) === "cozy"? "Cozy" : "Compact",
     toolbar: {
       icon: '',
       items: ['Cozy', 'Compact'],
