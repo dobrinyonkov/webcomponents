@@ -1,5 +1,7 @@
+import { action } from "@storybook/addon-actions";
 import { Story, Canvas, ArgsTable } from "@storybook/addon-docs";
 import { html } from "lit-html";
+import { ifDefined } from "lit-html/directives/if-defined.js";
 import argTypes from "./argsTypes.js";
 import Description from "./Description.md";
 import AvatarGroupWithPopover from "./AvatarGroupWithPopover.js";
@@ -13,9 +15,9 @@ import AvatarGroupWithPopover from "./AvatarGroupWithPopover.js";
 export const Template = (args) =>
   html`
     <ui5-avatar-group
-      .aria-haspopup="${args.ariaHaspopup}"
-      .type="${args.type}"
-      @click="${args["ui5-click"]}"
+      .aria-haspopup="${ifDefined(args.ariaHaspopup)}"
+      .type="${ifDefined(args.type)}"
+      @ui5-click="${ifDefined(args["ui5-click"])}"
     >
       <ui5-avatar size="M" icon="employee"></ui5-avatar>
       <ui5-avatar size="M" initials="JD"></ui5-avatar>
@@ -42,7 +44,7 @@ export const Template = (args) =>
     name="Type Grouped"
     args={{
       type: "Group",
-      ["ui5-click"]: () => {},
+      ["ui5-click"]: (e) => click('ui5-click')(e.datail),
     }}
   >
     {Template.bind({})}
@@ -56,7 +58,7 @@ export const Template = (args) =>
     name="Type Individual"
     args={{
       type: "Individual",
-      ["ui5-click"]: () => {},
+      ["ui5-click"]: (e) => click('ui5-click')(e.datail),
     }}
   >
     {Template.bind({})}
@@ -72,6 +74,10 @@ export const Template = (args) =>
       controls: {
         include: ["type"],
       },
+      docs: {
+        // Opt-out of inline rendering
+        inlineStories: false,
+      },
     }}
   >
     {AvatarGroupWithPopover.bind()}
@@ -81,7 +87,15 @@ export const Template = (args) =>
 ## Type Group with Popover
 
 <Canvas>
-  <Story name="Type Group with Popover">
+  <Story
+    parameters={{
+      docs: {
+        // Opt-out of inline rendering
+        inlineStories: false,
+      },
+    }}
+    name="Type Group with Popover"
+  >
     {html` <div class="snippet group">
       <ui5-popover
         header-text="My people"

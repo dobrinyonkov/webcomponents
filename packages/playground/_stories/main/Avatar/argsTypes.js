@@ -1,6 +1,6 @@
 export default {
     ['ui5-click']: {
-        action: 'clicked',
+        action: 'ui5-click',
         table: {
             category: "Events"
         },

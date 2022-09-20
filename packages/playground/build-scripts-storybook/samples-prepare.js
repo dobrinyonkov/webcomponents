@@ -17,7 +17,7 @@ const EXCLUDE_LIST = [
 	"FlexibleColumnLayout.sample.html",
 	"IllustratedMessage.sample.html",
 	"Input.sample.html",
-	"List.sample.html",
+	// "List.sample.html",
 	"MultiInput.sample.html",
 	"MessageStrip.sample.html",
 	"NotificationListGroupItem.sample.html",
