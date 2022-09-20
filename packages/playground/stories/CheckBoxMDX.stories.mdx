@@ -1,0 +1,74 @@
+import { html } from "lit-html";
+import { Canvas, Meta, Story, ArgsTable } from "@storybook/addon-docs";
+
+<Meta
+  title="MDX/Checkbox"
+  component="ui5-checkobx"
+  argTypes={{
+    checked: {
+      description:
+        "Defines if the component is checked. <br /><br /> <b>Note:</b> The property can be changed with user interaction, either by cliking/tapping on the component, or by pressing the Enter or Space key.",
+      control: "boolean",
+      table: { defaultValue: { summary: "false" } },
+    },
+    disabled: {
+      description:
+        "Defines whether the component is disabled. <br /><br /> <b>Note:</b> A disabled component is completely noninteractive.",
+      control: "boolean",
+      table: { defaultValue: { summary: "false" } },
+    },
+    readonly: {
+      description:
+        "Defines whether the component is read-only. <br /><br /> <b>Note:</b> A red-only component is not editable, but still provides visual feedback upon user interaction.",
+      control: "boolean",
+      table: { defaultValue: { summary: "false" } },
+    },
+    text: {
+      description: "Defines the text of the component.",
+      control: "text",
+      table: { defaultValue: { summary: '""' } },
+    },
+    valueState: {
+      description:
+        "Defines the value state of the component.\n\n<br /><br /> <b>Note:</b>\n\n<ul> <li><code>Warning</code></li> <li><code>Error</code></li> <li><code>None</code>(default)</li> <li><code>Success</code></li> <li><code>Information</code></li> </ul>",
+      control: "select",
+      options: ["None", "Warning", "Error", "Success"],
+      table: { defaultValue: { summary: '"None"' } },
+    },
+  }}
+/>
+
+export const Template = ({ text, checked, valueState, disabled, readonly }) =>
+  html`<ui5-checkbox
+    text="${text}"
+    value-state="${valueState}"
+    ?disabled=${disabled}
+    ?readonly=${readonly}
+    ?checked=${checked}
+  ></ui5-checkbox>`;
+
+# Checkbox
+
+With `MDX`, we can define a story for `Checkbox` right in the middle of our Markdown documentation.
+
+<Canvas>
+  <Story
+    name="Unchecked"
+    args={{
+      text: "Unchecked",
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+  <Story
+    name="Checked"
+    args={{
+      text: "Checked",
+      checked: true,
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>
+
+<ArgsTable story="." />
