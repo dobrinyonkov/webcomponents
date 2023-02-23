@@ -6,11 +6,13 @@ module.exports = {
 	"root": true,
 	"extends": "airbnb-base",
 	overrides: [{
+		files: '*.md',
+		extends: 'plugin:mdx/recommended',
+	  }, {
 		files: ["*.ts"],
 		parser: "@typescript-eslint/parser",
 		plugins: ["@typescript-eslint"],
 		extends: [
-			"plugin:mdx/recommended",
 			"plugin:@typescript-eslint/recommended",
 			"plugin:@typescript-eslint/recommended-requiring-type-checking"
 		],
