@@ -4,6 +4,7 @@
 	--_ui5_shellbar_logo_outline: var(--sapContent_FocusWidth) var(--sapContent_FocusStyle) var(--_ui5_shellbar_logo_outline_color);
 	--_ui5_shellbar_outline_offset: -0.0625rem;
 	--_ui5_shellbar_logo_outline_offset: var(--_ui5_shellbar_outline_offset);
+	--_ui5_shellbar_button_background: transparent;
 	--_ui5_shellbar_button_box_shadow: none;
 	--_ui5_shellbar_button_border: none;
 	--_ui5_shellbar_button_border_radius: 0.25rem;

@@ -20,6 +20,7 @@
 	font-size: var(--sapFontSize);
 	font-weight: normal;
 	box-sizing: border-box;
+	box-shadow: var(--_ui5_shellbar_root_box_shadow);
 }
 
 .ui5-shellbar-menu-button,
@@ -30,7 +31,7 @@
 	padding: 0;
 	margin-inline-start: 0.5rem;
 	border: none;
-	background: transparent;
+	background: var(--_ui5_shellbar_button_background);
 	outline-color: var(--_ui5_shellbar_logo_outline_color);
 	color: var(--sapShell_TextColor);
 	box-sizing: border-box;
@@ -56,6 +57,7 @@
 .ui5-shellbar-button:hover,
 .ui5-shellbar-image-button:hover {
 	background: var(--sapShell_Hover_Background);
+	border: var(--_ui5_shellbar_button_border);
 }
 
 
@@ -70,7 +72,8 @@
 .ui5-shellbar-button[active],
 .ui5-shellbar-image-button:active {
 	background: var(--sapShell_Active_Background);
-	color: var(--_ui5_shellbar_button_active_color);
+	color: var(--_ui5_shellbar_button_active_border);
+	border: var(--_ui5_shellbar_button_border);
 }
 
 .ui5-shellbar-menu-button.ui5-shellbar-menu-button--interactive:active .ui5-shellbar-menu-button-arrow {
@@ -417,14 +420,25 @@ slot[name="profile"] {
 ::slotted([ui5-input]) {
 	background: var(--_ui5_shellbar_search_field_background);
 	border: var(--_ui5_shellbar_search_field_border);
+	box-shadow: var(--_ui5_shellbar_search_field_shadow);
 	color: var(--_ui5_shellbar_search_field_color);
 	height: 2.25rem;
 	width: 100%;
 }
 
+::slotted([ui5-input]::part(inner)) {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 1px;
+	background: var(--sapField_Hover_BorderColor);
+}
+
 ::slotted([ui5-input]:hover) {
 	background: var(--_ui5_shellbar_search_field_background_hover);
-	box-shadow: var(--_ui5_shellbar_search_field_box_shadow_hover);
+	border: var(--_ui5_shellbar_search_field_border_hover);
 }
 
 ::slotted([ui5-input][focused]) {
