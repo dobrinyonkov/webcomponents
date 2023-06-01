@@ -1,9 +1,4 @@
 declare const _default: {
-    tokens: {
-        control: {
-            type: string;
-        };
-    };
     previewItem: {
         control: {
             type: boolean;
@@ -17,22 +12,8 @@ declare const _default: {
         control: string;
         options: string[];
     };
-    default: {
-        control: {
-            type: string;
-        };
-    };
-    icon: {
-        control: {
-            type: string;
-        };
-    };
-    valueStateMessage: {
-        control: {
-            type: string;
-        };
-    };
     openPicker: {
+        description: string;
         table: {
             category: string;
         };

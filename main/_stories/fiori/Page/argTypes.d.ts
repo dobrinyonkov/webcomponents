@@ -3,21 +3,6 @@ declare const _default: {
         control: string;
         options: string[];
     };
-    default: {
-        control: {
-            type: string;
-        };
-    };
-    footer: {
-        control: {
-            type: string;
-        };
-    };
-    header: {
-        control: {
-            type: string;
-        };
-    };
 };
 export default _default;
 export declare const componentInfo: {

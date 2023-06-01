@@ -15,6 +15,7 @@ export default {
             "FilterTable",
             "GroupTable",
             "NoActivities",
+            "NoColumnsSet",
             "NoData",
             "NoDimensionsSet",
             "NoEntries",
@@ -52,6 +53,7 @@ export default {
             "SuccessCheckMark",
             "SuccessHighFive",
             "SuccessScreen",
+            "Survey",
             "Tent",
             "TntChartArea",
             "TntChartArea2",
@@ -104,21 +106,6 @@ export default {
             "Scene",
             "Spot"
         ]
-    },
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "subtitle": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "title": {
-        "control": {
-            "type": "text"
-        }
     }
 };
 export const componentInfo = {

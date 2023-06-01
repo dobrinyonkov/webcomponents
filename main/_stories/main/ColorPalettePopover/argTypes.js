@@ -1,17 +1,14 @@
 export default {
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
     "openPopover": {
+        "description": "Shows the ColorPalettePopover. <b>Note:</b> The method is deprecated and will be removed in future, use <code>showAt</code> instead.",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     },
     "showAt": {
+        "description": "Shows the ColorPalettePopover.",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     }
 };

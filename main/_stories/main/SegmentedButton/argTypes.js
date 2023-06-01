@@ -1,7 +1,7 @@
 export default {
-    "default": {
+    "selectedItem": {
         "control": {
-            "type": "text"
+            "type": false
         }
     }
 };

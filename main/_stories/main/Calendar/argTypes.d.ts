@@ -3,11 +3,6 @@ declare const _default: {
         control: string;
         options: string[];
     };
-    default: {
-        control: {
-            type: string;
-        };
-    };
     primaryCalendarType: {
         control: string;
         options: string[];

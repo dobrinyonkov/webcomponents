@@ -1,9 +1,9 @@
-import type { Meta, StoryFn } from "@storybook/web-components";
+import type { Meta } from "@storybook/web-components";
+import type { StoryArgsSlots } from "./argTypes.js";
+import type { UI5StoryArgs } from "../../../types.js";
 import type DateRangePicker from "@ui5/webcomponents/dist/DateRangePicker.js";
 declare const _default: Meta<DateRangePicker>;
 export default _default;
-export declare const Template0: StoryFn;
-export declare const Template1: StoryFn;
-export declare const Template2: StoryFn;
-export declare const Template3: StoryFn;
-export declare const Template4: StoryFn;
+export declare const Basic: UI5StoryArgs<DateRangePicker, StoryArgsSlots>;
+export declare const MinMax: UI5StoryArgs<DateRangePicker, StoryArgsSlots>;
+export declare const LongFormat: UI5StoryArgs<DateRangePicker, StoryArgsSlots>;

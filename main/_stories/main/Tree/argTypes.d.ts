@@ -3,17 +3,8 @@ declare const _default: {
         control: string;
         options: string[];
     };
-    default: {
-        control: {
-            type: string;
-        };
-    };
-    header: {
-        control: {
-            type: string;
-        };
-    };
     walk: {
+        description: string;
         table: {
             category: string;
         };

@@ -1,13 +1,7 @@
 declare const _default: {
-    default: {
-        control: {
-            type: string;
-        };
-    };
-    actions: {
-        control: {
-            type: string;
-        };
+    priority: {
+        control: string;
+        options: string[];
     };
 };
 export default _default;

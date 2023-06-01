@@ -25,19 +25,10 @@ export default {
             "ShowAboveS"
         ]
     },
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "sideContent": {
-        "control": {
-            "type": "text"
-        }
-    },
     "toggleContents": {
+        "description": "Toggles visibility of main and side contents on S screen size (mobile device).",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     }
 };

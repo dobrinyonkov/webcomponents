@@ -1,20 +1,20 @@
 export default {
+    "colorScheme": {
+        "control": {
+            "type": false
+        }
+    },
+    "hiddenItems": {
+        "control": {
+            "type": false
+        }
+    },
     "type": {
         "control": "select",
         "options": [
             "Group",
             "Individual"
         ]
-    },
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "overflowButton": {
-        "control": {
-            "type": "text"
-        }
     }
 };
 export const componentInfo = {

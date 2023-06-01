@@ -7,16 +7,6 @@ declare const _default: {
         control: string;
         options: string[];
     };
-    columns: {
-        control: {
-            type: string;
-        };
-    };
-    default: {
-        control: {
-            type: string;
-        };
-    };
 };
 export default _default;
 export declare const componentInfo: {

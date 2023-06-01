@@ -1,6 +1,5 @@
-import { html } from "lit-html";
-export default () => html `<div class="snippet">
-    <ui5-avatar-group type="Individual">
+import { html } from "lit";
+export default () => html ` <ui5-avatar-group type="Individual">
         <ui5-avatar size="S">
             <img
                 src="../assets/images/avatars/man_avatar_1.png"
@@ -64,6 +63,5 @@ export default () => html `<div class="snippet">
                 alt="Man Avatar 3"
             />
         </ui5-avatar>
-    </ui5-avatar-group>
-</div> `;
+    </ui5-avatar-group>`;
 //# sourceMappingURL=TemplateAvatarGroupSizes.js.map

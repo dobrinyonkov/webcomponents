@@ -15,7 +15,7 @@
 
 
 	
-  <script type="module" crossorigin src='https://sap.github.io/ui5-webcomponents/main/assets/bundle.common.dda60edd.js'></script>
+  <script type="module" crossorigin src='https://sap.github.io/ui5-webcomponents/main/assets/bundle.common.b553b1e4.js'></script>
   <link rel="stylesheet" href='https://sap.github.io/ui5-webcomponents/main/assets/DateTimePicker.81c1bacc.css'>
 </head>
 
@@ -83,6 +83,15 @@
 		<ui5-datetime-picker
 			format-pattern="dd/MM/yyyy"
 			value="Apr 10, 2020"
+		></ui5-datetime-picker>
+	</section>
+
+	<section>
+		<ui5-title wrapping-type="Normal">DateTimePicker with no format pattern & min-max dates in ISO format</ui5-title><br>
+		<ui5-datetime-picker
+				id="dtMinMaxDatesISO"
+				min-date="2023-05-01"
+				max-date="2023-05-31"
 		></ui5-datetime-picker>
 	</section>
 

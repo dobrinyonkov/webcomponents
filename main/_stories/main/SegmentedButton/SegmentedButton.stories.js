@@ -1,4 +1,6 @@
-import { html } from "lit-html";
+import { html } from "lit";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import argTypes, { componentInfo } from "./argTypes.js";
 import { DocsPage } from "../../../.storybook/docs";
 const component = "ui5-segmented-button";
@@ -13,37 +15,31 @@ export default {
     },
     argTypes,
 };
-const Template = (args) => html `<div></div>`;
-export const Template0 = () => html `
-<h3>Basic SegmentedButton</h3>
-	<div class="snippet">
-        <ui5-segmented-button accessible-name="Geographic location">
-            <ui5-segmented-button-item>Map</ui5-segmented-button-item>
-            <ui5-segmented-button-item pressed="">Satellite</ui5-segmented-button-item>
-            <ui5-segmented-button-item>Terrain</ui5-segmented-button-item>
-        </ui5-segmented-button>
-	</div>
-`;
-export const Template1 = () => html `
-<h3>SegmentedButton with Icons</h3>
-	<div class="snippet">
-		<ui5-segmented-button>
-			<ui5-segmented-button-item icon="employee" pressed=""></ui5-segmented-button-item>
-			<ui5-segmented-button-item icon="menu"></ui5-segmented-button-item>
-			<ui5-segmented-button-item icon="factory"></ui5-segmented-button-item>
-		</ui5-segmented-button>
-	</div>
-`;
-export const Template2 = () => html `
-<h3>SegmentedButton with 5 SegmentedButtonItems</h3>
-	<div class="snippet">
-		<ui5-segmented-button>
-			<ui5-segmented-button-item>Item</ui5-segmented-button-item>
-			<ui5-segmented-button-item pressed="">Pressed SegmentedButtonItem With Bigger Text</ui5-segmented-button-item>
-			<ui5-segmented-button-item>Item</ui5-segmented-button-item>
-			<ui5-segmented-button-item>SegmentedButtonItem</ui5-segmented-button-item>
-			<ui5-segmented-button-item>Press me</ui5-segmented-button-item>
-		</ui5-segmented-button>
-	</div>
-`;
+const Template = (args) => html `<ui5-segmented-button
+	accessible-name="${ifDefined(args.accessibleName)}"
+>
+	${unsafeHTML(args.default)}
+</ui5-segmented-button>`;
+export const Basic = Template.bind({});
+Basic.args = {
+    default: `<ui5-segmented-button-item>Map</ui5-segmented-button-item>
+<ui5-segmented-button-item pressed="">Satellite</ui5-segmented-button-item>
+<ui5-segmented-button-item>Terrain</ui5-segmented-button-item>`,
+    accessibleName: "Geographic location",
+};
+export const WithIcons = Template.bind({});
+WithIcons.args = {
+    default: `<ui5-segmented-button-item icon="employee" pressed=""></ui5-segmented-button-item>
+<ui5-segmented-button-item icon="menu"></ui5-segmented-button-item>
+<ui5-segmented-button-item icon="factory"></ui5-segmented-button-item>`,
+};
+export const WithMoreItems = Template.bind({});
+WithMoreItems.storyName = "More Segmented Button Items";
+WithMoreItems.args = {
+    default: `<ui5-segmented-button-item>Item</ui5-segmented-button-item>
+<ui5-segmented-button-item pressed="">Pressed SegmentedButtonItem With Bigger Text</ui5-segmented-button-item>
+<ui5-segmented-button-item>Item</ui5-segmented-button-item>
+<ui5-segmented-button-item>SegmentedButtonItem</ui5-segmented-button-item>
+<ui5-segmented-button-item>Press me</ui5-segmented-button-item>`,
+};
 //# sourceMappingURL=SegmentedButton.stories.js.map

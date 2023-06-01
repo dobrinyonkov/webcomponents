@@ -1,6 +1,9 @@
-import { html } from "lit-html";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import argTypes, { componentInfo } from "./argTypes.js";
 import { DocsPage } from "../../../.storybook/docs";
+import ValueState from "@ui5/webcomponents-base/dist/types/ValueState";
 const component = "ui5-step-input";
 export default {
     title: "Main/StepInput",
@@ -12,57 +15,71 @@ export default {
     },
     argTypes,
 };
-const Template = (args) => html `<div></div>`;
-export const Template0 = () => html `
-<h3>Basic Step Input</h3>
-	<div class="snippet">
-		<div class="shorter">
-			<ui5-step-input class="samples-margin samples-responsive-margin-bottom" value="5"></ui5-step-input>
-			<ui5-step-input class="samples-margin samples-responsive-margin-bottom" readonly="" value="5"></ui5-step-input>
-			<ui5-step-input class="samples-margin samples-responsive-margin-bottom" disabled="" value="5"></ui5-step-input>
-		</div>
-	</div>
-`;
-export const Template1 = () => html `
-<h3>Step Input with alignment</h3>
-	<div class="snippet">
-		<div class="shorter">
-			<ui5-step-input class="samples-margin samples-responsive-margin-bottom" value="5"></ui5-step-input>
-			<ui5-step-input class="samples-margin samples-responsive-margin-bottom" value="5" style="text-align: center"></ui5-step-input>
-			<ui5-step-input class="samples-margin samples-responsive-margin-bottom" value="5" style="text-align: right"></ui5-step-input>
-		</div>
-	</div>
-`;
-export const Template2 = () => html `
-<h3>Step Input with min, max, step and valuePrecision</h3>
-	<div class="snippet">
-		<div class="shorter">
-			<ui5-step-input class="samples-margin samples-responsive-margin-bottom" value="5" min="0" max="10" step="1"></ui5-step-input>
-			<ui5-step-input class="samples-margin samples-responsive-margin-bottom" value="0" min="-100" max="100" step="10"></ui5-step-input>
-			<ui5-step-input class="samples-margin samples-responsive-margin-bottom" value="10" min="0" max="20" step="0.5" value-precision="1"></ui5-step-input>
-		</div>
-	</div>
-`;
-export const Template3 = () => html `
-<h3>Step Input with Value State</h3>
-	<div class="snippet">
-		<div class="shorter">
-			<ui5-step-input class="samples-margin samples-responsive-margin-bottom" value-state="Success"></ui5-step-input>
-			<ui5-step-input class="samples-margin samples-responsive-margin-bottom" value-state="Warning"></ui5-step-input>
-			<ui5-step-input class="samples-margin samples-responsive-margin-bottom" value-state="Error"></ui5-step-input>
-			<ui5-step-input class="samples-margin samples-responsive-margin-bottom" value-state="Information"></ui5-step-input>
-		</div>
-	</div>
-`;
-export const Template4 = () => html `
-<h3>Step Input with Label</h3>
-	<div class="snippet">
-		<div class="flex-column samples-margin">
-			<div class="shorter">
-				<ui5-label class="samples-big-margin-right" for="myStepInput" required="" show-colon="">Number</ui5-label>
-				<ui5-step-input id="myStepInput" placeholder="Enter your Number" required=""></ui5-step-input>
-			</div>
-		</div>
-	</div>
-`;
+const Template = (args) => html `<ui5-step-input
+	value="${ifDefined(args.value)}"
+	value-state="${ifDefined(args.valueState)}"
+	value-precision="${ifDefined(args.valuePrecision)}"
+	min="${ifDefined(args.min)}"
+	max="${ifDefined(args.max)}"
+	step="${ifDefined(args.step)}"
+	?required="${ifDefined(args.required)}"
+	?readonly="${ifDefined(args.readonly)}"
+	?disabled="${ifDefined(args.disabled)}"
+	placeholder="${ifDefined(args.placeholder)}"
+	name="${ifDefined(args.name)}"
+	accessible-name="${ifDefined(args.accessibleName)}"
+	accessible-name-ref="${ifDefined(args.accessibleNameRef)}"
+	id="${ifDefined(args.id)}"
+	style="${ifDefined(args.style)}"
+>
+	${unsafeHTML(args.valueStateMessage)}
+</ui5-step-input>`;
+export const Basic = Template.bind({});
+Basic.args = {
+    value: 5,
+};
+export const Readonly = Template.bind({});
+Readonly.args = {
+    value: 5,
+    readonly: true,
+};
+export const Disabled = Template.bind({});
+Disabled.args = {
+    value: 5,
+    disabled: true,
+};
+export const Design = Template.bind({});
+Design.storyName = "Value State";
+Design.args = {
+    value: 5,
+    valueState: ValueState.Success,
+};
+export const MinMax = Template.bind({});
+MinMax.storyName = "Min/Max and Step Values";
+MinMax.args = {
+    value: 0,
+    min: -100,
+    max: 100,
+    step: 10,
+};
+export const ValuePrecision = Template.bind({});
+ValuePrecision.args = {
+    value: 5,
+    min: 0,
+    max: 10,
+    step: 0.5,
+    valuePrecision: 1,
+};
+export const Label = Template.bind({});
+Label.storyName = "With Label and Alignment";
+Label.args = {
+    id: "myStepInput",
+    style: "text-align: left",
+    placeholder: "Enter your Number",
+    required: true,
+};
+Label.decorators = [
+    (story) => html `<ui5-label class="samples-big-margin-right" for="myStepInput">Number</ui5-label>
+	${story()}`,
+];
 //# sourceMappingURL=StepInput.stories.js.map

@@ -3,6 +3,8 @@ import getEffectiveContentDensity from "@ui5/webcomponents-base/dist/util/getEff
 import customElements from "./custom-elements.json";
 import { setCustomElementsManifest } from "@storybook/web-components";
 import { useOptions, themes } from "./useOptions";
+import { enhanceArgTypes } from "./args/enhanceArgTypes";
+import { htmlTransformation } from "./addons/html/HTMLTransformation";
 if (customElements?.modules) {
     setCustomElementsManifest(customElements);
 }
@@ -13,11 +15,15 @@ export const parameters = {
         transform: (code) => {
             // script tag (if any) is not inside the #root-inner element - we add it to the final result
             const script = document.querySelector('#scripts-root');
-            return code + script?.innerHTML;
+            const html = htmlTransformation.transform(code);
+            return html + script?.innerHTML;
         }
     },
     actions: { argTypesRegex: "^ui5-[a-z].*" },
     docs: {
+        source: {
+            format: true,
+        },
         iframeHeight: "300px",
         transformSource: (source // this is called before rendering of the "code" inside the preview of the stories
         ) => source
@@ -72,4 +78,5 @@ export const globalTypes = {
     },
 };
 export const decorators = [useOptions];
+export const argTypesEnhancers = [enhanceArgTypes];
 //# sourceMappingURL=preview.js.map

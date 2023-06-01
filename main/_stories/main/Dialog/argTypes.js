@@ -9,21 +9,6 @@ export default {
             "Warning"
         ]
     },
-    "footer": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "header": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "show": {
-        "table": {
-            "category": "Methods"
-        }
-    },
     "accessibleRole": {
         "control": "select",
         "options": [
@@ -32,24 +17,28 @@ export default {
             "None"
         ]
     },
-    "default": {
-        "control": {
-            "type": "text"
+    "show": {
+        "description": "Shows the dialog.",
+        "table": {
+            "category": "methods"
         }
     },
     "applyFocus": {
+        "description": "Focuses the element denoted by <code>initialFocus</code>, if provided, or the first focusable element otherwise.",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     },
     "close": {
+        "description": "Closes the popup.",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     },
     "isOpen": {
+        "description": "Tells if the component is opened",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     }
 };

@@ -8,41 +8,6 @@ declare const _default: {
         control: string;
         options: string[];
     };
-    valueStateMessage: {
-        control: {
-            type: string;
-        };
-    };
-    closePicker: {
-        table: {
-            category: string;
-        };
-    };
-    formatValue: {
-        table: {
-            category: string;
-        };
-    };
-    isInValidRange: {
-        table: {
-            category: string;
-        };
-    };
-    isOpen: {
-        table: {
-            category: string;
-        };
-    };
-    isValid: {
-        table: {
-            category: string;
-        };
-    };
-    openPicker: {
-        table: {
-            category: string;
-        };
-    };
     primaryCalendarType: {
         control: string;
         options: string[];
@@ -50,6 +15,42 @@ declare const _default: {
     secondaryCalendarType: {
         control: string;
         options: string[];
+    };
+    closePicker: {
+        description: string;
+        table: {
+            category: string;
+        };
+    };
+    formatValue: {
+        description: string;
+        table: {
+            category: string;
+        };
+    };
+    isInValidRange: {
+        description: string;
+        table: {
+            category: string;
+        };
+    };
+    isOpen: {
+        description: string;
+        table: {
+            category: string;
+        };
+    };
+    isValid: {
+        description: string;
+        table: {
+            category: string;
+        };
+    };
+    openPicker: {
+        description: string;
+        table: {
+            category: string;
+        };
     };
 };
 export default _default;

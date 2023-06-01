@@ -1,4 +1,4 @@
-import { html } from "lit-html";
+import { html } from "lit";
 import argTypes, { componentInfo } from "./argTypes.js";
 import { DocsPage } from "../../../.storybook/docs";
 const component = "ui5-upload-collection";

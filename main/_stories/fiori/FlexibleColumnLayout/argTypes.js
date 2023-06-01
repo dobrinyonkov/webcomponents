@@ -37,21 +37,6 @@ export default {
         "control": {
             "type": false
         }
-    },
-    "endColumn": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "midColumn": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "startColumn": {
-        "control": {
-            "type": "text"
-        }
     }
 };
 export const componentInfo = {

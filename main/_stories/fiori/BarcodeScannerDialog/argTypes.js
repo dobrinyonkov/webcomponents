@@ -1,12 +1,14 @@
 export default {
     "close": {
+        "description": "Closes the dialog and the scan session.",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     },
     "show": {
+        "description": "Shows a dialog with the camera videostream. Starts a scan session.",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     }
 };

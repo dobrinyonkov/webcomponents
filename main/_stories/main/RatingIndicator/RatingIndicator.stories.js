@@ -1,4 +1,5 @@
-import { html } from "lit-html";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 import argTypes, { componentInfo } from "./argTypes.js";
 import { DocsPage } from "../../../.storybook/docs";
 const component = "ui5-rating-indicator";
@@ -12,35 +13,34 @@ export default {
     },
     argTypes,
 };
-const Template = (args) => html `<div></div>`;
-export const Template0 = () => html `
-<h3>Basic Rating Indicator</h3>
-	<div class="snippet">
-		<ui5-rating-indicator></ui5-rating-indicator>
-		<ui5-rating-indicator value="3"></ui5-rating-indicator>
-		<ui5-rating-indicator value="3.7"></ui5-rating-indicator>
-	</div>
-`;
-export const Template1 = () => html `
-<h3>Rating Indicator With Different Max Value</h3>
-	<div class="snippet">
-		<ui5-rating-indicator max="10" value="5"></ui5-rating-indicator>
-		<ui5-rating-indicator max="3" value="3"></ui5-rating-indicator>
-	</div>
-`;
-export const Template2 = () => html `
-<h3>Disabled Rating Indicator</h3>
-	<div class="snippet">
-		<ui5-rating-indicator value="4" disabled=""></ui5-rating-indicator>
-		<ui5-rating-indicator max="10" value="5" disabled=""></ui5-rating-indicator>
-		<ui5-rating-indicator max="3" value="3" disabled=""></ui5-rating-indicator>
-	</div>
-`;
-export const Template3 = () => html `
-<h3>Readonly Rating Indicator</h3>
-	<div class="snippet">
-		<ui5-rating-indicator value="4" readonly=""></ui5-rating-indicator>
-		<ui5-rating-indicator max="7" value="5" readonly=""></ui5-rating-indicator>
-	</div>
-`;
+const Template = (args) => html `
+<ui5-rating-indicator
+	value="${ifDefined(args.value)}"
+	max="${ifDefined(args.max)}"
+	?disabled="${ifDefined(args.disabled)}"
+	?readonly="${ifDefined(args.readonly)}"
+	accessible-нame="${ifDefined(args.accessibleName)}"
+></ui5-rating-indicator>`;
+export const BasicRatingIndicator = Template.bind({});
+BasicRatingIndicator.args = {
+    value: 3.7
+};
+export const RatingIndicatorMax = Template.bind({});
+RatingIndicatorMax.args = {
+    value: 5,
+    max: 10
+};
+RatingIndicatorMax.storyName = "Rating Indicator with Max Value";
+export const DisabledRatingIndicator = Template.bind({});
+DisabledRatingIndicator.args = {
+    value: 5,
+    max: 10,
+    disabled: true
+};
+export const ReadonlyRatingIndicator = Template.bind({});
+ReadonlyRatingIndicator.args = {
+    value: 5,
+    max: 7,
+    readonly: true
+};
 //# sourceMappingURL=RatingIndicator.stories.js.map

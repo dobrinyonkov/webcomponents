@@ -14,34 +14,34 @@ export default {
             "Warning"
         ]
     },
-    "valueStateMessage": {
-        "control": {
-            "type": "text"
-        }
-    },
     "closePicker": {
+        "description": "Closes the picker",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     },
     "formatValue": {
+        "description": "Formats a Java Script date object into a string representing a locale date and time according to the <code>formatPattern</code> property of the TimePicker instance",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     },
     "isOpen": {
+        "description": "Checks if the picker is open",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     },
     "isValid": {
+        "description": "Checks if a value is valid against the current <code>formatPattern</code> value.\n\n<br><br> <b>Note:</b> an empty string is considered as valid value.",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     },
     "openPicker": {
+        "description": "Opens the picker.",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     }
 };

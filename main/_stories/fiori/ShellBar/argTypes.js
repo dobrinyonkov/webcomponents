@@ -29,39 +29,10 @@ export default {
             "type": false
         }
     },
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "logo": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "menuItems": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "profile": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "searchField": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "startButton": {
-        "control": {
-            "type": "text"
-        }
-    },
     "closeOverflow": {
+        "description": "Closes the overflow area. Useful to manually close the overflow after having suppressed automatic closing with preventDefault() of ShellbarItem's press event",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     }
 };

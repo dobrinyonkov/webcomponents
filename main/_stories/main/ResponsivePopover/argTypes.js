@@ -1,19 +1,4 @@
 export default {
-    "close": {
-        "table": {
-            "category": "Methods"
-        }
-    },
-    "isOpen": {
-        "table": {
-            "category": "Methods"
-        }
-    },
-    "showAt": {
-        "table": {
-            "category": "Methods"
-        }
-    },
     "horizontalAlign": {
         "control": "select",
         "options": [
@@ -41,16 +26,6 @@ export default {
             "Top"
         ]
     },
-    "footer": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "header": {
-        "control": {
-            "type": "text"
-        }
-    },
     "accessibleRole": {
         "control": "select",
         "options": [
@@ -59,14 +34,28 @@ export default {
             "None"
         ]
     },
-    "default": {
-        "control": {
-            "type": "text"
+    "close": {
+        "description": "Closes the popup.",
+        "table": {
+            "category": "methods"
+        }
+    },
+    "isOpen": {
+        "description": "Tells if the component is opened",
+        "table": {
+            "category": "methods"
+        }
+    },
+    "showAt": {
+        "description": "Shows the popover.",
+        "table": {
+            "category": "methods"
         }
     },
     "applyFocus": {
+        "description": "Focuses the element denoted by <code>initialFocus</code>, if provided, or the first focusable element otherwise.",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     }
 };

@@ -1,22 +1,11 @@
 declare const _default: {
-    valueState: {
+    filter: {
         control: string;
         options: string[];
     };
-    default: {
-        control: {
-            type: string;
-        };
-    };
-    icon: {
-        control: {
-            type: string;
-        };
-    };
-    valueStateMessage: {
-        control: {
-            type: string;
-        };
+    valueState: {
+        control: string;
+        options: string[];
     };
 };
 export default _default;

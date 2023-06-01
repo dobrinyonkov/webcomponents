@@ -1,4 +1,9 @@
 declare const _default: {
+    allItems: {
+        control: {
+            type: boolean;
+        };
+    };
     contentBackgroundDesign: {
         control: string;
         options: string[];
@@ -14,21 +19,6 @@ declare const _default: {
     tabsOverflowMode: {
         control: string;
         options: string[];
-    };
-    default: {
-        control: {
-            type: string;
-        };
-    };
-    overflowButton: {
-        control: {
-            type: string;
-        };
-    };
-    startOverflowButton: {
-        control: {
-            type: string;
-        };
     };
 };
 export default _default;

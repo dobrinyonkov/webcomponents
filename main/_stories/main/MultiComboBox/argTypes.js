@@ -1,4 +1,13 @@
 export default {
+    "filter": {
+        "control": "select",
+        "options": [
+            "Contains",
+            "None",
+            "StartsWith",
+            "StartsWithPerTerm"
+        ]
+    },
     "open": {
         "control": {
             "type": false
@@ -13,21 +22,6 @@ export default {
             "Success",
             "Warning"
         ]
-    },
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "icon": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "valueStateMessage": {
-        "control": {
-            "type": "text"
-        }
     }
 };
 export const componentInfo = {

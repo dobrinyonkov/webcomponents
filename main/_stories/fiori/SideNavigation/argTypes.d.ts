@@ -1,20 +1,4 @@
-declare const _default: {
-    default: {
-        control: {
-            type: string;
-        };
-    };
-    fixedItems: {
-        control: {
-            type: string;
-        };
-    };
-    header: {
-        control: {
-            type: string;
-        };
-    };
-};
+declare const _default: {};
 export default _default;
 export declare const componentInfo: {
     package: string;

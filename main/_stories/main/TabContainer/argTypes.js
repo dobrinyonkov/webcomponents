@@ -1,4 +1,9 @@
 export default {
+    "allItems": {
+        "control": {
+            "type": false
+        }
+    },
     "contentBackgroundDesign": {
         "control": "select",
         "options": [
@@ -28,21 +33,6 @@ export default {
             "End",
             "StartAndEnd"
         ]
-    },
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "overflowButton": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "startOverflowButton": {
-        "control": {
-            "type": "text"
-        }
     }
 };
 export const componentInfo = {

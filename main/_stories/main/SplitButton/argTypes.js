@@ -9,11 +9,6 @@ export default {
             "Positive",
             "Transparent"
         ]
-    },
-    "default": {
-        "control": {
-            "type": "text"
-        }
     }
 };
 export const componentInfo = {

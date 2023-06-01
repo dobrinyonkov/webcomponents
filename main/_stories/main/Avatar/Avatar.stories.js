@@ -1,6 +1,6 @@
-import { html } from "lit-html";
-import { ifDefined } from "lit-html/directives/if-defined.js";
-import { unsafeHTML } from "lit-html/directives/unsafe-html.js";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import AvatarSize from "@ui5/webcomponents/dist/types/AvatarSize.js";
 import AvatarShape from "@ui5/webcomponents/dist/types/AvatarShape.js";
 import argTypes, { componentInfo } from "./argTypes.js";
@@ -25,17 +25,17 @@ const Template = (args) => html `<ui5-avatar
     color-scheme="${ifDefined(args.colorScheme)}"
     ?interactive="${ifDefined(args.interactive)}"
     aria-haspopup="${ifDefined(args.ariaHaspopup)}"
+    accessible-name="${ifDefined(args.accessibleName)}"
   >
     ${unsafeHTML(args.default)}
   </ui5-avatar>`;
 export const Basic = Template.bind({});
-Basic.storyName = "Basic";
 Basic.args = {
     initials: "FJ",
     interactive: true,
+    accessibleName: "Avatar with accessible name"
 };
 export const WithImage = Template.bind({});
-WithImage.storyName = "Avatar with image";
 WithImage.args = {
     default: `<img
 	alt="Woman 1"
@@ -43,13 +43,11 @@ WithImage.args = {
 />`,
 };
 export const Size = Template.bind({});
-Size.storyName = "Avatar Size";
 Size.args = {
     size: AvatarSize.L,
     icon: "home",
 };
 export const Styles = Template.bind({});
-Styles.storyName = "Avatar Styles";
 Styles.args = {
     size: AvatarSize.XL,
     shape: AvatarShape.Square,

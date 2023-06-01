@@ -1,5 +1,5 @@
-commit 9709d0b7a219af8b3d838f41c6b498f49d82e9a5
+commit bef9a64eddd50e527cf0679ceb089b89fbdb847d
 Author: Dobrin Dimchev <dobrin.dimchev@sap.com>
-Date:   Fri Feb 17 18:00:50 2023 +0200
+Date:   Thu Jun 1 11:40:24 2023 +0300
 
-    fix(playground): use relative path for storybook assets
+    fix: favicon icon

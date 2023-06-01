@@ -1,13 +1,12 @@
 export default {
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "actions": {
-        "control": {
-            "type": "text"
-        }
+    "priority": {
+        "control": "select",
+        "options": [
+            "High",
+            "Low",
+            "Medium",
+            "None"
+        ]
     }
 };
 export const componentInfo = {

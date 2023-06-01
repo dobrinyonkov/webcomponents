@@ -7,11 +7,6 @@ export default {
             "Single"
         ]
     },
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
     "primaryCalendarType": {
         "control": "select",
         "options": [

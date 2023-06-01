@@ -8,11 +8,6 @@ export default {
             "Success",
             "Warning"
         ]
-    },
-    "valueStateMessage": {
-        "control": {
-            "type": "text"
-        }
     }
 };
 export const componentInfo = {

@@ -25,24 +25,10 @@ export default {
             "Warning"
         ]
     },
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "icon": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "valueStateMessage": {
-        "control": {
-            "type": "text"
-        }
-    },
     "openPicker": {
+        "description": "Manually opens the suggestions popover, assuming suggestions are enabled. Items must be preloaded for it to open.",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     }
 };

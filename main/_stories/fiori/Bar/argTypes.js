@@ -7,21 +7,6 @@ export default {
             "Header",
             "Subheader"
         ]
-    },
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "endContent": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "startContent": {
-        "control": {
-            "type": "text"
-        }
     }
 };
 export const componentInfo = {

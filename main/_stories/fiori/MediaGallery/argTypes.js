@@ -20,11 +20,6 @@ export default {
             "Bottom",
             "Top"
         ]
-    },
-    "default": {
-        "control": {
-            "type": "text"
-        }
     }
 };
 export const componentInfo = {

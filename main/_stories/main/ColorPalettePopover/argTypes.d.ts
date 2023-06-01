@@ -1,15 +1,12 @@
 declare const _default: {
-    default: {
-        control: {
-            type: string;
-        };
-    };
     openPopover: {
+        description: string;
         table: {
             category: string;
         };
     };
     showAt: {
+        description: string;
         table: {
             category: string;
         };

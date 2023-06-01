@@ -1,7 +1,9 @@
-import type { Meta, StoryFn } from "@storybook/web-components";
+import type { Meta } from "@storybook/web-components";
+import type { StoryArgsSlots } from "./argTypes.js";
+import type { UI5StoryArgs } from "../../../types.js";
 import type Menu from "@ui5/webcomponents/dist/Menu.js";
 declare const _default: Meta<Menu>;
 export default _default;
-export declare const Template0: StoryFn;
-export declare const Template1: StoryFn;
-export declare const Template2: StoryFn;
+export declare const Basic: UI5StoryArgs<Menu, StoryArgsSlots>;
+export declare const SubMenu: UI5StoryArgs<Menu, StoryArgsSlots>;
+export declare const AditionalText: UI5StoryArgs<Menu, StoryArgsSlots>;

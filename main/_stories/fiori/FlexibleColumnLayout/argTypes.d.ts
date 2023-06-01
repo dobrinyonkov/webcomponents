@@ -28,21 +28,6 @@ declare const _default: {
             type: boolean;
         };
     };
-    endColumn: {
-        control: {
-            type: string;
-        };
-    };
-    midColumn: {
-        control: {
-            type: string;
-        };
-    };
-    startColumn: {
-        control: {
-            type: string;
-        };
-    };
 };
 export default _default;
 export declare const componentInfo: {

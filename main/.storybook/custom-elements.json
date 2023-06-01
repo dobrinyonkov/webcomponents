@@ -60,7 +60,7 @@
                                 "text": "string"
                             },
                             "default": "\"\"",
-                            "description": "Defines the name of the UI5 Icon, that will be displayed. <br> <b>Note:</b> If <code>image</code> slot is provided, the property will be ignored. <br> <b>Note:</b> You should import the desired icon first, then use its name as \"icon\". <br><br> import \"@ui5/webcomponents-icons/dist/{icon_name}.js\" <br> <pre>&lt;ui5-avatar icon=\"employee\"></pre>\n\nSee all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\" class=\"api-table-content-cell-link\">Icon Explorer</ui5-link>."
+                            "description": "Defines the name of the UI5 Icon, that will be displayed. <br> <b>Note:</b> If <code>image</code> slot is provided, the property will be ignored. <br> <b>Note:</b> You should import the desired icon first, then use its name as \"icon\". <br><br> import \"@ui5/webcomponents-icons/dist/{icon_name}.js\" <br> <pre>&lt;ui5-avatar icon=\"employee\"></pre> <br> <b>Note:</b> If no icon or an empty one is provided, by default the \"employee\" icon should be displayed.\n\nSee all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\">Icon Explorer</ui5-link>."
                         },
                         {
                             "deprecated": false,
@@ -178,6 +178,30 @@
                     ],
                     "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nDisplays a group of avatars arranged horizontally. It is useful to visually showcase a group of related avatars, such as, project team members or employees.\n\nThe component allows you to display the avatars in different sizes, depending on your use case.\n\nThe <code>AvatarGroup</code> component has two group types: <ul> <li><code>Group</code> type: The avatars are displayed as partially overlapped on top of each other and the entire group has one click/tap area.</li> <li><code>Individual</code> type: The avatars are displayed side-by-side and each avatar has its own click/tap area.</li> </ul>\n\n<h3>Responsive Behavior</h3>\n\nWhen the available space is less than the width required to display all avatars, an overflow visualization appears as a button placed at the end with the same shape and size as the avatars. The visualization displays the number of avatars that have overflowed and are not currently visible.\n\n<h3>Usage</h3>\n\nUse the <code>AvatarGroup</code> if: <ul> <li>You want to display a group of avatars.</li> <li>You want to display several avatars which have something in common.</li> </ul>\n\nDo not use the <code>AvatarGroup</code> if: <ul> <li>You want to display a single avatar.</li> <li>You want to display a gallery for simple images.</li> <li>You want to use it for other visual content than avatars.</li> </ul>\n\n<h3>Keyboard Handling</h3> The component provides advanced keyboard handling. When focused, the user can use the following keyboard shortcuts in order to perform a navigation: <br> - <code>type</code> Individual: <br> <ul> <li>[TAB] - Move focus to the overflow button</li> <li>[LEFT] - Navigate one avatar to the left</li> <li>[RIGHT] - Navigate one avatar to the right</li> <li>[HOME] - Navigate to the first avatar</li> <li>[END] - Navigate to the last avatar</li> <li>[SPACE],[ENTER],[RETURN] - Trigger <code>ui5-click</code> event</li> </ul> <br> - <code>type</code> Group: <br> <ul> <li>[TAB] - Move focus to the next interactive element after the component</li> <li>[SPACE],[ENTER],[RETURN] - Trigger <code>ui5-click</code> event</li> </ul> <br>",
                     "members": [
+                        {
+                            "deprecated": false,
+                            "kind": "field",
+                            "name": "colorScheme",
+                            "privacy": "public",
+                            "static": false,
+                            "type": {
+                                "text": "sap.ui.webc.main.types.AvatarColorScheme[]"
+                            },
+                            "default": "[]",
+                            "description": "Returns an array containing the <code>AvatarColorScheme</code> values that correspond to the avatars in the component."
+                        },
+                        {
+                            "deprecated": false,
+                            "kind": "field",
+                            "name": "hiddenItems",
+                            "privacy": "public",
+                            "static": false,
+                            "type": {
+                                "text": "HTMLElement[]"
+                            },
+                            "default": "[]",
+                            "description": "Returns an array containing the <code>ui5-avatar</code> instances that are currently not displayed due to lack of space."
+                        },
                         {
                             "deprecated": false,
                             "kind": "field",
@@ -645,7 +669,7 @@
                                 "text": "string"
                             },
                             "default": "\"\"",
-                            "description": "Defines the icon, displayed as graphical element within the component. The SAP-icons font provides numerous options. <br><br> Example:\n\nSee all the available icons within the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\" class=\"api-table-content-cell-link\">Icon Explorer</ui5-link>."
+                            "description": "Defines the icon, displayed as graphical element within the component. The SAP-icons font provides numerous options. <br><br> Example:\n\nSee all the available icons within the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\">Icon Explorer</ui5-link>."
                         },
                         {
                             "deprecated": false,
@@ -869,7 +893,7 @@
                             "name": "header"
                         }
                     ],
-                    "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nThe <code>ui5-card</code> is a component that represents information in the form of a tile with separate header and content areas. The content area of a <code>ui5-card</code> can be arbitrary HTML content. The header can be used through slot <code>header</code>. For which there is a <code>ui5-card-header</code> component to achieve the card look and fill.\n\nNote: We recommend the usage of <code>ui5-card-header</code> for the header slot, so advantage can be taken for keyboard handling, styling and accessibility.\n\n<h3>CSS Shadow Parts</h3>\n\n<ui5-link target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/::part\">CSS Shadow Parts</ui5-link> allow developers to style elements inside the Shadow DOM.\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/Card\";</code> <br> <code>import \"@ui5/webcomponents/dist/CardHeader.js\";</code> (for <code>ui5-card-header</code>)",
+                    "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nThe <code>ui5-card</code> is a component that represents information in the form of a tile with separate header and content areas. The content area of a <code>ui5-card</code> can be arbitrary HTML content. The header can be used through slot <code>header</code>. For which there is a <code>ui5-card-header</code> component to achieve the card look and feel.\n\nNote: We recommend the usage of <code>ui5-card-header</code> for the header slot, so advantage can be taken for keyboard handling, styling and accessibility.\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/Card\";</code> <br> <code>import \"@ui5/webcomponents/dist/CardHeader.js\";</code> (for <code>ui5-card-header</code>)",
                     "members": [
                         {
                             "deprecated": false,
@@ -955,7 +979,7 @@
                             "description": "Fired when the component is activated by mouse/tap or by using the Enter or Space key. <br><br> <b>Note:</b> The event would be fired only if the <code>interactive</code> property is set to true."
                         }
                     ],
-                    "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nThe <code>ui5-card-header</code> is a component, meant to be used as a header of the <code>ui5-card</code> component. It displays valuable information, that can be defined with several properties, such as: <code>titleText</code>, <code>subtitleText</code>, <code>status</code> and two slots: <code>avatar</code> and <code>action</code>.\n\n<h3>Keyboard handling</h3> In case you enable <code>interactive</code> property, you can press the <code>ui5-card-header</code> by Space and Enter keys.\n\n<h3>CSS Shadow Parts</h3>\n\n<ui5-link target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/::part\">CSS Shadow Parts</ui5-link> allow developers to style elements inside the Shadow DOM. <br> The <code>ui5-card</code> exposes the following CSS Shadow Parts: <ul> <li>root - Used to style the root DOM element of the CardHeader</li> <li>title - Used to style the title of the CardHeader</li> <li>subtitle - Used to style the subtitle of the CardHeader</li> <li>status - Used to style the status of the CardHeader</li> </ul>\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/CardHeader\";</code>",
+                    "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nThe <code>ui5-card-header</code> is a component, meant to be used as a header of the <code>ui5-card</code> component. It displays valuable information, that can be defined with several properties, such as: <code>titleText</code>, <code>subtitleText</code>, <code>status</code> and two slots: <code>avatar</code> and <code>action</code>.\n\n<h3>Keyboard handling</h3> In case you enable <code>interactive</code> property, you can press the <code>ui5-card-header</code> by Space and Enter keys.\n\n<h3>CSS Shadow Parts</h3>\n\n<ui5-link target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/::part\">CSS Shadow Parts</ui5-link> allow developers to style elements inside the Shadow DOM. <br> The <code>ui5-card-header</code> exposes the following CSS Shadow Parts: <ul> <li>root - Used to style the root DOM element of the CardHeader</li> <li>title - Used to style the title of the CardHeader</li> <li>subtitle - Used to style the subtitle of the CardHeader</li> <li>status - Used to style the status of the CardHeader</li> </ul>\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/CardHeader\";</code>",
                     "members": [
                         {
                             "deprecated": false,
@@ -1060,7 +1084,7 @@
                             "description": "Fired whenever the page changes due to user interaction, when the user clicks on the navigation arrows or while resizing, based on the <code>items-per-page-l</code>, <code>items-per-page-m</code> and <code>items-per-page-s</code> properties."
                         }
                     ],
-                    "description": "<h3 class=\"comment-api-title\">Overview</h3> The Carousel allows the user to browse through a set of items. The component is mostly used for showing a gallery of images, but can hold any other HTML element. <br> There are several ways to perform navigation: <ul> <li>on desktop - the user can navigate using the navigation arrows or with keyboard shorcuts.</li> <li>on mobile - the user can use swipe gestures.</li> </ul>\n\n<h3>Usage</h3>\n\n<h4>When to use:</h4>\n\n<ul> <li>The items you want to display are very different from each other.</li> <li>You want to display the items one after the other.</li> </ul>\n\n<h4>When not to use:</h4>\n\n<ul> <li>The items you want to display need to be visible at the same time.</li> <li>The items you want to display are uniform and very similar.</li> </ul>\n\n<h3>Keyboard Handling</h3>\n\n<h4>Basic Navigation</h4> When the <code>ui5-carousel</code> is focused the user can navigate between the items with the following keyboard shortcuts: <br>\n\n<h3>CSS Shadow Parts</h3>\n\n<ui5-link target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/::part\">CSS Shadow Parts</ui5-link> allow developers to style elements inside the Shadow DOM. <br> The <code>ui5-carousel</code> exposes the following CSS Shadow Parts: <ul> <li>content - Used to style the content of the component</li> </ul>\n\n* <h4>Fast Navigation</h4> This component provides a build in fast navigation group which can be used via <code>F6 / Shift + F6</code> or <code> Ctrl + Alt(Option) + Down / Ctrl + Alt(Option) + Up</code>. In order to use this functionality, you need to import the following module: <code>import \"@ui5/webcomponents-base/dist/features/F6Navigation.js\"</code> <br><br>\n\n<ul> <li>[UP/DOWN] - Navigates to previous and next item</li> <li>[LEFT/RIGHT] - Navigates to previous and next item</li> </ul>\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/Carousel.js\";</code>",
+                    "description": "<h3 class=\"comment-api-title\">Overview</h3> The Carousel allows the user to browse through a set of items. The component is mostly used for showing a gallery of images, but can hold any other HTML element. <br> There are several ways to perform navigation: <ul> <li>on desktop - the user can navigate using the navigation arrows or with keyboard shorcuts.</li> <li>on mobile - the user can use swipe gestures.</li> </ul>\n\n<h3>Usage</h3>\n\n<h4>When to use:</h4>\n\n<ul> <li>The items you want to display are very different from each other.</li> <li>You want to display the items one after the other.</li> </ul>\n\n<h4>When not to use:</h4>\n\n<ul> <li>The items you want to display need to be visible at the same time.</li> <li>The items you want to display are uniform and very similar.</li> </ul>\n\n<h3>Keyboard Handling</h3>\n\n<h4>Basic Navigation</h4> When the <code>ui5-carousel</code> is focused the user can navigate between the items with the following keyboard shortcuts: <br> <ul> <li>[UP/DOWN] - Navigates to previous and next item</li> <li>[LEFT/RIGHT] - Navigates to previous and next item</li> </ul>\n\n<h3>Fast Navigation</h3> This component provides a build in fast navigation group which can be used via <code>F6 / Shift + F6</code> or <code> Ctrl + Alt(Option) + Down / Ctrl + Alt(Option) + Up</code>. In order to use this functionality, you need to import the following module: <code>import \"@ui5/webcomponents-base/dist/features/F6Navigation.js\"</code> <br><br>\n\n<h3>CSS Shadow Parts</h3>\n\n<ui5-link target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/::part\">CSS Shadow Parts</ui5-link> allow developers to style elements inside the Shadow DOM. <br> The <code>ui5-carousel</code> exposes the following CSS Shadow Parts: <ul> <li>content - Used to style the content of the component</li> </ul>\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/Carousel.js\";</code>",
                     "members": [
                         {
                             "deprecated": false,
@@ -1223,7 +1247,7 @@
                             "description": "Fired when the component checked state changes."
                         }
                     ],
-                    "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nAllows the user to set a binary value, such as true/false or yes/no for an item. <br><br> The <code>ui5-checkbox</code> component consists of a box and a label that describes its purpose. If it's checked, an indicator is displayed inside the box. To check/uncheck the <code>ui5-checkbox</code>, the user has to click or tap the square box or its label. <br><br> The <code>ui5-checkbox</code> component only has 2 states - checked and unchecked. Clicking or tapping toggles the <code>ui5-checkbox</code> between checked and unchecked state.\n\n<h3>Usage</h3>\n\nYou can define the checkbox text with via the <code>text</code> property. If the text exceeds the available width, it is truncated by default. In case you prefer text to wrap, set the <code>wrappingType</code> property to \"Normal\". The touchable area for toggling the <code>ui5-checkbox</code> ends where the text ends. <br><br> You can disable the <code>ui5-checkbox</code> by setting the <code>disabled</code> property to <code>true</code>, or use the <code>ui5-checkbox</code> in read-only mode by setting the <code>readonly</code> property to <code>true</code>.\n\n<br><br> <h3>Keyboard Handling</h3>\n\nThe user can use the following keyboard shortcuts to toggle the checked state of the <code>ui5-checkbox</code>. <ul> <li>[SPACE, ENTER] - Toggles between different states: checked, not checked.</li> </ul> <br><br>\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/CheckBox\";</code>",
+                    "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nAllows the user to set a binary value, such as true/false or yes/no for an item. <br><br> The <code>ui5-checkbox</code> component consists of a box and a label that describes its purpose. If it's checked, an indicator is displayed inside the box. To check/uncheck the <code>ui5-checkbox</code>, the user has to click or tap the square box or its label. <br><br> The <code>ui5-checkbox</code> component only has 2 states - checked and unchecked. Clicking or tapping toggles the <code>ui5-checkbox</code> between checked and unchecked state.\n\n<h3>Usage</h3>\n\nYou can define the checkbox text with via the <code>text</code> property. If the text exceeds the available width, it is truncated by default. In case you prefer text to wrap, set the <code>wrappingType</code> property to \"Normal\". The touchable area for toggling the <code>ui5-checkbox</code> ends where the text ends. <br><br> You can disable the <code>ui5-checkbox</code> by setting the <code>disabled</code> property to <code>true</code>, or use the <code>ui5-checkbox</code> in read-only mode by setting the <code>readonly</code> property to <code>true</code>.\n\n<br><br> <h3>CSS Shadow Parts</h3>\n\n<ui5-link target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/::part\">CSS Shadow Parts</ui5-link> allow developers to style elements inside the Shadow DOM. <br> The <code>ui5-checkbox</code> exposes the following CSS Shadow Parts: <ul> <li>root - Used to style the outermost wrapper of the <code>ui5-checkbox</code></li> </ul>\n\n<br><br> <h3>Keyboard Handling</h3>\n\nThe user can use the following keyboard shortcuts to toggle the checked state of the <code>ui5-checkbox</code>. <ul> <li>[SPACE, ENTER] - Toggles between different states: checked, not checked.</li> </ul> <br><br>\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/CheckBox\";</code>",
                     "members": [
                         {
                             "deprecated": false,
@@ -1785,10 +1809,10 @@
                             "privacy": "public",
                             "static": false,
                             "type": {
-                                "text": "string"
+                                "text": "sap.ui.webc.main.types.ComboBoxFilter"
                             },
                             "default": "\"StartsWithPerTerm\"",
-                            "description": "Defines the filter type of the component. Available options are: <code>StartsWithPerTerm</code>, <code>StartsWith</code> and <code>Contains</code>."
+                            "description": "Defines the filter type of the component. Available options are: <code>StartsWithPerTerm</code>, <code>StartsWith</code>, <code>Contains</code> and <code>None</code>."
                         },
                         {
                             "deprecated": false,
@@ -2104,7 +2128,7 @@
                             "description": "Fired when the value of the component is changed at each key stroke."
                         }
                     ],
-                    "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nThe <code>ui5-date-picker</code> component provides an input field with assigned calendar which opens on user action. The <code>ui5-date-picker</code> allows users to select a localized date using touch, mouse, or keyboard input. It consists of two parts: the date input field and the date picker.\n\n<h3>Usage</h3>\n\nThe user can enter a date by: <ul> <li>Using the calendar that opens in a popup</li> <li>Typing it in directly in the input field</li> </ul> <br><br> When the user makes an entry and presses the enter key, the calendar shows the corresponding date. When the user directly triggers the calendar display, the actual date is displayed.\n\n<h3>Formatting</h3>\n\nIf a date is entered by typing it into the input field, it must fit to the used date format. <br><br> Supported format options are pattern-based on Unicode LDML Date Format notation. For more information, see <ui5-link target=\"_blank\" href=\"http://unicode.org/reports/tr35/#Date_Field_Symbol_Table\" class=\"api-table-content-cell-link\">UTS #35: Unicode Locale Data Markup Language</ui5-link>. <br><br> For example, if the <code>format-pattern</code> is \"yyyy-MM-dd\", a valid value string is \"2015-07-30\" and the same is displayed in the input.\n\n<h3>Keyboard Handling</h3> The <code>ui5-date-picker</code> provides advanced keyboard handling. If the <code>ui5-date-picker</code> is focused, you can open or close the drop-down by pressing <code>F4</code>, <code>ALT+UP</code> or <code>ALT+DOWN</code> keys. Once the drop-down is opened, you can use the <code>UP</code>, <code>DOWN</code>, <code>LEFT</code>, <code>RIGHT</code> arrow keys to navigate through the dates and select one by pressing the <code>Space</code> or <code>Enter</code> keys. Moreover you can use TAB to reach the buttons for changing month and year. <br>\n\nIf the <code>ui5-date-picker</code> input field is focused and its corresponding picker dialog is not opened, then users can increment or decrement the date referenced by <code>dateValue</code> property by using the following shortcuts: <br> <ul> <li>[PAGEDOWN] - Decrements the corresponding day of the month by one</li> <li>[SHIFT] + [PAGEDOWN] - Decrements the corresponding month by one</li> <li>[SHIFT] + [CTRL] + [PAGEDOWN] - Decrements the corresponding year by one</li> <li>[PAGEUP] - Increments the corresponding day of the month by one</li> <li>[SHIFT] + [PAGEUP] - Increments the corresponding month by one</li> <li>[SHIFT] + [CTRL] + [PAGEUP] - Increments the corresponding year by one</li> </ul>\n\n<h3>Calendar types</h3> The component supports several calendar types - Gregorian, Buddhist, Islamic, Japanese and Persian. By default the Gregorian Calendar is used. In order to use the Buddhist, Islamic, Japanese or Persian calendar, you need to set the <code>primaryCalendarType</code> property and import one or more of the following modules: <br><br>\n\n<code>import \"@ui5/webcomponents-localization/dist/features/calendar/Buddhist.js\";</code> <br> <code>import \"@ui5/webcomponents-localization/dist/features/calendar/Islamic.js\";</code> <br> <code>import \"@ui5/webcomponents-localization/dist/features/calendar/Japanese.js\";</code> <br> <code>import \"@ui5/webcomponents-localization/dist/features/calendar/Persian.js\";</code> <br><br>\n\nOr, you can use the global configuration and set the <code>calendarType</code> key: <br> <pre><code>&lt;script data-id=\"sap-ui-config\" type=\"application/json\"&gt;\n{\n\t\"calendarType\": \"Japanese\"\n}\n&lt;/script&gt;</code></pre>\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/DatePicker\";</code>",
+                    "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nThe <code>ui5-date-picker</code> component provides an input field with assigned calendar which opens on user action. The <code>ui5-date-picker</code> allows users to select a localized date using touch, mouse, or keyboard input. It consists of two parts: the date input field and the date picker.\n\n<h3>Usage</h3>\n\nThe user can enter a date by: <ul> <li>Using the calendar that opens in a popup</li> <li>Typing it in directly in the input field</li> </ul> <br><br> When the user makes an entry and presses the enter key, the calendar shows the corresponding date. When the user directly triggers the calendar display, the actual date is displayed.\n\n<h3>Formatting</h3>\n\nIf a date is entered by typing it into the input field, it must fit to the used date format. <br><br> Supported format options are pattern-based on Unicode LDML Date Format notation. For more information, see <ui5-link target=\"_blank\" href=\"http://unicode.org/reports/tr35/#Date_Field_Symbol_Table\">UTS #35: Unicode Locale Data Markup Language</ui5-link>. <br><br> For example, if the <code>format-pattern</code> is \"yyyy-MM-dd\", a valid value string is \"2015-07-30\" and the same is displayed in the input.\n\n<h3>Keyboard Handling</h3> The <code>ui5-date-picker</code> provides advanced keyboard handling. If the <code>ui5-date-picker</code> is focused, you can open or close the drop-down by pressing <code>F4</code>, <code>ALT+UP</code> or <code>ALT+DOWN</code> keys. Once the drop-down is opened, you can use the <code>UP</code>, <code>DOWN</code>, <code>LEFT</code>, <code>RIGHT</code> arrow keys to navigate through the dates and select one by pressing the <code>Space</code> or <code>Enter</code> keys. Moreover you can use TAB to reach the buttons for changing month and year. <br>\n\nIf the <code>ui5-date-picker</code> input field is focused and its corresponding picker dialog is not opened, then users can increment or decrement the date referenced by <code>dateValue</code> property by using the following shortcuts: <br> <ul> <li>[PAGEDOWN] - Decrements the corresponding day of the month by one</li> <li>[SHIFT] + [PAGEDOWN] - Decrements the corresponding month by one</li> <li>[SHIFT] + [CTRL] + [PAGEDOWN] - Decrements the corresponding year by one</li> <li>[PAGEUP] - Increments the corresponding day of the month by one</li> <li>[SHIFT] + [PAGEUP] - Increments the corresponding month by one</li> <li>[SHIFT] + [CTRL] + [PAGEUP] - Increments the corresponding year by one</li> </ul>\n\n<h3>Calendar types</h3> The component supports several calendar types - Gregorian, Buddhist, Islamic, Japanese and Persian. By default the Gregorian Calendar is used. In order to use the Buddhist, Islamic, Japanese or Persian calendar, you need to set the <code>primaryCalendarType</code> property and import one or more of the following modules: <br><br>\n\n<code>import \"@ui5/webcomponents-localization/dist/features/calendar/Buddhist.js\";</code> <br> <code>import \"@ui5/webcomponents-localization/dist/features/calendar/Islamic.js\";</code> <br> <code>import \"@ui5/webcomponents-localization/dist/features/calendar/Japanese.js\";</code> <br> <code>import \"@ui5/webcomponents-localization/dist/features/calendar/Persian.js\";</code> <br><br>\n\nOr, you can use the global configuration and set the <code>calendarType</code> key: <br> <pre><code>&lt;script data-id=\"sap-ui-config\" type=\"application/json\"&gt;\n{\n\t\"calendarType\": \"Japanese\"\n}\n&lt;/script&gt;</code></pre>\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/DatePicker\";</code>",
                     "members": [
                         {
                             "deprecated": false,
@@ -2255,7 +2279,7 @@
                                     "deprecated": false,
                                     "name": "date",
                                     "type": {
-                                        "text": "object"
+                                        "text": "Date"
                                     },
                                     "description": "A Java Script date object to be formatted as string"
                                 }
@@ -2477,7 +2501,7 @@
                     "kind": "DateTimePicker",
                     "name": "DateTimePicker",
                     "tagName": "ui5-datetime-picker",
-                    "description": "<h3 class=\"comment-api-title\">Overview</h3> The <code>DateTimePicker</code> component alows users to select both date (day, month and year) and time (hours, minutes and seconds) and for the purpose it consists of input field and Date/Time picker.\n\n<h3>Usage</h3>\n\nUse the <code>DateTimePicker</code> if you need a combined date and time input component. Don't use it if you want to use either date, or time value. In this case, use the <code>DatePicker</code> or the <code>TimePicker</code> components instead. <br><br> The user can set date/time by: <ul> <li>using the calendar and the time selectors</li> <li>typing in the input field</li> </ul>\n\nProgrammatically, to set date/time for the <code>DateTimePicker</code>, use the <code>value</code> property\n\n<h3>Formatting</h3>\n\nThe value entered by typing into the input field must fit to the used date/time format. <br><br> Supported format options are pattern-based on Unicode LDML Date Format notation. For more information, see <ui5-link target=\"_blank\" href=\"https://unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table\" class=\"api-table-content-cell-link\">UTS #35: Unicode Locale Data Markup Language</ui5-link>. <br><br> <b>Example:</b> the following format <code>dd/MM/yyyy, hh:mm:ss aa</code> corresponds the <code>13/04/2020, 03:16:16 AM</code> value. <br> The small 'h' defines \"12\" hours format and the \"aa\" symbols - \"AM/PM\" time periods.\n\n<br><br> <b>Example:</b> the following format <code>dd/MM/yyyy, HH:mm:ss</code> corresponds the <code>13/04/2020, 15:16:16</code> value. <br> The capital 'H' indicates \"24\" hours format.\n\n<br><br> <b>Note:</b> If the <code>formatPattern</code> does NOT include time, the <code>DateTimePicker</code> will fallback to the default time format according to the locale.\n\n<br><br> <b>Note:</b> If no placeholder is set to the <code>DateTimePicker</code>, the current <code>formatPattern</code> is displayed as a placeholder. If another placeholder is needed, it must be set or in case no placeholder is needed - it can be set to an empty string.\n\n<br><br> <b>Note:</b> If the user input does NOT match the <code>formatPattern</code>, the <code>DateTimePicker</code> makes an attempt to parse it based on the locale settings.\n\n<h3>Responsive behavior</h3>\n\nThe <code>DateTimePicker</code> is responsive and fully adapts to all devices. For larger screens, such as tablet or desktop, it is displayed as a popover, while on phone devices, it is displayed full screen.\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/DateTimePicker.js\";</code>",
+                    "description": "<h3 class=\"comment-api-title\">Overview</h3> The <code>DateTimePicker</code> component alows users to select both date (day, month and year) and time (hours, minutes and seconds) and for the purpose it consists of input field and Date/Time picker.\n\n<h3>Usage</h3>\n\nUse the <code>DateTimePicker</code> if you need a combined date and time input component. Don't use it if you want to use either date, or time value. In this case, use the <code>DatePicker</code> or the <code>TimePicker</code> components instead. <br><br> The user can set date/time by: <ul> <li>using the calendar and the time selectors</li> <li>typing in the input field</li> </ul>\n\nProgrammatically, to set date/time for the <code>DateTimePicker</code>, use the <code>value</code> property\n\n<h3>Formatting</h3>\n\nThe value entered by typing into the input field must fit to the used date/time format. <br><br> Supported format options are pattern-based on Unicode LDML Date Format notation. For more information, see <ui5-link target=\"_blank\" href=\"https://unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table\">UTS #35: Unicode Locale Data Markup Language</ui5-link>. <br><br> <b>Example:</b> the following format <code>dd/MM/yyyy, hh:mm:ss aa</code> corresponds the <code>13/04/2020, 03:16:16 AM</code> value. <br> The small 'h' defines \"12\" hours format and the \"aa\" symbols - \"AM/PM\" time periods.\n\n<br><br> <b>Example:</b> the following format <code>dd/MM/yyyy, HH:mm:ss</code> corresponds the <code>13/04/2020, 15:16:16</code> value. <br> The capital 'H' indicates \"24\" hours format.\n\n<br><br> <b>Note:</b> If the <code>formatPattern</code> does NOT include time, the <code>DateTimePicker</code> will fallback to the default time format according to the locale.\n\n<br><br> <b>Note:</b> If no placeholder is set to the <code>DateTimePicker</code>, the current <code>formatPattern</code> is displayed as a placeholder. If another placeholder is needed, it must be set or in case no placeholder is needed - it can be set to an empty string.\n\n<br><br> <b>Note:</b> If the user input does NOT match the <code>formatPattern</code>, the <code>DateTimePicker</code> makes an attempt to parse it based on the locale settings.\n\n<h3>Responsive behavior</h3>\n\nThe <code>DateTimePicker</code> is responsive and fully adapts to all devices. For larger screens, such as tablet or desktop, it is displayed as a popover, while on phone devices, it is displayed full screen.\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/DateTimePicker.js\";</code>",
                     "superclass": {
                         "module": "DatePicker.js",
                         "name": "DatePicker",
@@ -2976,7 +3000,7 @@
                     "kind": "Icon",
                     "name": "Icon",
                     "tagName": "ui5-icon",
-                    "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nThe <code>ui5-icon</code> component represents an SVG icon. There are two main scenarios how the <code>ui5-icon</code> component is used: as a purely decorative element, <br> or as an interactive element that can be focused and clicked.\n\n<h3>Usage</h3>\n\n1. <b>Get familiar with the icons collections.</b> <br> Before displaying an icon, you need to explore the icons collections to find and import the desired icon. <br> Currently there are 3 icons collection, available as 3 npm packages: <br>\n\n<ul> <li> <ui5-link target=\"_blank\" href=\"https://www.npmjs.com/package/@ui5/webcomponents-icons\" class=\"api-table-content-cell-link\">@ui5/webcomponents-icons</ui5-link> represents the \"SAP-icons\" collection and includes the following <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/SAP-icons\" class=\"api-table-content-cell-link\">icons</ui5-link>. </li> <li> <ui5-link target=\"_blank\" href=\"https://www.npmjs.com/package/@ui5/webcomponents-icons-tnt\" class=\"api-table-content-cell-link\">@ui5/webcomponents-icons-tnt</ui5-link> represents the \"tnt\" collection and includes the following <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/SAP-icons-TNT\" class=\"api-table-content-cell-link\">icons</ui5-link>. </li> <li> <ui5-link target=\"_blank\" href=\"https://www.npmjs.com/package/@ui5/webcomponents-icons-business-suite\" class=\"api-table-content-cell-link\">@ui5/webcomponents-icons-icons-business-suite</ui5-link> represents the \"business-suite\" collection and includes the following <ui5-link target=\"_blank\" href=\"https://ui5.sap.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/BusinessSuiteInAppSymbols\" class=\"api-table-content-cell-link\">icons</ui5-link>. </li> </ul>\n\n2. <b>After exploring the icons collections, add one or more of the packages as dependencies to your project.</b> <br> <code>npm i @ui5/webcomponents-icons</code><br> <code>npm i @ui5/webcomponents-icons-tnt</code><br> <code>npm i @ui5/webcomponents-icons-business-suite</code> <br><br>\n\n3. <b>Then, import the desired icon</b>. <br> <code>import \"@ui5/{package_name}/dist/{icon_name}.js\";</code> <br><br>\n\n<b>For Example</b>: <br>\n\nFor the standard \"SAP-icons\" icon collection, import an icon from the <code>@ui5/webcomponents-icons</code> package: <br> <code>import \"@ui5/webcomponents-icons/dist/employee.js\";</code> <br><br>\n\nFor the \"tnt\" (SAP Fiori Tools) icon collection, import an icon from the <code>@ui5/webcomponents-icons-tnt</code> package: <br> <code>import \"@ui5/webcomponents-icons-tnt/dist/antenna.js\";</code> <br><br>\n\nFor the \"business-suite\" (SAP Business Suite) icon collection, import an icon from the <code>@ui5/webcomponents-icons-business-suite</code> package: <br> <code>import \"@ui5/webcomponents-icons-business-suite/dist/ab-testing.js\";</code> <br><br>\n\n4. <b>Display the icon using the <code>ui5-icon</code> web component.</b><br> Set the icon collection (\"SAP-icons\", \"tnt\" or \"business-suite\" - \"SAP-icons\" is the default icon collection and can be skipped)<br> and the icon name to the <code>name</code> property. <br><br>\n\n<code>&lt;ui5-icon name=\"employee\">&lt;/ui5-icon></code><br> <code>&lt;ui5-icon name=\"tnt/antenna\">&lt;/ui5-icon></code><br> <code>&lt;ui5-icon name=\"business-suite/ab-testing\">&lt;/ui5-icon></code>\n\n<h3>Keyboard Handling</h3>\n\n<ul> <li>[SPACE, ENTER, RETURN] - Fires the <code>click</code> event if the <code>interactive</code> property is set to true.</li> <li>[SHIFT] - If [SPACE] or [ENTER],[RETURN] is pressed, pressing [SHIFT] releases the ui5-icon without triggering the click event.</li> </ul>\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/Icon.js\";</code>",
+                    "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nThe <code>ui5-icon</code> component represents an SVG icon. There are two main scenarios how the <code>ui5-icon</code> component is used: as a purely decorative element, <br> or as an interactive element that can be focused and clicked.\n\n<h3>Usage</h3>\n\n1. <b>Get familiar with the icons collections.</b> <br> Before displaying an icon, you need to explore the icons collections to find and import the desired icon. <br> Currently there are 3 icons collection, available as 3 npm packages: <br>\n\n<ul> <li> <ui5-link target=\"_blank\" href=\"https://www.npmjs.com/package/@ui5/webcomponents-icons\">@ui5/webcomponents-icons</ui5-link> represents the \"SAP-icons\" collection and includes the following <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/SAP-icons\">icons</ui5-link>. </li> <li> <ui5-link target=\"_blank\" href=\"https://www.npmjs.com/package/@ui5/webcomponents-icons-tnt\">@ui5/webcomponents-icons-tnt</ui5-link> represents the \"tnt\" collection and includes the following <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/SAP-icons-TNT\">icons</ui5-link>. </li> <li> <ui5-link target=\"_blank\" href=\"https://www.npmjs.com/package/@ui5/webcomponents-icons-business-suite\">@ui5/webcomponents-icons-icons-business-suite</ui5-link> represents the \"business-suite\" collection and includes the following <ui5-link target=\"_blank\" href=\"https://ui5.sap.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/BusinessSuiteInAppSymbols\">icons</ui5-link>. </li> </ul>\n\n2. <b>After exploring the icons collections, add one or more of the packages as dependencies to your project.</b> <br> <code>npm i @ui5/webcomponents-icons</code><br> <code>npm i @ui5/webcomponents-icons-tnt</code><br> <code>npm i @ui5/webcomponents-icons-business-suite</code> <br><br>\n\n3. <b>Then, import the desired icon</b>. <br> <code>import \"@ui5/{package_name}/dist/{icon_name}.js\";</code> <br><br>\n\n<b>For Example</b>: <br>\n\nFor the standard \"SAP-icons\" icon collection, import an icon from the <code>@ui5/webcomponents-icons</code> package: <br> <code>import \"@ui5/webcomponents-icons/dist/employee.js\";</code> <br><br>\n\nFor the \"tnt\" (SAP Fiori Tools) icon collection, import an icon from the <code>@ui5/webcomponents-icons-tnt</code> package: <br> <code>import \"@ui5/webcomponents-icons-tnt/dist/antenna.js\";</code> <br><br>\n\nFor the \"business-suite\" (SAP Business Suite) icon collection, import an icon from the <code>@ui5/webcomponents-icons-business-suite</code> package: <br> <code>import \"@ui5/webcomponents-icons-business-suite/dist/ab-testing.js\";</code> <br><br>\n\n4. <b>Display the icon using the <code>ui5-icon</code> web component.</b><br> Set the icon collection (\"SAP-icons\", \"tnt\" or \"business-suite\" - \"SAP-icons\" is the default icon collection and can be skipped)<br> and the icon name to the <code>name</code> property. <br><br>\n\n<code>&lt;ui5-icon name=\"employee\">&lt;/ui5-icon></code><br> <code>&lt;ui5-icon name=\"tnt/antenna\">&lt;/ui5-icon></code><br> <code>&lt;ui5-icon name=\"business-suite/ab-testing\">&lt;/ui5-icon></code>\n\n<br><br> <h3>CSS Shadow Parts</h3>\n\n<ui5-link target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/::part\">CSS Shadow Parts</ui5-link> allow developers to style elements inside the Shadow DOM. <br> The <code>ui5-icon</code> exposes the following CSS Shadow Parts: <ul> <li>root - Used to style the outermost wrapper of the <code>ui5-icon</code></li> </ul>\n\n<br><br> <h3>Keyboard Handling</h3>\n\n<ul> <li>[SPACE, ENTER, RETURN] - Fires the <code>click</code> event if the <code>interactive</code> property is set to true.</li> <li>[SHIFT] - If [SPACE] or [ENTER],[RETURN] is pressed, pressing [SHIFT] releases the ui5-icon without triggering the click event.</li> </ul>\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/Icon.js\";</code>",
                     "members": [
                         {
                             "deprecated": false,
@@ -3036,7 +3060,7 @@
                                 "text": "string"
                             },
                             "default": "\"\"",
-                            "description": "Defines the unique identifier (icon name) of the component. <br>\n\nTo browse all available icons, see the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\" class=\"api-table-content-cell-link\">SAP Icons</ui5-link>, <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/SAP-icons-TNT\" class=\"api-table-content-cell-link\">SAP Fiori Tools</ui5-link> and <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\" class=\"api-table-content-cell-link\">SAP Business Suite</ui5-link> collections. <br>\n\nExample: <br> <code>name='add'</code>, <code>name='delete'</code>, <code>name='employee'</code>. <br><br>\n\n<b>Note:</b> To use the SAP Fiori Tools icons, you need to set the <code>tnt</code> prefix in front of the icon's name. <br>\n\nExample: <br> <code>name='tnt/antenna'</code>, <code>name='tnt/actor'</code>, <code>name='tnt/api'</code>. <br><br>\n\n<b>Note:</b> To use the SAP Business Suite icons, you need to set the <code>business-suite</code> prefix in front of the icon's name. <br>\n\nExample: <br> <code>name='business-suite/3d'</code>, <code>name='business-suite/1x2-grid-layout'</code>, <code>name='business-suite/4x4-grid-layout'</code>."
+                            "description": "Defines the unique identifier (icon name) of the component. <br>\n\nTo browse all available icons, see the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\">SAP Icons</ui5-link>, <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/SAP-icons-TNT\">SAP Fiori Tools</ui5-link> and <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\">SAP Business Suite</ui5-link> collections. <br>\n\nExample: <br> <code>name='add'</code>, <code>name='delete'</code>, <code>name='employee'</code>. <br><br>\n\n<b>Note:</b> To use the SAP Fiori Tools icons, you need to set the <code>tnt</code> prefix in front of the icon's name. <br>\n\nExample: <br> <code>name='tnt/antenna'</code>, <code>name='tnt/actor'</code>, <code>name='tnt/api'</code>. <br><br>\n\n<b>Note:</b> To use the SAP Business Suite icons, you need to set the <code>business-suite</code> prefix in front of the icon's name. <br>\n\nExample: <br> <code>name='business-suite/3d'</code>, <code>name='business-suite/1x2-grid-layout'</code>, <code>name='business-suite/4x4-grid-layout'</code>."
                         },
                         {
                             "deprecated": false,
@@ -3900,6 +3924,30 @@
                         {
                             "deprecated": false,
                             "kind": "field",
+                            "name": "busy",
+                            "privacy": "public",
+                            "static": false,
+                            "type": {
+                                "text": "boolean"
+                            },
+                            "default": "false",
+                            "description": "Defines if a loading indicator would be displayed inside the corresponding ui5-menu popover."
+                        },
+                        {
+                            "deprecated": false,
+                            "kind": "field",
+                            "name": "busyDelay",
+                            "privacy": "public",
+                            "static": false,
+                            "type": {
+                                "text": "sap.ui.webc.base.types.Integer"
+                            },
+                            "default": "1000",
+                            "description": "Defines the delay in milliseconds, after which the busy indicator will be displayed inside the corresponding ui5-menu popover.."
+                        },
+                        {
+                            "deprecated": false,
+                            "kind": "field",
                             "name": "headerText",
                             "privacy": "public",
                             "static": false,
@@ -4032,6 +4080,30 @@
                         {
                             "deprecated": false,
                             "kind": "field",
+                            "name": "busy",
+                            "privacy": "public",
+                            "static": false,
+                            "type": {
+                                "text": "boolean"
+                            },
+                            "default": "false",
+                            "description": "Defines the delay in milliseconds, after which the busy indicator will be displayed inside the corresponding ui5-menu popover.\n\nNote: If set to <code>true</code> a <code>ui5-busy-indicator</code> component will be displayed into the related one to the current <code>ui5-menu-item</code> sub-menu popover."
+                        },
+                        {
+                            "deprecated": false,
+                            "kind": "field",
+                            "name": "busyDelay",
+                            "privacy": "public",
+                            "static": false,
+                            "type": {
+                                "text": "sap.ui.webc.base.types.Integer"
+                            },
+                            "default": "1000",
+                            "description": "Defines the delay in milliseconds, after which the busy indicator will be displayed inside the corresponding ui5-menu popover."
+                        },
+                        {
+                            "deprecated": false,
+                            "kind": "field",
                             "name": "disabled",
                             "privacy": "public",
                             "static": false,
@@ -4051,7 +4123,7 @@
                                 "text": "string"
                             },
                             "default": "\"\"",
-                            "description": "Defines the icon to be displayed as graphical element within the component. The SAP-icons font provides numerous options. <br><br> <b>* Example:</b> See all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\" class=\"api-table-content-cell-link\">Icon Explorer</ui5-link>."
+                            "description": "Defines the icon to be displayed as graphical element within the component. The SAP-icons font provides numerous options. <br><br> <b>* Example:</b> See all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\">Icon Explorer</ui5-link>."
                         },
                         {
                             "deprecated": false,
@@ -4125,7 +4197,7 @@
                         },
                         {
                             "deprecated": false,
-                            "description": "Defines the content to be displayed as graphical element within the component. <br><br> <b>Note:</b> If no icon is given, the default icon for the component type will be used. The SAP-icons font provides numerous options. <br><br>\n\nSee all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\" class=\"api-table-content-cell-link\">Icon Explorer</ui5-link>.",
+                            "description": "Defines the content to be displayed as graphical element within the component. <br><br> <b>Note:</b> If no icon is given, the default icon for the component type will be used. The SAP-icons font provides numerous options. <br><br>\n\nSee all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\">Icon Explorer</ui5-link>.",
                             "name": "icon"
                         }
                     ],
@@ -4381,7 +4453,7 @@
                             "privacy": "public",
                             "static": false,
                             "type": {
-                                "text": "string"
+                                "text": "sap.ui.webc.main.types.ComboBoxFilter"
                             },
                             "default": "\"StartsWithPerTerm\"",
                             "description": "Defines the filter type of the component. Available options are: <code>StartsWithPerTerm</code>, <code>StartsWith</code>, <code>Contains</code> and <code>None</code>."
@@ -4707,7 +4779,7 @@
                             "kind": "field",
                             "name": "additionalText",
                             "privacy": "public",
-                            "static": true,
+                            "static": false,
                             "type": {
                                 "text": "string"
                             },
@@ -4718,7 +4790,7 @@
                             "kind": "field",
                             "name": "disabled",
                             "privacy": "public",
-                            "static": true,
+                            "static": false,
                             "type": {
                                 "text": "boolean"
                             },
@@ -4730,18 +4802,18 @@
                             "kind": "field",
                             "name": "icon",
                             "privacy": "public",
-                            "static": true,
+                            "static": false,
                             "type": {
                                 "text": "string"
                             },
-                            "description": "Defines the <code>icon</code> source URI. <br><br> <b>Note:</b> SAP-icons font provides numerous built-in icons. To find all the available icons, see the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\" class=\"api-table-content-cell-link\">Icon Explorer</ui5-link>."
+                            "description": "Defines the <code>icon</code> source URI. <br><br> <b>Note:</b> SAP-icons font provides numerous built-in icons. To find all the available icons, see the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\">Icon Explorer</ui5-link>."
                         },
                         {
                             "deprecated": false,
                             "kind": "field",
                             "name": "selected",
                             "privacy": "public",
-                            "static": true,
+                            "static": false,
                             "type": {
                                 "text": "boolean"
                             },
@@ -4753,7 +4825,7 @@
                             "kind": "field",
                             "name": "value",
                             "privacy": "public",
-                            "static": true,
+                            "static": false,
                             "type": {
                                 "text": "string"
                             },
@@ -5718,6 +5790,17 @@
                             },
                             "default": "undefined",
                             "description": "Defines the accessible ARIA name of the component."
+                        },
+                        {
+                            "deprecated": false,
+                            "kind": "field",
+                            "name": "selectedItem",
+                            "privacy": "public",
+                            "static": false,
+                            "type": {
+                                "text": "sap.ui.webc.main.ISegmentedButtonItem"
+                            },
+                            "description": "Currently selected item."
                         }
                     ],
                     "superclass": {
@@ -5784,17 +5867,6 @@
                             },
                             "default": "false",
                             "description": "<b>Note:</b> The property is inherited and not supported. If set, it won't take any effect."
-                        },
-                        {
-                            "deprecated": false,
-                            "kind": "field",
-                            "name": "selectedItem",
-                            "privacy": "public",
-                            "static": false,
-                            "type": {
-                                "text": "sap.ui.webc.main.ISegmentedButtonItem"
-                            },
-                            "description": "Currently selected item."
                         },
                         {
                             "deprecated": false,
@@ -5887,7 +5959,7 @@
                             "kind": "field",
                             "name": "accessibleName",
                             "privacy": "public",
-                            "static": true,
+                            "static": false,
                             "type": {
                                 "text": "string"
                             },
@@ -5899,7 +5971,7 @@
                             "kind": "field",
                             "name": "accessibleNameRef",
                             "privacy": "public",
-                            "static": true,
+                            "static": false,
                             "type": {
                                 "text": "string"
                             },
@@ -5911,7 +5983,7 @@
                             "kind": "field",
                             "name": "disabled",
                             "privacy": "public",
-                            "static": true,
+                            "static": false,
                             "type": {
                                 "text": "boolean"
                             },
@@ -5923,7 +5995,7 @@
                             "kind": "field",
                             "name": "name",
                             "privacy": "public",
-                            "static": true,
+                            "static": false,
                             "type": {
                                 "text": "string"
                             },
@@ -5935,7 +6007,7 @@
                             "kind": "field",
                             "name": "required",
                             "privacy": "public",
-                            "static": true,
+                            "static": false,
                             "type": {
                                 "text": "boolean"
                             },
@@ -5945,9 +6017,20 @@
                         {
                             "deprecated": false,
                             "kind": "field",
+                            "name": "selectedOption",
+                            "privacy": "public",
+                            "static": false,
+                            "type": {
+                                "text": "sap.ui.webc.main.ISelectOption"
+                            },
+                            "description": "Currently selected <code>ui5-option</code> element."
+                        },
+                        {
+                            "deprecated": false,
+                            "kind": "field",
                             "name": "valueState",
                             "privacy": "public",
-                            "static": true,
+                            "static": false,
                             "type": {
                                 "text": "sap.ui.webc.base.types.ValueState"
                             },
@@ -6279,7 +6362,7 @@
                                 "text": "string"
                             },
                             "default": "\"\"",
-                            "description": "Defines the icon to be displayed as graphical element within the component. The SAP-icons font provides numerous options. <br><br> Example:\n\nSee all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\" class=\"api-table-content-cell-link\">Icon Explorer</ui5-link>."
+                            "description": "Defines the icon to be displayed as graphical element within the component. The SAP-icons font provides numerous options. <br><br> Example:\n\nSee all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\">Icon Explorer</ui5-link>."
                         }
                     ],
                     "superclass": {
@@ -6390,7 +6473,7 @@
                             "type": {
                                 "text": "string"
                             },
-                            "description": "Defines the <code>icon</code> source URI. <br><br> <b>Note:</b> SAP-icons font provides numerous built-in icons. To find all the available icons, see the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\" class=\"api-table-content-cell-link\">Icon Explorer</ui5-link>."
+                            "description": "Defines the <code>icon</code> source URI. <br><br> <b>Note:</b> SAP-icons font provides numerous built-in icons. To find all the available icons, see the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\">Icon Explorer</ui5-link>."
                         },
                         {
                             "deprecated": false,
@@ -6764,7 +6847,7 @@
                             "type": {
                                 "text": "string"
                             },
-                            "description": "Defines the <code>icon</code> source URI. <br><br> <b>Note:</b> SAP-icons font provides numerous built-in icons. To find all the available icons, see the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\" class=\"api-table-content-cell-link\">Icon Explorer</ui5-link>."
+                            "description": "Defines the <code>icon</code> source URI. <br><br> <b>Note:</b> SAP-icons font provides numerous built-in icons. To find all the available icons, see the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\">Icon Explorer</ui5-link>."
                         },
                         {
                             "deprecated": false,
@@ -7021,7 +7104,7 @@
                                 "text": "string"
                             },
                             "default": "\"\"",
-                            "description": "Represents the \"additionalText\" text, which is displayed in the tab."
+                            "description": "Represents the \"additionalText\" text, which is displayed in the tab. In the cases when in the same time there are tabs with icons and tabs without icons, if a tab has no icon the \"additionalText\" is displayed larger."
                         },
                         {
                             "deprecated": false,
@@ -7057,7 +7140,7 @@
                                 "text": "string"
                             },
                             "default": "\"\"",
-                            "description": "Defines the icon source URI to be displayed as graphical element within the component. The SAP-icons font provides numerous built-in icons. See all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\" class=\"api-table-content-cell-link\">Icon Explorer</ui5-link>."
+                            "description": "Defines the icon source URI to be displayed as graphical element within the component. The SAP-icons font provides numerous built-in icons. See all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\">Icon Explorer</ui5-link>."
                         },
                         {
                             "deprecated": false,
@@ -7082,6 +7165,13 @@
                             },
                             "default": "\"\"",
                             "description": "The text to be displayed for the item."
+                        },
+                        {
+                            "deprecated": false,
+                            "kind": "field",
+                            "name": "getTabInStripDomRef",
+                            "privacy": "public",
+                            "description": "Returns the DOM reference of the tab that is placed in the header. <b>Note:</b> Tabs, placed in the <code>subTabs</code> slot of other tabs are not shown in the header. Calling this method on such tabs will return <code>null</code>. <b>Note:</b> If you need a DOM ref to the tab content please use the <code>getDomRef</code> method."
                         }
                     ],
                     "superclass": {
@@ -7150,6 +7240,17 @@
                     ],
                     "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nThe <code>ui5-tabcontainer</code> represents a collection of tabs with associated content. Navigation through the tabs changes the content display of the currently active content area. A tab can be labeled with text only, or icons with text.\n\n<h3>Structure</h3>\n\nThe <code>ui5-tabcontainer</code> can hold two types of entities: <ul> <li><code>ui5-tab</code> - contains all the information on an item (text and icon)</li> <li><code>ui5-tab-separator</code> - used to separate tabs with a line</li> </ul>\n\n<h3>Hierarchies</h3> Multiple sub tabs could be placed underneath one main tab. Nesting allows deeper hierarchies with indentations to indicate the level of each nested tab. When a tab has both sub tabs and own content its click area is split to allow the user to display the content or alternatively to expand / collapse the list of sub tabs.\n\n<h3>CSS Shadow Parts</h3>\n\n<ui5-link target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/::part\">CSS Shadow Parts</ui5-link> allow developers to style elements inside the Shadow DOM. <br> The <code>ui5-tabcontainer</code> exposes the following CSS Shadow Parts: <ul> <li>content - Used to style the content of the component</li> </ul>\n\n<h3>Keyboard Handling</h3>\n\n<h4>Fast Navigation</h4> This component provides a build in fast navigation group which can be used via <code>F6 / Shift + F6</code> or <code> Ctrl + Alt(Option) + Down / Ctrl + Alt(Option) + Up</code>. In order to use this functionality, you need to import the following module: <code>import \"@ui5/webcomponents-base/dist/features/F6Navigation.js\"</code> <br><br>\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/TabContainer\";</code> <br> <code>import \"@ui5/webcomponents/dist/Tab\";</code> (for <code>ui5-tab</code>) <br> <code>import \"@ui5/webcomponents/dist/TabSeparator\";</code> (for <code>ui5-tab-separator</code>)",
                     "members": [
+                        {
+                            "deprecated": false,
+                            "kind": "field",
+                            "name": "allItems",
+                            "privacy": "public",
+                            "static": false,
+                            "type": {
+                                "text": "undefined"
+                            },
+                            "description": "Returns all slotted tabs and their subTabs in a flattened array. The order of tabs is depth-first. For example, given the following slotted elements: <pre><code>\n\t&lt;ui5-tabcontainer&gt;\n\t\t&lt;ui5-tab id=\"First\" text=\"First\"&gt;\n\t\t\t...\n\t\t\t&lt;ui5-tab slot=\"subTabs\" id=\"Nested\" text=\"Nested\"&gt;...&lt;/ui5-tab&gt;\n\t\t&lt;/ui5-tab&gt;\n\t\t&lt;ui5-tab id=\"Second\" text=\"Second\"&gt;...&lt;/ui5-tab&gt;\n\t\t&lt;ui5-tab-separator id=\"sep\"&gt;&lt;/ui5-tab-separator&gt;\n\t\t&lt;ui5-tab id=\"Third\" text=\"Third\"&gt;...&lt;/ui5-tab&gt;\n\t&lt;/ui5-tabcontainer&gt;\n</code></pre> Calling <code>allItems</code> on this TabContainer will return the instances in the following order: <code>[ ui5-tab#First, ui5-tab#Nested, ui5-tab#Second, ui5-tab-separator#sep, ui5-tab#Third ]</code>"
+                        },
                         {
                             "deprecated": false,
                             "kind": "field",
@@ -7312,7 +7413,7 @@
                             "description": "Fired when selection is changed by user interaction in <code>SingleSelect</code> and <code>MultiSelect</code> modes."
                         }
                     ],
-                    "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nThe <code>ui5-import type { table } from \"./TableRow.js\";/code> component provides a set of sophisticated and convenient functions for responsive table design. It provides a comprehensive set of features for displaying and dealing with vast amounts of data. <br><br> To render the <code>Table</code> properly, the order of the <code>columns</code> should match with the order of the item <code>cells</code> in the <code>rows</code>. <br><br> Desktop and tablet devices are supported. On tablets, special consideration should be given to the number of visible columns and rows due to the limited performance of some devices.\n\n<h3>Selection</h3> To benefit from the selection mechanism of <code>ui5-table</code> component, you can use the available selection modes: <code>SingleSelect</code> and <code>MultiSelect</code>. <br> In additition to the used mode, you can also specify the <code>ui5-table-row</code> type choosing between <code>Active</code> or <code>Inactive</code>. <br><br> In <code>SingleSelect</code> mode, you can select both an <code>Active</code> and <code>Inactive</code> row via mouse or by pressing the <code>Space</code> or <code>Enter</code> keys. <br> In <code>MultiSelect</code> mode, you can select both an <code>Active</code> and <code>Inactive</code> row by pressing the <code>Space</code> key when a row is on focus or via mouse click over the selection checkbox of the row. In order to select all the available rows at once, you can use the selection checkbox presented in the table's header. <br><br> <b>Note:</b> Currently, when a column is shown as a pop-in, the visual indication for selection is not presented over it.\n\n<h3>Keyboard Handling</h3>\n\n<h4>Fast Navigation</h4> This component provides a build in fast navigation group which can be used via <code>F6 / Shift + F6</code> or <code> Ctrl + Alt(Option) + Down / Ctrl + Alt(Option) + Up</code>. In order to use this functionality, you need to import the following module: <code>import \"@ui5/webcomponents-base/dist/features/F6Navigation.js\"</code> <br><br> Furthermore, you can interact with <code>ui5-table</code> via the following keys. <br>\n\n<ul> <li>[F7] - If focus is on an interactive control inside an item, moves focus to the corresponding item.</li> <li>[CTRL]+[A] - Selects all items, if MultiSelect mode is enabled.</li> <li>[HOME]/[END] - Focuses the first/last item.</li> <li>[PAGEUP]/[PAGEDOWN] - Moves focus up/down by page size (20 items by default).</li> <li>[ALT]+[DOWN]/[UP] - Switches focus between header, last focused item, and More button (if applies) in either direction.</li> <li>[SHIFT]+[DOWN]/[UP] - Selects the next/previous item in a MultiSelect table, if the current item is selected (Range selection). Otherwise, deselects them (Range deselection).</li> <li>[SHIFT]+[HOME]/[END] - Range selection to the first/last item of the List.</li> <li>[CTRL]+[HOME]/[END] - Same behavior as HOME & END.</li> </ul>\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/Table.js\";</code> <br> <code>import \"@ui5/webcomponents/dist/TableColumn.js\";</code> (for <code>ui5-table-column</code>) <br> <code>import \"@ui5/webcomponents/dist/TableRow.js\";</code> (for <code>ui5-table-row</code>) <br> <code>import \"@ui5/webcomponents/dist/TableCell.js\";</code> (for <code>ui5-table-cell</code>)",
+                    "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nThe <code>ui5-table</code> component provides a set of sophisticated and convenient functions for responsive table design. It provides a comprehensive set of features for displaying and dealing with vast amounts of data. <br><br> To render the <code>Table</code> properly, the order of the <code>columns</code> should match with the order of the item <code>cells</code> in the <code>rows</code>. <br><br> Desktop and tablet devices are supported. On tablets, special consideration should be given to the number of visible columns and rows due to the limited performance of some devices.\n\n<h3>Selection</h3> To benefit from the selection mechanism of <code>ui5-table</code> component, you can use the available selection modes: <code>SingleSelect</code> and <code>MultiSelect</code>. <br> In additition to the used mode, you can also specify the <code>ui5-table-row</code> type choosing between <code>Active</code> or <code>Inactive</code>. <br><br> In <code>SingleSelect</code> mode, you can select both an <code>Active</code> and <code>Inactive</code> row via mouse or by pressing the <code>Space</code> or <code>Enter</code> keys. <br> In <code>MultiSelect</code> mode, you can select both an <code>Active</code> and <code>Inactive</code> row by pressing the <code>Space</code> key when a row is on focus or via mouse click over the selection checkbox of the row. In order to select all the available rows at once, you can use the selection checkbox presented in the table's header. <br><br> <b>Note:</b> Currently, when a column is shown as a pop-in, the visual indication for selection is not presented over it.\n\n<h3>Keyboard Handling</h3>\n\n<h4>Fast Navigation</h4> This component provides a build in fast navigation group which can be used via <code>F6 / Shift + F6</code> or <code> Ctrl + Alt(Option) + Down / Ctrl + Alt(Option) + Up</code>. In order to use this functionality, you need to import the following module: <code>import \"@ui5/webcomponents-base/dist/features/F6Navigation.js\"</code> <br><br> Furthermore, you can interact with <code>ui5-table</code> via the following keys. <br>\n\n<ul> <li>[F7] - If focus is on an interactive control inside an item, moves focus to the corresponding item.</li> <li>[CTRL]+[A] - Selects all items, if MultiSelect mode is enabled.</li> <li>[HOME]/[END] - Focuses the first/last item.</li> <li>[PAGEUP]/[PAGEDOWN] - Moves focus up/down by page size (20 items by default).</li> <li>[ALT]+[DOWN]/[UP] - Switches focus between header, last focused item, and More button (if applies) in either direction.</li> <li>[SHIFT]+[DOWN]/[UP] - Selects the next/previous item in a MultiSelect table, if the current item is selected (Range selection). Otherwise, deselects them (Range deselection).</li> <li>[SHIFT]+[HOME]/[END] - Range selection to the first/last item of the List.</li> <li>[CTRL]+[HOME]/[END] - Same behavior as HOME & END.</li> </ul>\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/Table.js\";</code> <br> <code>import \"@ui5/webcomponents/dist/TableColumn.js\";</code> (for <code>ui5-table-column</code>) <br> <code>import \"@ui5/webcomponents/dist/TableRow.js\";</code> (for <code>ui5-table-row</code>) <br> <code>import \"@ui5/webcomponents/dist/TableCell.js\";</code> (for <code>ui5-table-cell</code>)",
                     "members": [
                         {
                             "deprecated": false,
@@ -7762,6 +7863,15 @@
                     "name": "TabSeparator",
                     "tagName": "ui5-tab-separator",
                     "description": "The <code>ui5-tab-separator</code> represents a vertical line to separate tabs inside a <code>ui5-tabcontainer</code>.",
+                    "members": [
+                        {
+                            "deprecated": false,
+                            "kind": "field",
+                            "name": "getTabInStripDomRef",
+                            "privacy": "public",
+                            "description": "Returns the DOM reference of the separator that is placed in the header. <b>Note:</b> Tabs and separators, placed in the <code>subTabs</code> slot of other tabs are not shown in the header. Calling this method on such tabs or separators will return <code>null</code>."
+                        }
+                    ],
                     "superclass": {
                         "module": "UI5Element.js",
                         "name": "UI5Element",
@@ -7801,6 +7911,13 @@
                     "kind": "TextArea",
                     "name": "TextArea",
                     "tagName": "ui5-textarea",
+                    "slots": [
+                        {
+                            "deprecated": false,
+                            "description": "Defines the value state message that will be displayed as pop up under the component.\n\n<br><br> <b>Note:</b> If not specified, a default text (in the respective language) will be displayed.\n\n<br><br> <b>Note:</b> The <code>valueStateMessage</code> would be displayed if the component has <code>valueState</code> of type <code>Information</code>, <code>Warning</code> or <code>Error</code>.",
+                            "name": "valueStateMessage"
+                        }
+                    ],
                     "events": [
                         {
                             "deprecated": false,
@@ -7879,7 +7996,7 @@
                         {
                             "deprecated": false,
                             "kind": "field",
-                            "name": "maxLength",
+                            "name": "maxlength",
                             "privacy": "public",
                             "static": false,
                             "type": {
@@ -8024,7 +8141,7 @@
                     "kind": "TimePicker",
                     "name": "TimePicker",
                     "tagName": "ui5-time-picker",
-                    "description": "<h3 class=\"comment-api-title\">Overview</h3> The <code>ui5-time-picker</code> component provides an input field with assigned sliders which are opened on user action. The <code>ui5-time-picker</code> allows users to select a localized time using touch, mouse, or keyboard input. It consists of two parts: the time input field and the sliders.\n\n<h3>Usage</h3> The user can enter a time by: <ul> <li>Using the sliders that are displayed in a popup</li> <li>Typing it in directly in the input field</li> </ul> <br><br> When the user makes an entry and chooses the enter key, the sliders shows the corresponding time. When the user directly triggers the sliders display, the actual time is displayed. For the <code>ui5-time-picker</code>\n\n<h3>Formatting</h3>\n\nIf a time is entered by typing it into the input field, it must fit to the used time format. <br><br> Supported format options are pattern-based on Unicode LDML Date Format notation. For more information, see <ui5-link target=\"_blank\" href=\"http://unicode.org/reports/tr35/#Date_Field_Symbol_Table\" class=\"api-table-content-cell-link\">UTS #35: Unicode Locale Data Markup Language</ui5-link>. <br><br> For example, if the <code>format-pattern</code> is \"HH:mm:ss\", a valid value string is \"11:42:35\" and the same is displayed in the input.\n\n<h3>Keyboard handling</h3> [F4], [ALT]+[UP], [ALT]+[DOWN] Open/Close picker dialog and move focus to it. <br> When closed: <ul> <li>[PAGEUP] - Increments hours by 1. If 12 am is reached, increment hours to 1 pm and vice versa.</li> <li>[PAGEDOWN] - Decrements the corresponding field by 1. If 1 pm is reached, decrement hours to 12 am and vice versa.</li> <li>[SHIFT]+[PAGEUP] Increments minutes by 1.</li> <li>[SHIFT]+ [PAGEDOWN] Decrements minutes by 1.</li> <li>[SHIFT]+[CTRL]+[PAGEUP] Increments seconds by 1.</li> <li>[SHIFT]+[CTRL]+ [PAGEDOWN] Decrements seconds by 1.</li> </ul> When opened: <ul> <li>[UP] If focus is on one of the selection lists: Select the value which is above the current value. If the first value is selected, select the last value in the list. Exception: AM/ PM List: stay on the first item.</li> <li>[DOWN] If focus is on one of the selection lists: Select the value which is below the current value. If the last value is selected, select the first value in the list. Exception: AM/ PM List: stay on the last item.</li> <li>[LEFT] If focus is on one of the selection lists: Move focus to the selection list which is left of the current selection list. If focus is at the first selection list, move focus to the last selection list.</li> <li>[RIGHT] If focus is on one of the selection lists: Move focus to the selection list which is right of the current selection list. When focus is at the last selection list, move focus to the first selection list.</li> <li>[PAGEUP] If focus is on one of the selection lists: Move focus to the first entry of this list.</li> <li>[PAGEDOWN] If focus is on one of the selection lists: Move focus to the last entry of this list.</li> </ul>\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/TimePicker.js\";</code>",
+                    "description": "<h3 class=\"comment-api-title\">Overview</h3> The <code>ui5-time-picker</code> component provides an input field with assigned sliders which are opened on user action. The <code>ui5-time-picker</code> allows users to select a localized time using touch, mouse, or keyboard input. It consists of two parts: the time input field and the sliders.\n\n<h3>Usage</h3> The user can enter a time by: <ul> <li>Using the sliders that are displayed in a popup</li> <li>Typing it in directly in the input field</li> </ul> <br><br> When the user makes an entry and chooses the enter key, the sliders shows the corresponding time. When the user directly triggers the sliders display, the actual time is displayed. For the <code>ui5-time-picker</code>\n\n<h3>Formatting</h3>\n\nIf a time is entered by typing it into the input field, it must fit to the used time format. <br><br> Supported format options are pattern-based on Unicode LDML Date Format notation. For more information, see <ui5-link target=\"_blank\" href=\"http://unicode.org/reports/tr35/#Date_Field_Symbol_Table\">UTS #35: Unicode Locale Data Markup Language</ui5-link>. <br><br> For example, if the <code>format-pattern</code> is \"HH:mm:ss\", a valid value string is \"11:42:35\" and the same is displayed in the input.\n\n<h3>Keyboard handling</h3> [F4], [ALT]+[UP], [ALT]+[DOWN] Open/Close picker dialog and move focus to it. <br> When closed: <ul> <li>[PAGEUP] - Increments hours by 1. If 12 am is reached, increment hours to 1 pm and vice versa.</li> <li>[PAGEDOWN] - Decrements the corresponding field by 1. If 1 pm is reached, decrement hours to 12 am and vice versa.</li> <li>[SHIFT]+[PAGEUP] Increments minutes by 1.</li> <li>[SHIFT]+ [PAGEDOWN] Decrements minutes by 1.</li> <li>[SHIFT]+[CTRL]+[PAGEUP] Increments seconds by 1.</li> <li>[SHIFT]+[CTRL]+ [PAGEDOWN] Decrements seconds by 1.</li> </ul> When opened: <ul> <li>[UP] If focus is on one of the selection lists: Select the value which is above the current value. If the first value is selected, select the last value in the list. Exception: AM/ PM List: stay on the first item.</li> <li>[DOWN] If focus is on one of the selection lists: Select the value which is below the current value. If the last value is selected, select the first value in the list. Exception: AM/ PM List: stay on the last item.</li> <li>[LEFT] If focus is on one of the selection lists: Move focus to the selection list which is left of the current selection list. If focus is at the first selection list, move focus to the last selection list.</li> <li>[RIGHT] If focus is on one of the selection lists: Move focus to the selection list which is right of the current selection list. When focus is at the last selection list, move focus to the first selection list.</li> <li>[PAGEUP] If focus is on one of the selection lists: Move focus to the first entry of this list.</li> <li>[PAGEDOWN] If focus is on one of the selection lists: Move focus to the last entry of this list.</li> </ul>\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents/dist/TimePicker.js\";</code>",
                     "members": [
                         {
                             "deprecated": false,
@@ -8104,7 +8221,7 @@
                     "slots": [
                         {
                             "deprecated": false,
-                            "description": "Defines the text of the component. <br><br> <b>Note:</b> Although this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.",
+                            "description": "Defines the text of the component. This component supports nesting a <code>Link</code> component inside. <br><br> <b>Note:</b> Although this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.",
                             "name": "default"
                         }
                     ],
@@ -8334,6 +8451,7 @@
                             "type": {
                                 "text": "boolean"
                             },
+                            "default": "false",
                             "description": "Defines whether the component is read-only. <br><br> <b>Note:</b> A read-only component can not be deleted or selected, but still provides visual feedback upon user interaction."
                         },
                         {
@@ -8345,6 +8463,7 @@
                             "type": {
                                 "text": "boolean"
                             },
+                            "default": "false",
                             "description": "Defines whether the component is selected or not."
                         },
                         {
@@ -9522,7 +9641,7 @@
                                 "text": "sap.ui.webc.fiori.types.IllustrationMessageType"
                             },
                             "default": "\"BeforeSearch\"",
-                            "description": "Defines the illustration name that will be displayed in the component. <br><br> Available illustrations are: <ul> <li><code>AddColumn</code></li> <li><code>AddPeople</code></li> <li><code>AddDimensions</code></li> <li><code>BalloonSky</code></li> <li><code>BeforeSearch</code></li> <li><code>Connection</code></li> <li><code>EmptyCalendar</code></li> <li><code>EmptyList</code></li> <li><code>EmptyPlanningCalendar</code></li> <li><code>ErrorScreen</code></li> <li><code>FilterTable</code></li> <li><code>GroupTable</code></li> <li><code>NoActivities</code></li> <li><code>NoData</code></li> <li><code>NoEntries</code></li> <li><code>NoFilterResults</code></li> <li><code>NoMail_v1</code></li> <li><code>NoMail</code></li> <li><code>NoNotifications</code></li> <li><code>NoSavedItems_v1</code></li> <li><code>NoSavedItems</code></li> <li><code>NoSearchResults</code></li> <li><code>NoTasks_v1</code></li> <li><code>NoTasks</code></li> <li><code>NoDimensionsSet</code></li> <li><code>PageNotFound</code></li> <li><code>ReloadScreen</code></li> <li><code>ResizeColumn</code></li> <li><code>SearchEarth</code></li> <li><code>SearchFolder</code></li> <li><code>SimpleBalloon</code></li> <li><code>SimpleBell</code></li> <li><code>SimpleCalendar</code></li> <li><code>SimpleCheckMark</code></li> <li><code>SimpleConnection</code></li> <li><code>SimpleEmptyDoc</code></li> <li><code>SimpleEmptyList</code></li> <li><code>SimpleError</code></li> <li><code>SimpleMagnifier</code></li> <li><code>SimpleMail</code></li> <li><code>SimpleNoSavedItems</code></li> <li><code>SimpleNotFoundMagnifier</code></li> <li><code>SimpleReload</code></li> <li><code>SimpleTask</code></li> <li><code>SleepingBell</code></li> <li><code>SortColumn</code></li> <li><code>SuccessBalloon</code></li> <li><code>SuccessCheckMark</code></li> <li><code>SuccessHighFive</code></li> <li><code>SuccessScreen</code></li> <li><code>Tent</code></li> <li><code>UnableToLoad</code></li> <li><code>UnableToLoadImage</code></li> <li><code>UnableToUpload</code></li> <li><code>UploadToCloud</code></li> <li><code>UploadCollection</code></li> <li><code>TntChartArea</code></li> <li><code>TntChartArea2</code></li> <li><code>TntChartBar</code></li> <li><code>TntChartBPMNFlow</code></li> <li><code>TntChartBullet</code></li> <li><code>TntChartDoughnut</code></li> <li><code>TntChartFlow</code></li> <li><code>TntChartGantt</code></li> <li><code>TntChartOrg</code></li> <li><code>TntChartPie</code></li> <li><code>TntCodePlaceholder</code></li> <li><code>TntCompany</code></li> <li><code>TntComponents</code></li> <li><code>TntExternalLink</code></li> <li><code>TntFaceID</code></li> <li><code>TntFingerprint</code></li> <li><code>TntLock</code></li> <li><code>TntMission</code></li> <li><code>TntNoApplications</code></li> <li><code>TntNoFlows</code></li> <li><code>TntNoUsers</code></li> <li><code>TntRadar</code></li> <li><code>TntSecrets</code></li> <li><code>TntServices</code></li> <li><code>TntSessionExpired</code></li> <li><code>TntSessionExpiring</code></li> <li><code>TntSuccess</code></li> <li><code>TntSuccessfulAuth</code></li> <li><code>TntSystems</code></li> <li><code>TntTeams</code></li> <li><code>TntTools</code></li> <li><code>TntUnableToLoad</code></li> <li><code>TntUnlock</code></li> <li><code>TntUnsuccessfulAuth</code></li> <li><code>TntUser2</code></li> </ul> <br><br> <b>Note:</b> By default the <code>BeforeSearch</code> illustration is loaded. <br> When using an illustration type, other than the default, it should be loaded in addition: <br> <code>import \"@ui5/webcomponents-fiori/dist/illustrations/NoData.js\";</code> <br><br> <b>Note:</b> TNT illustrations cointain <code>Tnt</code> prefix in their name. You can import them removing the <code>Tnt</code> prefix like this: <br> <code>import \"@ui5/webcomponents-fiori/dist/illustrations/tnt/SessionExpired.js\";</code>"
+                            "description": "Defines the illustration name that will be displayed in the component. <br><br> Available illustrations are: <ul> <li><code>AddColumn</code></li> <li><code>AddPeople</code></li> <li><code>AddDimensions</code></li> <li><code>BalloonSky</code></li> <li><code>BeforeSearch</code></li> <li><code>Connection</code></li> <li><code>EmptyCalendar</code></li> <li><code>EmptyList</code></li> <li><code>EmptyPlanningCalendar</code></li> <li><code>ErrorScreen</code></li> <li><code>FilterTable</code></li> <li><code>GroupTable</code></li> <li><code>NoActivities</code></li> <li><code>NoColumnsSet</code></li> <li><code>NoData</code></li> <li><code>NoEntries</code></li> <li><code>NoFilterResults</code></li> <li><code>NoMail_v1</code></li> <li><code>NoMail</code></li> <li><code>NoNotifications</code></li> <li><code>NoSavedItems_v1</code></li> <li><code>NoSavedItems</code></li> <li><code>NoSearchResults</code></li> <li><code>NoTasks_v1</code></li> <li><code>NoTasks</code></li> <li><code>NoDimensionsSet</code></li> <li><code>PageNotFound</code></li> <li><code>ReloadScreen</code></li> <li><code>ResizeColumn</code></li> <li><code>SearchEarth</code></li> <li><code>SearchFolder</code></li> <li><code>SimpleBalloon</code></li> <li><code>SimpleBell</code></li> <li><code>SimpleCalendar</code></li> <li><code>SimpleCheckMark</code></li> <li><code>SimpleConnection</code></li> <li><code>SimpleEmptyDoc</code></li> <li><code>SimpleEmptyList</code></li> <li><code>SimpleError</code></li> <li><code>SimpleMagnifier</code></li> <li><code>SimpleMail</code></li> <li><code>SimpleNoSavedItems</code></li> <li><code>SimpleNotFoundMagnifier</code></li> <li><code>SimpleReload</code></li> <li><code>SimpleTask</code></li> <li><code>SleepingBell</code></li> <li><code>SortColumn</code></li> <li><code>SuccessBalloon</code></li> <li><code>SuccessCheckMark</code></li> <li><code>SuccessHighFive</code></li> <li><code>SuccessScreen</code></li> <li><code>Survey</code></li> <li><code>Tent</code></li> <li><code>UnableToLoad</code></li> <li><code>UnableToLoadImage</code></li> <li><code>UnableToUpload</code></li> <li><code>UploadToCloud</code></li> <li><code>UploadCollection</code></li> <li><code>TntChartArea</code></li> <li><code>TntChartArea2</code></li> <li><code>TntChartBar</code></li> <li><code>TntChartBPMNFlow</code></li> <li><code>TntChartBullet</code></li> <li><code>TntChartDoughnut</code></li> <li><code>TntChartFlow</code></li> <li><code>TntChartGantt</code></li> <li><code>TntChartOrg</code></li> <li><code>TntChartPie</code></li> <li><code>TntCodePlaceholder</code></li> <li><code>TntCompany</code></li> <li><code>TntComponents</code></li> <li><code>TntExternalLink</code></li> <li><code>TntFaceID</code></li> <li><code>TntFingerprint</code></li> <li><code>TntLock</code></li> <li><code>TntMission</code></li> <li><code>TntNoApplications</code></li> <li><code>TntNoFlows</code></li> <li><code>TntNoUsers</code></li> <li><code>TntRadar</code></li> <li><code>TntSecrets</code></li> <li><code>TntServices</code></li> <li><code>TntSessionExpired</code></li> <li><code>TntSessionExpiring</code></li> <li><code>TntSuccess</code></li> <li><code>TntSuccessfulAuth</code></li> <li><code>TntSystems</code></li> <li><code>TntTeams</code></li> <li><code>TntTools</code></li> <li><code>TntUnableToLoad</code></li> <li><code>TntUnlock</code></li> <li><code>TntUnsuccessfulAuth</code></li> <li><code>TntUser2</code></li> </ul> <br><br> <b>Note:</b> By default the <code>BeforeSearch</code> illustration is loaded. <br> When using an illustration type, other than the default, it should be loaded in addition: <br> <code>import \"@ui5/webcomponents-fiori/dist/illustrations/NoData.js\";</code> <br><br> <b>Note:</b> TNT illustrations cointain <code>Tnt</code> prefix in their name. You can import them removing the <code>Tnt</code> prefix like this: <br> <code>import \"@ui5/webcomponents-fiori/dist/illustrations/tnt/SessionExpired.js\";</code>"
                         },
                         {
                             "deprecated": false,
@@ -9819,6 +9938,14 @@
                     "kind": "NotificationAction",
                     "name": "NotificationAction",
                     "tagName": "ui5-notification-action",
+                    "events": [
+                        {
+                            "deprecated": false,
+                            "name": "click",
+                            "type": "CustomEvent",
+                            "description": "Fired, when the action is pressed."
+                        }
+                    ],
                     "description": "The <code>ui5-notification-action</code> represents an abstract action, used in the <code>ui5-li-notification</code> and the <code>ui5-li-notification-group</code> items.",
                     "members": [
                         {
@@ -9855,7 +9982,7 @@
                                 "text": "string"
                             },
                             "default": "\"\"",
-                            "description": "Defines the <code>icon</code> source URI. <br><br> <b>Note:</b> SAP-icons font provides numerous built-in icons. To find all the available icons, see the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\" class=\"api-table-content-cell-link\">Icon Explorer</ui5-link>."
+                            "description": "Defines the <code>icon</code> source URI. <br><br> <b>Note:</b> SAP-icons font provides numerous built-in icons. To find all the available icons, see the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\">Icon Explorer</ui5-link>."
                         },
                         {
                             "deprecated": false,
@@ -10019,7 +10146,7 @@
                                 "text": "sap.ui.webc.main.types.WrappingType"
                             },
                             "default": "\"None\"",
-                            "description": "Defines if the <code>titleText</code> and <code>description</code> should wrap, they truncate by default.\n\n<br><br> <b>Note:</b> by default the <code>titleText</code> and <code>decription</code>, and a <code>ShowMore/Less</code> button would be displayed."
+                            "description": "Defines if the <code>titleText</code> and <code>description</code> should wrap, they truncate by default.\n\n<br><br> <b>Note:</b> by default the <code>titleText</code> and <code>description</code>, and a <code>ShowMore/Less</code> button would be displayed."
                         }
                     ],
                     "superclass": {
@@ -10048,135 +10175,6 @@
                     "deprecated": false,
                     "kind": "custom-element-definition",
                     "name": "ui5-li-notification"
-                }
-            ]
-        },
-        {
-            "kind": "javascript-module",
-            "path": "NotificationListItemBase.js",
-            "declarations": [
-                {
-                    "deprecated": false,
-                    "customElement": true,
-                    "kind": "NotificationListItemBase",
-                    "name": "NotificationListItemBase",
-                    "tagName": "ui5-li-notification-group",
-                    "slots": [
-                        {
-                            "deprecated": false,
-                            "description": "Defines the actions, displayed in the top-right area. <br><br> <b>Note:</b> use the <code>ui5-notification-action</code> component.",
-                            "name": "actions"
-                        }
-                    ],
-                    "events": [
-                        {
-                            "deprecated": false,
-                            "name": "close",
-                            "type": "CustomEvent",
-                            "description": "Fired when the <code>Close</code> button is pressed."
-                        }
-                    ],
-                    "description": "The base class of the <code>NotificationListItem</code> and <code>NotificationListGroupItem</code>.",
-                    "members": [
-                        {
-                            "deprecated": false,
-                            "kind": "field",
-                            "name": "busy",
-                            "privacy": "public",
-                            "static": false,
-                            "type": {
-                                "text": "boolean"
-                            },
-                            "default": "false",
-                            "description": "Defines if a busy indicator would be displayed over the item."
-                        },
-                        {
-                            "deprecated": false,
-                            "kind": "field",
-                            "name": "busyDelay",
-                            "privacy": "public",
-                            "static": false,
-                            "type": {
-                                "text": "sap.ui.webc.base.types.Integer"
-                            },
-                            "default": "1000",
-                            "description": "Defines the delay in milliseconds, after which the busy indicator will show up for this component."
-                        },
-                        {
-                            "deprecated": false,
-                            "kind": "field",
-                            "name": "priority",
-                            "privacy": "public",
-                            "static": false,
-                            "type": {
-                                "text": "sap.ui.webc.main.types.Priority"
-                            },
-                            "default": "\"None\"",
-                            "description": "Defines the <code>priority</code> of the item. Available options are: <ul> <li><code>None</code></li> <li><code>Low</code></li> <li><code>Medium</code></li> <li><code>High</code></li> </ul>"
-                        },
-                        {
-                            "deprecated": false,
-                            "kind": "field",
-                            "name": "read",
-                            "privacy": "public",
-                            "static": false,
-                            "type": {
-                                "text": "boolean"
-                            },
-                            "default": "false",
-                            "description": "Defines if the <code>notification</code> is new or has been already read. <br><br> <b>Note:</b> if set to <code>false</code> the <code>titleText</code> has bold font, if set to true - it has a normal font."
-                        },
-                        {
-                            "deprecated": false,
-                            "kind": "field",
-                            "name": "showClose",
-                            "privacy": "public",
-                            "static": false,
-                            "type": {
-                                "text": "boolean"
-                            },
-                            "default": "false",
-                            "description": "Defines if the <code>close</code> button would be displayed."
-                        },
-                        {
-                            "deprecated": false,
-                            "kind": "field",
-                            "name": "titleText",
-                            "privacy": "public",
-                            "static": false,
-                            "type": {
-                                "text": "string"
-                            },
-                            "default": "\"\"",
-                            "description": "Defines the <code>titleText</code> of the item."
-                        }
-                    ],
-                    "superclass": {
-                        "module": "ListItemBase.js",
-                        "name": "ListItemBase",
-                        "package": "@ui5/webcomponents"
-                    }
-                }
-            ],
-            "exports": [
-                {
-                    "declaration": {
-                        "module": "NotificationListItemBase.js",
-                        "name": "NotificationListItemBase",
-                        "package": "@ui5/webcomponents-fiori"
-                    },
-                    "deprecated": false,
-                    "kind": "js",
-                    "name": "default"
-                },
-                {
-                    "declaration": {
-                        "name": "NotificationListItemBase",
-                        "module": "NotificationListItemBase.js"
-                    },
-                    "deprecated": false,
-                    "kind": "custom-element-definition",
-                    "name": "ui5-li-notification-group"
                 }
             ]
         },
@@ -10364,7 +10362,7 @@
                                 "text": "string"
                             },
                             "default": "\"\"",
-                            "description": "Defines the icon to be displayed as a graphical element within the component. <br><br> Example: <br> <pre>ui5-product-switch-item icon=\"palette\"</pre>\n\nSee all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\" class=\"api-table-content-cell-link\">Icon Explorer</ui5-link>."
+                            "description": "Defines the icon to be displayed as a graphical element within the component. <br><br> Example: <br> <pre>ui5-product-switch-item icon=\"palette\"</pre>\n\nSee all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\">Icon Explorer</ui5-link>."
                         },
                         {
                             "deprecated": false,
@@ -10923,8 +10921,16 @@
                     "slots": [
                         {
                             "deprecated": false,
-                            "description": "If you wish to nest menus, you can pass inner menu items to the default slot.",
+                            "description": "Defines nested items by passing <code>ui5-side-navigation-sub-item</code> to the default slot.",
                             "name": "default"
+                        }
+                    ],
+                    "events": [
+                        {
+                            "deprecated": false,
+                            "name": "click",
+                            "type": "CustomEvent",
+                            "description": "Fired when the component is activated either with a click/tap or by using the Enter or Space key."
                         }
                     ],
                     "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nThe <code>ui5-side-navigation-item</code> is used within <code>ui5-side-navigation</code> only. Via the <code>ui5-side-navigation-item</code> you control the content of the <code>SideNavigation</code>.\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents-fiori/dist/SideNavigationItem.js\";</code>",
@@ -10951,7 +10957,7 @@
                                 "text": "string"
                             },
                             "default": "\"\"",
-                            "description": "Defines the icon of the item. <br><br>\n\nThe SAP-icons font provides numerous options. <br> See all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\" class=\"api-table-content-cell-link\">Icon Explorer</ui5-link>."
+                            "description": "Defines the icon of the item. <br><br>\n\nThe SAP-icons font provides numerous options. <br> See all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\">Icon Explorer</ui5-link>."
                         },
                         {
                             "deprecated": false,
@@ -11029,6 +11035,14 @@
                     "kind": "SideNavigationSubItem",
                     "name": "SideNavigationSubItem",
                     "tagName": "ui5-side-navigation-sub-item",
+                    "events": [
+                        {
+                            "deprecated": false,
+                            "name": "click",
+                            "type": "CustomEvent",
+                            "description": "Fired when the component is activated either with a click/tap or by using the Enter or Space key."
+                        }
+                    ],
                     "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nThe <code>ui5-side-navigation-sub-item</code> is intended to be used inside a <code>ui5-side-navigation-item</code> only.\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents-fiori/dist/SideNavigationSubItem.js\";</code>",
                     "members": [
                         {
@@ -11041,7 +11055,7 @@
                                 "text": "string"
                             },
                             "default": "\"\"",
-                            "description": "Defines the icon of the item. <br><br>\n\nThe SAP-icons font provides numerous options. <br> See all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\" class=\"api-table-content-cell-link\">Icon Explorer</ui5-link>."
+                            "description": "Defines the icon of the item. <br><br>\n\nThe SAP-icons font provides numerous options. <br> See all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\">Icon Explorer</ui5-link>."
                         },
                         {
                             "deprecated": false,
@@ -11272,7 +11286,7 @@
                                 "text": "string"
                             },
                             "default": "\"\"",
-                            "description": "Defines the icon to be displayed as graphical element within the <code>ui5-timeline-item</code>. SAP-icons font provides numerous options. <br><br>\n\nSee all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\" class=\"api-table-content-cell-link\">Icon Explorer</ui5-link>."
+                            "description": "Defines the icon to be displayed as graphical element within the <code>ui5-timeline-item</code>. SAP-icons font provides numerous options. <br><br>\n\nSee all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\">Icon Explorer</ui5-link>."
                         },
                         {
                             "deprecated": false,
@@ -11797,7 +11811,7 @@
                             "description": "Fired when the step is changed by user interaction - either with scrolling, or by clicking on the steps within the component header."
                         }
                     ],
-                    "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nThe <code>ui5-wizard</code> helps users to complete a complex task by dividing it into sections and guiding them through it. It has two main areas - a navigation area at the top showing the step sequence and a content area below it.\n\n<h3>Structure</h3> <h4>Navigation area</h4> The top most area of the <code>ui5-wizard</code> is occupied by the navigation area. It shows the sequence of steps, where the recommended number of steps is between 3 and 8 steps. <ul> <li> Steps can have different visual representations - numbers or icons.</li> <li> Steps might have labels for better readability - titleText and subTitleText.</li> <li> Steps are defined by using the <code>ui5-wizard-step</code> as slotted element within the <code>ui5-wizard</code>.</li> </ul>\n\n<b>Note:</b> If no selected step is defined, the first step will be auto selected. <br> <b>Note:</b> If multiple selected steps are defined, the last step will be selected.\n\n<h3>CSS Shadow Parts</h3>\n\n<ui5-link target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/::part\">CSS Shadow Parts</ui5-link> allow developers to style elements inside the Shadow DOM. <br> The <code>ui5-wizard</code> exposes the following CSS Shadow Parts: <ul> <li>navigator - Used to style the progress navigator of the <code>ui5-wizard</code>.</li> <li>step-content - Used to style a <code>ui5-wizard-step</code> container.</li> </ul>\n\n<h3>Keyboard Handling</h3> The user can navigate using the following keyboard shortcuts: <br>\n\n<h4>Wizard Progress Navigation</h4> <ul> <li>[LEFT], [DOWN] - Focus moves backward to the WizardProgressNavAnchors.</li> <li>[UP], [RIGHT] - Focus moves forward to the WizardProgressNavAnchor.</li> <li>[SPACE] or [ENTER], [RETURN] - Selects an active step</li> <li>[HOME] or [PAGE UP] - Focus goes to the first step</li> <li>[END] or [PAGE DOWN] - Focus goes to the last step</li> </ul>\n\n<h4>Fast Navigation</h4> This component provides a build in fast navigation group which can be used via <code>F6 / Shift + F6</code> or <code> Ctrl + Alt(Option) + Down / Ctrl + Alt(Option) + Up</code>. In order to use this functionality, you need to import the following module: <code>import \"@ui5/webcomponents-base/dist/features/F6Navigation.js\"</code>\n\n<h4>Content</h4> The content occupies the main part of the page. It can hold any type of HTML elements. It's defined by using the <code>ui5-wizard-step</code> as slotted element within the <code>ui5-wizard</code>.\n\n<h3>Scrolling</h3> The component handles user scrolling by selecting the closest step, based on the current scroll position and scrolls to particular place, when the user clicks on the step within the navigation area. <br><br>\n\n<b>Important:</b> In order the component's scrolling behaviour to work, it has to be limited from the outside parent element in terms of height. The component or its parent has to be given percentage or absolute height. Otherwise, the component will be scrolled out with the entire page. <br><br> <b>For example:</b> <br><br> <code>&lt;ui5-dialog style=\"height: 80%\"&gt;<br></code> <code>&#9;&lt;ui5-wizard&gt;&lt;/ui5-wizard&gt;<br></code> <code>&lt;/ui5-dialog&gt;</code>\n\n<h4>Moving to next step</h4> The <code>ui5-wizard-step</code> provides the necessary API and it's up to the user of the component to use it to move to the next step. You have to set its <code>selected</code> property (and remove the <code>disabled</code> one if set) to <code>true</code>. The <code>ui5-wizard</code> will automatically scroll to the content of the newly selected step. <br><br>\n\nThe Fiori 3 guidelines recommends having a \"nextStep\" button in the content area. You can place a button, or any other type of element to trigger step change, inside the <code>ui5-wizard-step</code>, and show/hide it when certain fields are filled or user defined criteria is met.\n\n<h3>Usage</h3> <h4>When to use:</h4> When the user has to accomplish a long or unfamiliar task.\n\n<h4>When not to use:</h4> When the task has less than 3 steps.\n\n<h3>Responsive Behavior</h3> On small widths the step's titleText, subtitleText and separators in the navigation area shrink and from particular point the steps are grouped together and overlap. Tapping on them will show a popover to select the step to navigate to. On mobile device, the grouped steps are presented within a dialog.\n\n<h3>ES6 Module Import</h3> <code>import \"@ui5/webcomponents-fiori/dist/Wizard.js\";</code> (includes <ui5-wizard-step/>)",
+                    "description": "<h3 class=\"comment-api-title\">Overview</h3>\n\nThe <code>ui5-wizard</code> helps users to complete a complex task by dividing it into sections and guiding them through it. It has two main areas - a navigation area at the top showing the step sequence and a content area below it.\n\n<h3>Structure</h3> <h4>Navigation area</h4> The top most area of the <code>ui5-wizard</code> is occupied by the navigation area. It shows the sequence of steps, where the recommended number of steps is between 3 and 8 steps. <ul> <li> Steps can have different visual representations - numbers or icons.</li> <li> Steps might have labels for better readability - titleText and subTitleText.</li> <li> Steps are defined by using the <code>ui5-wizard-step</code> as slotted element within the <code>ui5-wizard</code>.</li> </ul>\n\n<b>Note:</b> If no selected step is defined, the first step will be auto selected. <br> <b>Note:</b> If multiple selected steps are defined, the last step will be selected.\n\n<h3>CSS Shadow Parts</h3>\n\n<ui5-link target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/::part\">CSS Shadow Parts</ui5-link> allow developers to style elements inside the Shadow DOM. <br> The <code>ui5-wizard</code> exposes the following CSS Shadow Parts: <ul> <li>navigator - Used to style the progress navigator of the <code>ui5-wizard</code>.</li> <li>step-content - Used to style a <code>ui5-wizard-step</code> container.</li> </ul>\n\n<h3>Keyboard Handling</h3> The user can navigate using the following keyboard shortcuts: <br>\n\n<h4>Wizard Progress Navigation</h4> <ul> <li>[LEFT], [DOWN] - Focus moves backward to the WizardProgressNavAnchors.</li> <li>[UP], [RIGHT] - Focus moves forward to the WizardProgressNavAnchor.</li> <li>[SPACE] or [ENTER], [RETURN] - Selects an active step</li> <li>[HOME] or [PAGE UP] - Focus goes to the first step</li> <li>[END] or [PAGE DOWN] - Focus goes to the last step</li> </ul>\n\n<h4>Fast Navigation</h4> This component provides a build in fast navigation group which can be used via <code>F6 / Shift + F6</code> or <code> Ctrl + Alt(Option) + Down / Ctrl + Alt(Option) + Up</code>. In order to use this functionality, you need to import the following module: <code>import \"@ui5/webcomponents-base/dist/features/F6Navigation.js\"</code>\n\n<h4>Content</h4> The content occupies the main part of the page. It can hold any type of HTML elements. It's defined by using the <code>ui5-wizard-step</code> as slotted element within the <code>ui5-wizard</code>.\n\n<h3>Scrolling</h3> The component handles user scrolling by selecting the closest step, based on the current scroll position and scrolls to particular place, when the user clicks on the step within the navigation area. <br><br>\n\n<b>Important:</b> In order the component's scrolling behaviour to work, it has to be limited from the outside parent element in terms of height. The component or its parent has to be given percentage or absolute height. Otherwise, the component will be scrolled out with the entire page. <br><br> <b>For example:</b> <br><br> <code>&lt;ui5-dialog style=\"height: 80%\"&gt;<br></code> <code>&#9;&lt;ui5-wizard&gt;&lt;/ui5-wizard&gt;<br></code> <code>&lt;/ui5-dialog&gt;</code>\n\n<h4>Moving to next step</h4> The <code>ui5-wizard-step</code> provides the necessary API and it's up to the user of the component to use it to move to the next step. You have to set its <code>selected</code> property (and remove the <code>disabled</code> one if set) to <code>true</code>. The <code>ui5-wizard</code> will automatically scroll to the content of the newly selected step. <br><br>\n\nThe Fiori 3 guidelines recommends having a \"nextStep\" button in the content area. You can place a button, or any other type of element to trigger step change, inside the <code>ui5-wizard-step</code>, and show/hide it when certain fields are filled or user defined criteria is met.\n\n<h3>Usage</h3> <h4>When to use:</h4> When the user has to accomplish a long or unfamiliar task.\n\n<h4>When not to use:</h4> When the task has less than 3 steps.\n\n<h3>Responsive Behavior</h3> On small widths the step's titleText, subtitleText and separators in the navigation area shrink and from particular point the steps are grouped together and overlap. Tapping on them will show a popover to select the step to navigate to. On mobile device, the grouped steps are presented within a dialog.\n\n<h3>ES6 Module Import</h3> <code>import \"@ui5/webcomponents-fiori/dist/Wizard.js\";</code> (includes &lt;ui5-wizard-step/&gt;)",
                     "superclass": {
                         "module": "UI5Element.js",
                         "name": "UI5Element",
@@ -11880,7 +11894,7 @@
                                 "text": "string"
                             },
                             "default": "\"\"",
-                            "description": "Defines the <code>icon</code> of the step. <br><br>\n\n<b>Note:</b> The icon is displayed in the <code>ui5-wizard</code> navigation header. <br><br>\n\nThe SAP-icons font provides numerous options. See all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\" class=\"api-table-content-cell-link\">Icon Explorer</ui5-link>."
+                            "description": "Defines the <code>icon</code> of the step. <br><br>\n\n<b>Note:</b> The icon is displayed in the <code>ui5-wizard</code> navigation header. <br><br>\n\nThe SAP-icons font provides numerous options. See all the available icons in the <ui5-link target=\"_blank\" href=\"https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html\">Icon Explorer</ui5-link>."
                         },
                         {
                             "deprecated": false,

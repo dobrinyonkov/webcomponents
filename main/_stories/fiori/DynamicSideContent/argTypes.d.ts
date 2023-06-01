@@ -11,17 +11,8 @@ declare const _default: {
         control: string;
         options: string[];
     };
-    default: {
-        control: {
-            type: string;
-        };
-    };
-    sideContent: {
-        control: {
-            type: string;
-        };
-    };
     toggleContents: {
+        description: string;
         table: {
             category: string;
         };

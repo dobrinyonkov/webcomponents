@@ -1,4 +1,6 @@
-import { html } from "lit-html";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import argTypes, { componentInfo } from "./argTypes.js";
 import { DocsPage } from "../../../.storybook/docs";
 const component = "ui5-datetime-picker";
@@ -12,56 +14,34 @@ export default {
     },
     argTypes,
 };
-const Template = (args) => html `<div></div>`;
-export const Template0 = () => html `
-<h3>DateTimePicker</h3>
-	<div class="snippet">
-		<ui5-datetime-picker style="width: 230px"></ui5-datetime-picker>
-	</div>
-`;
-export const Template1 = () => html `
-<h3>DateTimePicker with format-pattern</h3>
-	<div class="snippet">
-		<div style="display: flex; flex-direction: column;">
-			<ui5-label>d/MM/yyyy, hh:mm aa</ui5-label>
-			<ui5-datetime-picker style="width: 230px" format-pattern="dd/MM/yyyy, hh:mm aa" value="13/04/2020, 09:16 AM"></ui5-datetime-picker>
-			<br/>
-			<ui5-label>yyyy-MM-dd-hh:mm:ss aa</ui5-label>
-			<ui5-datetime-picker style="width: 230px" format-pattern="yyyy-MM-dd-hh:mm:ss aa" value="2020-04-13-04:16:16 AM"></ui5-datetime-picker>
-			<br/>
-			<ui5-label>d/MM/yyyy, hh:mm:ss aa</ui5-label>
-			<div style="display: flex; flex-direction: row;">
-				<ui5-datetime-picker id="dt1" style="width: 230px" format-pattern="dd/MM/yyyy, hh:mm:ss aa" value="13/04/2020, 03:16:16 AM"></ui5-datetime-picker>
-				<ui5-input id="input1" style="width: 320px"></ui5-input>
-			</div>
-		</div>
-		<script>
-			var counter = 0;
-			input1.value = "{ value: 13/04/2020, 03:16:16 AM }";
-			dt1.addEventListener("change", function(event) {
-				input1.value = "{ value: " + dt1.value + " , valid: " + event.detail.valid + " }";
-			});
-		</script>
-	</div>
-`;
-Template1.parameters = {
-    docs: {
-        story: {
-            // Opt-out of inline rendering
-            inline: false,
-        },
-    }
+const Template = (args) => html `<ui5-datetime-picker
+	value="${ifDefined(args.value)}"
+	value-state="${ifDefined(args.valueState)}"
+	?disabled="${ifDefined(args.disabled)}"
+	?readonly="${ifDefined(args.readonly)}"
+	?hide-week-numbers="${ifDefined(args.hideWeekNumbers)}"
+	placeholder="${ifDefined(args.placeholder)}"
+	primary-calendar-type="${ifDefined(args.primaryCalendarType)}"
+	secondary-calendar-type="${ifDefined(args.secondaryCalendarType)}"
+	format-pattern="${ifDefined(args.formatPattern)}"
+	min-date="${ifDefined(args.minDate)}"
+	max-date="${ifDefined(args.maxDate)}"
+	accessible-name="${ifDefined(args.accessibleName)}"
+	accessible-name-ref="${ifDefined(args.accessibleNameRef)}"
+>
+	${unsafeHTML(args.valueStateMessage)}
+</ui5-datetime-picker>`;
+export const Basic = Template.bind({});
+export const FormatPattern = Template.bind({});
+FormatPattern.args = {
+    formatPattern: "dd/MM/yyyy, hh:mm:ss aa",
 };
-export const Template2 = () => html `
-<h3>DateTimePicker in states</h3>
-	<div class="snippet">
-		<ui5-datetime-picker value-state="Error"></ui5-datetime-picker>
-		<ui5-datetime-picker value-state="Warning"></ui5-datetime-picker>
-		<ui5-datetime-picker value-state="Information"></ui5-datetime-picker>
-		<ui5-datetime-picker value-state="Success"></ui5-datetime-picker>
-		<br/><br/>
-		<ui5-datetime-picker readonly="" value="2020-04-13-04:16:16 AM"></ui5-datetime-picker>
-		<ui5-datetime-picker disabled="" value="2020-04-13-04:16:16 AM"></ui5-datetime-picker>
-	</div>
-`;
+export const MinMax = Template.bind({});
+MinMax.storyName = "Min/Max Dates and Format Pattern";
+MinMax.args = {
+    value: "Jan 11, 2020, 11:11:11 AM",
+    minDate: "Jan 11, 2020, 00:00:00 AM",
+    maxDate: "Jan 31, 2020, 11:59:59 PM",
+    formatPattern: "long",
+};
 //# sourceMappingURL=DateTimePicker.stories.js.map

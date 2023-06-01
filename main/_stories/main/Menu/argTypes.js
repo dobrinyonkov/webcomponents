@@ -1,17 +1,14 @@
 export default {
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
     "close": {
+        "description": "Closes the Menu.",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     },
     "showAt": {
+        "description": "Shows the Menu near the opener element.",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     }
 };

@@ -1,5 +1,5 @@
-import { html } from "lit-html";
-import { ifDefined } from "lit-html/directives/if-defined.js";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 import argTypes, { componentInfo } from "./argTypes.js";
 import { DocsPage } from "../../../.storybook/docs";
 const component = "ui5-progress-indicator";

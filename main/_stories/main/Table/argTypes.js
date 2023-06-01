@@ -14,16 +14,6 @@ export default {
             "None",
             "SingleSelect"
         ]
-    },
-    "columns": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "default": {
-        "control": {
-            "type": "text"
-        }
     }
 };
 export const componentInfo = {

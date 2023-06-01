@@ -1,4 +1,9 @@
 export default {
+    "selectedOption": {
+        "control": {
+            "type": false
+        }
+    },
     "valueState": {
         "control": "select",
         "options": [
@@ -8,16 +13,6 @@ export default {
             "Success",
             "Warning"
         ]
-    },
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "valueStateMessage": {
-        "control": {
-            "type": "text"
-        }
     }
 };
 export const componentInfo = {

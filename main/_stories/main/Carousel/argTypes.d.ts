@@ -7,12 +7,8 @@ declare const _default: {
         control: string;
         options: string[];
     };
-    default: {
-        control: {
-            type: string;
-        };
-    };
     navigateTo: {
+        description: string;
         table: {
             category: string;
         };

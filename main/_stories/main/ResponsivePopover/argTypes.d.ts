@@ -1,19 +1,4 @@
 declare const _default: {
-    close: {
-        table: {
-            category: string;
-        };
-    };
-    isOpen: {
-        table: {
-            category: string;
-        };
-    };
-    showAt: {
-        table: {
-            category: string;
-        };
-    };
     horizontalAlign: {
         control: string;
         options: string[];
@@ -26,26 +11,30 @@ declare const _default: {
         control: string;
         options: string[];
     };
-    footer: {
-        control: {
-            type: string;
-        };
-    };
-    header: {
-        control: {
-            type: string;
-        };
-    };
     accessibleRole: {
         control: string;
         options: string[];
     };
-    default: {
-        control: {
-            type: string;
+    close: {
+        description: string;
+        table: {
+            category: string;
+        };
+    };
+    isOpen: {
+        description: string;
+        table: {
+            category: string;
+        };
+    };
+    showAt: {
+        description: string;
+        table: {
+            category: string;
         };
     };
     applyFocus: {
+        description: string;
         table: {
             category: string;
         };

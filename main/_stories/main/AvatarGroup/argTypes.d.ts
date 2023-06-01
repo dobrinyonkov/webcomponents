@@ -1,17 +1,17 @@
 declare const _default: {
+    colorScheme: {
+        control: {
+            type: boolean;
+        };
+    };
+    hiddenItems: {
+        control: {
+            type: boolean;
+        };
+    };
     type: {
         control: string;
         options: string[];
-    };
-    default: {
-        control: {
-            type: string;
-        };
-    };
-    overflowButton: {
-        control: {
-            type: string;
-        };
     };
 };
 export default _default;

@@ -11,16 +11,6 @@ declare const _default: {
         control: string;
         options: string[];
     };
-    badge: {
-        control: {
-            type: string;
-        };
-    };
-    default: {
-        control: {
-            type: string;
-        };
-    };
 };
 export default _default;
 export declare const componentInfo: {

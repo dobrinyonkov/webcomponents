@@ -1,13 +1,7 @@
 declare const _default: {
-    default: {
-        control: {
-            type: string;
-        };
-    };
-    header: {
-        control: {
-            type: string;
-        };
+    mode: {
+        control: string;
+        options: string[];
     };
 };
 export default _default;

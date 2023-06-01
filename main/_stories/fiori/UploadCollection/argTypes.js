@@ -1,13 +1,15 @@
 export default {
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "header": {
-        "control": {
-            "type": "text"
-        }
+    "mode": {
+        "control": "select",
+        "options": [
+            "Delete",
+            "MultiSelect",
+            "None",
+            "SingleSelect",
+            "SingleSelectAuto",
+            "SingleSelectBegin",
+            "SingleSelectEnd"
+        ]
     }
 };
 export const componentInfo = {

@@ -1,8 +1,11 @@
-import type { Meta, StoryFn } from "@storybook/web-components";
+import type { Meta } from "@storybook/web-components";
+import type { StoryArgsSlots } from "./argTypes.js";
+import type { UI5StoryArgs } from "../../../types.js";
 import type Card from "@ui5/webcomponents/dist/Card.js";
 declare const _default: Meta<Card>;
 export default _default;
-export declare const Template0: StoryFn;
-export declare const Template1: StoryFn;
-export declare const Template2: StoryFn;
-export declare const Template3: StoryFn;
+export declare const InteractiveHeader: UI5StoryArgs<Card, StoryArgsSlots>;
+export declare const WithList: UI5StoryArgs<Card, StoryArgsSlots>;
+export declare const WithTable: UI5StoryArgs<Card, StoryArgsSlots>;
+export declare const WithTimeline: UI5StoryArgs<Card, StoryArgsSlots>;
+export declare const More: UI5StoryArgs<Card, StoryArgsSlots>;

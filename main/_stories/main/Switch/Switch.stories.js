@@ -1,6 +1,8 @@
-import { html } from "lit-html";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 import argTypes, { componentInfo } from "./argTypes.js";
 import { DocsPage } from "../../../.storybook/docs";
+import SwitchDesign from "@ui5/webcomponents/dist/types/SwitchDesign.js";
 const component = "ui5-switch";
 export default {
     title: "Main/Switch",
@@ -12,25 +14,36 @@ export default {
     },
     argTypes,
 };
-const Template = (args) => html `<div></div>`;
-export const Template0 = () => html `
-<h3>Basic Switch</h3>
-	<div class="snippet">
-		<ui5-switch text-on="On" text-off="Off"></ui5-switch>
-		<ui5-switch text-on="On" text-off="Off" checked=""></ui5-switch>
-		<ui5-switch></ui5-switch>
-		<ui5-switch checked=""></ui5-switch>
-		<ui5-switch text-on="Yes" text-off="No" disabled=""></ui5-switch>
-		<ui5-switch text-on="Yes" text-off="No" checked="" disabled=""></ui5-switch>
-	</div>
-`;
-export const Template1 = () => html `
-<h3>Graphical Switch</h3>
-	<div class="snippet">
-		<ui5-switch accessible-name="graphical" design="Graphical"></ui5-switch>
-		<ui5-switch accessible-name="graphical" design="Graphical" checked=""></ui5-switch>
-		<ui5-switch accessible-name="graphical" design="Graphical" disabled=""></ui5-switch>
-		<ui5-switch accessible-name="graphical" design="Graphical" checked="" disabled=""></ui5-switch>
-	</div>
-`;
+const Template = (args) => html `<ui5-switch
+	design="${ifDefined(args.design)}"
+	?checked="${ifDefined(args.checked)}"
+	?disabled="${ifDefined(args.disabled)}"
+	text-on="${ifDefined(args.textOn)}"
+	text-off="${ifDefined(args.textOff)}"
+	accessible-name="${ifDefined(args.accessibleName)}"
+	accessible-name-ref="${ifDefined(args.accessibleNameRef)}"
+	tooltip="${ifDefined(args.tooltip)}"
+></ui5-switch>`;
+export const Basic = Template.bind({});
+export const WithText = Template.bind({});
+WithText.args = {
+    textOn: "On",
+    textOff: "Off",
+};
+export const Checked = Template.bind({});
+Checked.args = {
+    textOn: "Yes",
+    textOff: "No",
+    checked: true,
+};
+export const Disabled = Template.bind({});
+Disabled.args = {
+    disabled: true,
+    checked: true,
+};
+export const Design = Template.bind({});
+Design.args = {
+    design: SwitchDesign.Graphical,
+    accessibleName: "graphical",
+};
 //# sourceMappingURL=Switch.stories.js.map

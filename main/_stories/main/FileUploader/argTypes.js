@@ -13,16 +13,6 @@ export default {
             "Success",
             "Warning"
         ]
-    },
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "valueStateMessage": {
-        "control": {
-            "type": "text"
-        }
     }
 };
 export const componentInfo = {

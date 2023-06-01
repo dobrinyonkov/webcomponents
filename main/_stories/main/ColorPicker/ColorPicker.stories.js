@@ -1,4 +1,5 @@
-import { html } from "lit-html";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 import argTypes, { componentInfo } from "./argTypes.js";
 import { DocsPage } from "../../../.storybook/docs";
 const component = "ui5-color-picker";
@@ -12,11 +13,11 @@ export default {
     },
     argTypes,
 };
-const Template = (args) => html `<div></div>`;
-export const Template0 = () => html `
-<h3>Pick color</h3>
-	<div class="snippet">
-		<ui5-color-picker></ui5-color-picker>
-	</div>
-`;
+const Template = (args) => html `<ui5-color-picker
+	color="${ifDefined(args.color)}"
+>Picker</ui5-color-picker>`;
+export const Basic = Template.bind({});
+Basic.args = {
+    color: "rgba(220, 208, 255, 1)",
+};
 //# sourceMappingURL=ColorPicker.stories.js.map

@@ -1,8 +1,8 @@
-import { html } from "lit-html";
-import { unsafeHTML } from "lit-html/directives/unsafe-html.js";
+import { html } from "lit";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import argTypes, { componentInfo } from "./argTypes.js";
 import { DocsPage } from "../../../.storybook/docs";
-import { ifDefined } from "lit-html/directives/if-defined.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 const component = "ui5-tree";
 export default {
     title: "Main/Tree",

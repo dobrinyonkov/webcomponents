@@ -1,20 +1,12 @@
 declare const _default: {
-    filterItems: {
-        control: {
-            type: string;
-        };
-    };
-    sortItems: {
-        control: {
-            type: string;
-        };
-    };
     setConfirmedSettings: {
+        description: string;
         table: {
             category: string;
         };
     };
     show: {
+        description: string;
         table: {
             category: string;
         };

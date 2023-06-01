@@ -1,5 +1,5 @@
-import { html } from "lit-html";
-import { ifDefined } from "lit-html/directives/if-defined.js";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 import argTypes, { componentInfo } from "./argTypes.js";
 import { DocsPage } from "../../../.storybook/docs";
 import IconDesign from "@ui5/webcomponents/dist/types/IconDesign.js";
@@ -14,15 +14,15 @@ export default {
     },
     argTypes,
 };
-const Template = (args) => html ` <ui5-icon
-        design="${ifDefined(args.design)}"
-        ?interactive="${ifDefined(args.interactive)}"
-        name="${ifDefined(args.name)}"
-        accessible-name="${ifDefined(args.accessibleName)}"
-        accessible-role="${ifDefined(args.accessibleRole)}"
-        ?show-tooltip="${ifDefined(args.showTooltip)}"
-        style="${ifDefined(args.style)}"
-    ></ui5-icon>`;
+const Template = (args) => html `<ui5-icon
+	design="${ifDefined(args.design)}"
+	?interactive="${ifDefined(args.interactive)}"
+	name="${ifDefined(args.name)}"
+	accessible-name="${ifDefined(args.accessibleName)}"
+	accessible-role="${ifDefined(args.accessibleRole)}"
+	?show-tooltip="${ifDefined(args.showTooltip)}"
+	style="${ifDefined(args.style)}"
+></ui5-icon>`;
 export const Basic = Template.bind({});
 Basic.args = {
     name: "activities",

@@ -13,14 +13,10 @@ export default {
             "Numeric"
         ]
     },
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
     "navigateTo": {
+        "description": "Changes the currently displayed page.",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     }
 };

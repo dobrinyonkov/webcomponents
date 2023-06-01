@@ -26,16 +26,6 @@ export default {
             "Inner",
             "None"
         ]
-    },
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "header": {
-        "control": {
-            "type": "text"
-        }
     }
 };
 export const componentInfo = {

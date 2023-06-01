@@ -16,11 +16,6 @@ export default {
             "GreaterThan",
             "Slash"
         ]
-    },
-    "default": {
-        "control": {
-            "type": "text"
-        }
     }
 };
 export const componentInfo = {

@@ -11,19 +11,10 @@ export default {
             "SingleSelectEnd"
         ]
     },
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "header": {
-        "control": {
-            "type": "text"
-        }
-    },
     "walk": {
+        "description": "Perform Depth-First-Search walk on the tree and run a callback on each node",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     }
 };

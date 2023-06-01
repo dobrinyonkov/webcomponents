@@ -1,23 +1,19 @@
 export default {
-    "avatar": {
-        "control": {
-            "type": "text"
-        }
+    "wrappingType": {
+        "control": "select",
+        "options": [
+            "None",
+            "Normal"
+        ]
     },
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "footnotes": {
-        "control": {
-            "type": "text"
-        }
-    },
-    "actions": {
-        "control": {
-            "type": "text"
-        }
+    "priority": {
+        "control": "select",
+        "options": [
+            "High",
+            "Low",
+            "Medium",
+            "None"
+        ]
     }
 };
 export const componentInfo = {

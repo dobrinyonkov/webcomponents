@@ -1,4 +1,8 @@
 declare const _default: {
+    filter: {
+        control: string;
+        options: string[];
+    };
     open: {
         control: {
             type: boolean;
@@ -7,21 +11,6 @@ declare const _default: {
     valueState: {
         control: string;
         options: string[];
-    };
-    default: {
-        control: {
-            type: string;
-        };
-    };
-    icon: {
-        control: {
-            type: string;
-        };
-    };
-    valueStateMessage: {
-        control: {
-            type: string;
-        };
     };
 };
 export default _default;

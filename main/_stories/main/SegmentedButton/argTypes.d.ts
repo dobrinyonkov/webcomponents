@@ -1,7 +1,7 @@
 declare const _default: {
-    default: {
+    selectedItem: {
         control: {
-            type: string;
+            type: boolean;
         };
     };
 };

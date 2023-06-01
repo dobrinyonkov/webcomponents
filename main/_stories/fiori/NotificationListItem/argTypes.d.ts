@@ -1,23 +1,11 @@
 declare const _default: {
-    avatar: {
-        control: {
-            type: string;
-        };
+    wrappingType: {
+        control: string;
+        options: string[];
     };
-    default: {
-        control: {
-            type: string;
-        };
-    };
-    footnotes: {
-        control: {
-            type: string;
-        };
-    };
-    actions: {
-        control: {
-            type: string;
-        };
+    priority: {
+        control: string;
+        options: string[];
     };
 };
 export default _default;

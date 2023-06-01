@@ -1,6 +1,9 @@
-import { html } from "lit-html";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import argTypes, { componentInfo } from "./argTypes.js";
 import { DocsPage } from "../../../.storybook/docs";
+import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 const component = "ui5-time-picker";
 export default {
     title: "Main/TimePicker",
@@ -12,31 +15,22 @@ export default {
     },
     argTypes,
 };
-const Template = (args) => html `<div></div>`;
-export const Template0 = () => html `
-<h3>Basic TimePicker</h3>
-	<div class="snippet">
-			<ui5-time-picker id="timepicker1"></ui5-time-picker>
-	</div>
-`;
-export const Template1 = () => html `
-<h3>TimePicker in twelve hours format</h3>
-	<div class="snippet">
-			<ui5-time-picker id="timepicker1" format-pattern="hh:mm:ss a"></ui5-time-picker>
-	</div>
-`;
-export const Template2 = () => html `
-<h3>TimePicker with only minutes and seconds</h3>
-	<div class="snippet">
-			<ui5-time-picker id="timepicker1" format-pattern="mm:ss"></ui5-time-picker>
-	</div>
-`;
-export const Template3 = () => html `
-<h3>TimePicker with value-state and valueStateMessage</h3>
-	<div class="snippet">
-		<ui5-time-picker id="timepicker3" format-pattern="mm:ss" value-state="Error">
-			<div slot="valueStateMessage">Please provide valid value</div>
-		</ui5-time-picker>
-	</div>
-`;
+const Template = (args) => html `<ui5-time-picker
+	value="${ifDefined(args.value)}"
+	value-state="${ifDefined(args.valueState)}"
+	?disabled="${ifDefined(args.disabled)}"
+	?readonly="${ifDefined(args.readonly)}"
+	placeholder="${ifDefined(args.placeholder)}"
+	format-pattern="${ifDefined(args.formatPattern)}"
+>
+	${unsafeHTML(args.valueStateMessage)}
+</ui5-time-picker>`;
+export const Basic = Template.bind({});
+export const WithValueState = Template.bind({});
+WithValueState.storyName = "Value State and Message";
+WithValueState.args = {
+    formatPattern: "hh:mm:ss a",
+    valueState: ValueState.Error,
+    valueStateMessage: `<div slot="valueStateMessage">Please provide valid value</div>`,
+};
 //# sourceMappingURL=TimePicker.stories.js.map

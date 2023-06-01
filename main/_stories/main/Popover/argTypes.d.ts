@@ -11,41 +11,30 @@ declare const _default: {
         control: string;
         options: string[];
     };
-    footer: {
-        control: {
-            type: string;
-        };
-    };
-    header: {
-        control: {
-            type: string;
-        };
-    };
-    showAt: {
-        table: {
-            category: string;
-        };
-    };
     accessibleRole: {
         control: string;
         options: string[];
     };
-    default: {
-        control: {
-            type: string;
+    showAt: {
+        description: string;
+        table: {
+            category: string;
         };
     };
     applyFocus: {
+        description: string;
         table: {
             category: string;
         };
     };
     close: {
+        description: string;
         table: {
             category: string;
         };
     };
     isOpen: {
+        description: string;
         table: {
             category: string;
         };

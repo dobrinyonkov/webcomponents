@@ -13,14 +13,10 @@ export default {
             "TopStart"
         ]
     },
-    "default": {
-        "control": {
-            "type": "text"
-        }
-    },
     "show": {
+        "description": "Shows the component.",
         "table": {
-            "category": "Methods"
+            "category": "methods"
         }
     }
 };

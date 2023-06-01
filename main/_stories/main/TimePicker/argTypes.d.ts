@@ -8,32 +8,32 @@ declare const _default: {
         control: string;
         options: string[];
     };
-    valueStateMessage: {
-        control: {
-            type: string;
-        };
-    };
     closePicker: {
+        description: string;
         table: {
             category: string;
         };
     };
     formatValue: {
+        description: string;
         table: {
             category: string;
         };
     };
     isOpen: {
+        description: string;
         table: {
             category: string;
         };
     };
     isValid: {
+        description: string;
         table: {
             category: string;
         };
     };
     openPicker: {
+        description: string;
         table: {
             category: string;
         };

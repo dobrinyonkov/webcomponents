@@ -1,17 +1,12 @@
 declare const _default: {
+    selectedOption: {
+        control: {
+            type: boolean;
+        };
+    };
     valueState: {
         control: string;
         options: string[];
-    };
-    default: {
-        control: {
-            type: string;
-        };
-    };
-    valueStateMessage: {
-        control: {
-            type: string;
-        };
     };
 };
 export default _default;

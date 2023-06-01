@@ -1,10 +1,12 @@
 declare const _default: {
     close: {
+        description: string;
         table: {
             category: string;
         };
     };
     show: {
+        description: string;
         table: {
             category: string;
         };

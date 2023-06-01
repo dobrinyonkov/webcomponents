@@ -10,7 +10,7 @@
 
 
 
-  <script type="module" crossorigin src='https://sap.github.io/ui5-webcomponents/main/assets/bundle.common.dda60edd.js'></script>
+  <script type="module" crossorigin src='https://sap.github.io/ui5-webcomponents/main/assets/bundle.common.b553b1e4.js'></script>
   <link rel="stylesheet" href='https://sap.github.io/ui5-webcomponents/main/assets/List_test_page.bd80d576.css'>
 </head>
 
@@ -50,7 +50,24 @@
 	</ui5-list>
 	<ui5-input id="itemClickResultField" placeholder="itemClick result"></ui5-input>
 	<ui5-input id="selectionChangeResultField" placeholder="selectionChange result"></ui5-input>
+	<ui5-input id="selectionChangeResultFieldRadio" placeholder="selectionComponentPressed result "></ui5-input>
 	<ui5-input id="selectionChangeResultPreviousItemsParameter" placeholder="selectionChange previousSelection result"></ui5-input>
+
+	<br><br><br>
+
+	<br>
+	<ui5-list id="listPreventSelectionChangeSingleSelect" mode="SingleSelect" header-text="Prevent ui5-selection-change on SingleSelect">
+		<ui5-li id="country1" >Argentina</ui5-li>
+		<ui5-li id="country2" >Bulgaria</ui5-li>
+		<ui5-li id="country3" selected >China</ui5-li>
+	</ui5-list>
+
+	<br/>
+	<ui5-list id="listPreventSelectionChangeMultiSelect" mode="MultiSelect" header-text="Prevent ui5-selection-change on MultiSelect">
+		<ui5-li id="country1" >Argentina</ui5-li>
+		<ui5-li id="country2" selected >Bulgaria</ui5-li>
+		<ui5-li id="country3" selected >China</ui5-li>
+	</ui5-list>
 
 	<br><br><br>
 
@@ -141,6 +158,19 @@
 		</ui5-li-custom>
 	</ui5-list>
 	<ui5-button id="afterBtn">After button</ui5-button>
+
+	<ui5-list id="focusAfterList">
+		<ui5-li>Test</ui5-li>
+		<ui5-li class="breadcrumbsItem">
+			<div style="max-width: 20px">
+				<ui5-breadcrumbs>
+					<ui5-breadcrumbs-item href="#">Link1</ui5-breadcrumbs-item>
+					<ui5-breadcrumbs-item>Location</ui5-breadcrumbs-item>
+				</ui5-breadcrumbs>
+			</div>
+		</ui5-li>
+	</ui5-list>
+	<ui5-button id="afterFocusListBtn">After button</ui5-button>
 
 	<ui5-list id="no-data-list" header-text="API: noDataText" separators="None" no-data-text="No Data Available"></ui5-list>
 
@@ -284,6 +314,7 @@
 		listEvents.addEventListener("ui5-selection-change", function (event) {
 			selectionChangeCounter += 1;
 			selectionChangeResultField.value = selectionChangeCounter;
+			selectionChangeResultFieldRadio.value = event.detail.selectionComponentPressed;
 		});
 
 		listEvents.addEventListener("ui5-selection-change", function(event) {
@@ -317,6 +348,14 @@
 		listPreventClickEvent.addEventListener("ui5-item-click", function (event) {
 			event.preventDefault();
 			itemClickPreventedResultField.value = event.detail.item.id;
+		});
+
+		listPreventSelectionChangeSingleSelect.addEventListener("ui5-selection-change", function (event) {
+			event.preventDefault();
+		});
+
+		listPreventSelectionChangeMultiSelect.addEventListener("ui5-selection-change", function (event) {
+			event.preventDefault();
 		});
 
 		var loadMoreCounter = 0;
