@@ -5,7 +5,7 @@ class AssetsParser {
     parseContent(content) {
         const assetsExpr = /([a-zA-Z0-9_\-]+)="([^"]*assets\/[^"]*)"/g;
         return content.replace(assetsExpr, (_, p1, p2) => {
-            return `${p1}="../../${p2}"`;
+            return `${p1}="../../..${p2}"`;
         });
     }
 }
@@ -31,7 +31,7 @@ class PagesPrepare {
             const pagePath = path.join(pagesSource, page);
             const content = await this.directoryUtils.readContent(pagePath);
             const modifiedContent = this.modifyContent(content);
-            const pageTargetPath = path.join(pagesTarget, page);
+            const pageTargetPath = path.join(pagesTarget, page.replace(".html", ""), "index.html");
             await this.directoryUtils.assureDirectoryExistence(pageTargetPath);
             await this.directoryUtils.writeFile(pageTargetPath, modifiedContent);
         }
