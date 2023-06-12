@@ -1,5 +1,5 @@
-commit fb22ed3be925e64f10f04b41b2a1b0b56e528dea
+commit 5d5cbc5976f0b5b31491f1abf8b565d5cbd40bd3
 Author: Dobrin Dimchev <dobrin.dimchev@sap.com>
-Date:   Thu Jun 1 11:40:24 2023 +0300
+Date:   Mon Jun 12 10:03:43 2023 +0300
 
-    fix: favicon icon
+    docs(playground): replace main playground with storybook

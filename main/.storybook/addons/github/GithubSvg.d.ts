@@ -1,1 +1,2 @@
-export declare const GithubSvg: () => import("react/jsx-runtime").JSX.Element;
+/// <reference types="react" />
+export declare const GithubSvg: () => JSX.Element;

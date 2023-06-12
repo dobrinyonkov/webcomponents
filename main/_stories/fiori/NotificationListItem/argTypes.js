@@ -1,19 +1,38 @@
 export default {
-    "wrappingType": {
-        "control": "select",
-        "options": [
-            "None",
-            "Normal"
-        ]
+    "avatar": {
+        "control": {
+            "type": "text"
+        }
     },
-    "priority": {
-        "control": "select",
-        "options": [
-            "High",
-            "Low",
-            "Medium",
-            "None"
-        ]
+    "default": {
+        "control": {
+            "type": "text"
+        }
+    },
+    "footnotes": {
+        "control": {
+            "type": "text"
+        }
+    },
+    "actions": {
+        "control": {
+            "type": "text"
+        }
+    },
+    "close": {
+        "description": "Fired when the <code>Close</code> button is pressed.",
+        "table": {
+            "category": "events"
+        },
+        "UI5CustomData": {
+            "parameters": [
+                {
+                    "name": "item",
+                    "type": "HTMLElement",
+                    "description": "the closed item."
+                }
+            ]
+        }
     }
 };
 export const componentInfo = {

@@ -5,6 +5,11 @@ export default {
             "Horizontal",
             "Vertical"
         ]
+    },
+    "default": {
+        "control": {
+            "type": "text"
+        }
     }
 };
 export const componentInfo = {

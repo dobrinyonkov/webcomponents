@@ -6,6 +6,21 @@ export default {
             "Solid",
             "Transparent"
         ]
+    },
+    "default": {
+        "control": {
+            "type": "text"
+        }
+    },
+    "footer": {
+        "control": {
+            "type": "text"
+        }
+    },
+    "header": {
+        "control": {
+            "type": "text"
+        }
     }
 };
 export const componentInfo = {

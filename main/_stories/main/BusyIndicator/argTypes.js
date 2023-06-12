@@ -6,6 +6,11 @@ export default {
             "Medium",
             "Small"
         ]
+    },
+    "default": {
+        "control": {
+            "type": "text"
+        }
     }
 };
 export const componentInfo = {

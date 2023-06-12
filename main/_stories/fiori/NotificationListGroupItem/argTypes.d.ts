@@ -1,7 +1,26 @@
 declare const _default: {
-    priority: {
-        control: string;
-        options: string[];
+    default: {
+        control: {
+            type: string;
+        };
+    };
+    actions: {
+        control: {
+            type: string;
+        };
+    };
+    close: {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
+        };
     };
 };
 export default _default;

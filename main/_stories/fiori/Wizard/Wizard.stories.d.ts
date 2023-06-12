@@ -3,3 +3,4 @@ import type Wizard from "@ui5/webcomponents-fiori/dist/Wizard.js";
 declare const _default: Meta<Wizard>;
 export default _default;
 export declare const WizardOverview: StoryFn;
+export declare const WizardPageMode: StoryFn;

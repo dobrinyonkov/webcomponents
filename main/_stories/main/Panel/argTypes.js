@@ -17,6 +17,16 @@ export default {
             "H5",
             "H6"
         ]
+    },
+    "default": {
+        "control": {
+            "type": "text"
+        }
+    },
+    "header": {
+        "control": {
+            "type": "text"
+        }
     }
 };
 export const componentInfo = {

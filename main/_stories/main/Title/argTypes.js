@@ -16,6 +16,11 @@ export default {
             "None",
             "Normal"
         ]
+    },
+    "default": {
+        "control": {
+            "type": "text"
+        }
     }
 };
 export const componentInfo = {

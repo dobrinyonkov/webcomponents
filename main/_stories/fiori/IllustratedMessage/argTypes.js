@@ -106,6 +106,21 @@ export default {
             "Scene",
             "Spot"
         ]
+    },
+    "default": {
+        "control": {
+            "type": "text"
+        }
+    },
+    "subtitle": {
+        "control": {
+            "type": "text"
+        }
+    },
+    "title": {
+        "control": {
+            "type": "text"
+        }
     }
 };
 export const componentInfo = {

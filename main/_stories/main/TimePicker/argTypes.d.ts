@@ -8,6 +8,11 @@ declare const _default: {
         control: string;
         options: string[];
     };
+    valueStateMessage: {
+        control: {
+            type: string;
+        };
+    };
     closePicker: {
         description: string;
         table: {
@@ -19,11 +24,27 @@ declare const _default: {
         table: {
             category: string;
         };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                optional: boolean;
+                description: string;
+            }[];
+            returnValue: {
+                type: string;
+            };
+        };
     };
     isOpen: {
         description: string;
         table: {
             category: string;
+        };
+        UI5CustomData: {
+            returnValue: {
+                type: string;
+            };
         };
     };
     isValid: {
@@ -31,11 +52,54 @@ declare const _default: {
         table: {
             category: string;
         };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                optional: boolean;
+                description: string;
+            }[];
+            returnValue: {
+                type: string;
+            };
+        };
     };
     openPicker: {
         description: string;
         table: {
             category: string;
+        };
+        UI5CustomData: {
+            returnValue: {
+                type: string;
+                description: string;
+            };
+        };
+    };
+    change: {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
+        };
+    };
+    input: {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
         };
     };
 };

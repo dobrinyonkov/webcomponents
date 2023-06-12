@@ -21,9 +21,6 @@ export const parameters = {
     },
     actions: { argTypesRegex: "^ui5-[a-z].*" },
     docs: {
-        source: {
-            format: true,
-        },
         iframeHeight: "300px",
         transformSource: (source // this is called before rendering of the "code" inside the preview of the stories
         ) => source

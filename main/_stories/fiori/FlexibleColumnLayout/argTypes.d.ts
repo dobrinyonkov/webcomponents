@@ -28,6 +28,34 @@ declare const _default: {
             type: boolean;
         };
     };
+    endColumn: {
+        control: {
+            type: string;
+        };
+    };
+    midColumn: {
+        control: {
+            type: string;
+        };
+    };
+    startColumn: {
+        control: {
+            type: string;
+        };
+    };
+    "layout-change": {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
+        };
+    };
 };
 export default _default;
 export declare const componentInfo: {

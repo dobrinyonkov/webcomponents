@@ -1,1 +1,0 @@
-import "@ui5/webcomponents-fiori/bundle.esm.js";

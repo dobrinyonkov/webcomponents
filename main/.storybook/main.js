@@ -1,7 +1,7 @@
 import remarkGfm from 'remark-gfm';
 const isProd = process.env.NODE_ENV === "production";
 const config = {
-    stories: ["../docs/**/*.mdx", "../_stories/**/*.stories.@(ts|tsx)"],
+    stories: ["../docs/**/*.mdx", "../_stories/**/*.stories.@(ts)"],
     addons: [
         "@storybook/addon-links",
         {

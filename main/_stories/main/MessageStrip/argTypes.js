@@ -7,6 +7,16 @@ export default {
             "Positive",
             "Warning"
         ]
+    },
+    "default": {
+        "control": {
+            "type": "text"
+        }
+    },
+    "icon": {
+        "control": {
+            "type": "text"
+        }
     }
 };
 export const componentInfo = {

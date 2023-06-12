@@ -20,6 +20,34 @@ declare const _default: {
         control: string;
         options: string[];
     };
+    default: {
+        control: {
+            type: string;
+        };
+    };
+    overflowButton: {
+        control: {
+            type: string;
+        };
+    };
+    startOverflowButton: {
+        control: {
+            type: string;
+        };
+    };
+    "tab-select": {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
+        };
+    };
 };
 export default _default;
 export declare const componentInfo: {

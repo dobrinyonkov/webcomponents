@@ -29,10 +29,118 @@ declare const _default: {
             type: boolean;
         };
     };
+    default: {
+        control: {
+            type: string;
+        };
+    };
+    logo: {
+        control: {
+            type: string;
+        };
+    };
+    menuItems: {
+        control: {
+            type: string;
+        };
+    };
+    profile: {
+        control: {
+            type: string;
+        };
+    };
+    searchField: {
+        control: {
+            type: string;
+        };
+    };
+    startButton: {
+        control: {
+            type: string;
+        };
+    };
     closeOverflow: {
         description: string;
         table: {
             category: string;
+        };
+    };
+    "co-pilot-click": {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
+        };
+    };
+    "logo-click": {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
+        };
+    };
+    "menu-item-click": {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
+        };
+    };
+    "notifications-click": {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
+        };
+    };
+    "product-switch-click": {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
+        };
+    };
+    "profile-click": {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
         };
     };
 };

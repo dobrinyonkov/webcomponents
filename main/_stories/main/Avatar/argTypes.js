@@ -31,6 +31,16 @@ export default {
             "XL",
             "XS"
         ]
+    },
+    "badge": {
+        "control": {
+            "type": "text"
+        }
+    },
+    "default": {
+        "control": {
+            "type": "text"
+        }
     }
 };
 export const componentInfo = {

@@ -3,6 +3,11 @@ declare const _default: {
         control: string;
         options: string[];
     };
+    default: {
+        control: {
+            type: string;
+        };
+    };
     show: {
         description: string;
         table: {

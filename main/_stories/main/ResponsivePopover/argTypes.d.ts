@@ -1,4 +1,46 @@
 declare const _default: {
+    close: {
+        description: string;
+        table: {
+            category: string;
+        };
+    };
+    isOpen: {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            returnValue: {
+                type: string;
+            };
+        };
+    };
+    showAt: {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: ({
+                name: string;
+                type: string;
+                optional: boolean;
+                description: string;
+                defaultValue?: undefined;
+            } | {
+                name: string;
+                type: string;
+                optional: boolean;
+                defaultValue: boolean;
+                description: string;
+            })[];
+            returnValue: {
+                type: string;
+                description: string;
+            };
+        };
+    };
     horizontalAlign: {
         control: string;
         options: string[];
@@ -11,32 +53,48 @@ declare const _default: {
         control: string;
         options: string[];
     };
+    footer: {
+        control: {
+            type: string;
+        };
+    };
+    header: {
+        control: {
+            type: string;
+        };
+    };
     accessibleRole: {
         control: string;
         options: string[];
     };
-    close: {
-        description: string;
-        table: {
-            category: string;
-        };
-    };
-    isOpen: {
-        description: string;
-        table: {
-            category: string;
-        };
-    };
-    showAt: {
-        description: string;
-        table: {
-            category: string;
+    default: {
+        control: {
+            type: string;
         };
     };
     applyFocus: {
         description: string;
         table: {
             category: string;
+        };
+        UI5CustomData: {
+            returnValue: {
+                type: string;
+                description: string;
+            };
+        };
+    };
+    "before-close": {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
         };
     };
 };

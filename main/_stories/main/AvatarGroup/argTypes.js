@@ -15,6 +15,36 @@ export default {
             "Group",
             "Individual"
         ]
+    },
+    "default": {
+        "control": {
+            "type": "text"
+        }
+    },
+    "overflowButton": {
+        "control": {
+            "type": "text"
+        }
+    },
+    "click": {
+        "description": "Fired when the component is activated either with a click/tap or by using the Enter or Space key.",
+        "table": {
+            "category": "events"
+        },
+        "UI5CustomData": {
+            "parameters": [
+                {
+                    "name": "targetRef",
+                    "type": "HTMLElement",
+                    "description": "The DOM ref of the clicked item."
+                },
+                {
+                    "name": "overflowButtonClicked",
+                    "type": "boolean",
+                    "description": "indicates if the overflow button is clicked"
+                }
+            ]
+        }
     }
 };
 export const componentInfo = {

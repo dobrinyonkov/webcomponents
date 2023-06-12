@@ -1,4 +1,9 @@
 declare const _default: {
+    default: {
+        control: {
+            type: string;
+        };
+    };
     close: {
         description: string;
         table: {
@@ -9,6 +14,53 @@ declare const _default: {
         description: string;
         table: {
             category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                optional: boolean;
+                description: string;
+            }[];
+        };
+    };
+    "before-close": {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
+        };
+    };
+    "before-open": {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
+        };
+    };
+    "item-click": {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
         };
     };
 };

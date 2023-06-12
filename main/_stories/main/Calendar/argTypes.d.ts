@@ -3,6 +3,24 @@ declare const _default: {
         control: string;
         options: string[];
     };
+    default: {
+        control: {
+            type: string;
+        };
+    };
+    "selected-dates-change": {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
+        };
+    };
     primaryCalendarType: {
         control: string;
         options: string[];

@@ -12,10 +12,51 @@ declare const _default: {
         control: string;
         options: string[];
     };
+    default: {
+        control: {
+            type: string;
+        };
+    };
+    icon: {
+        control: {
+            type: string;
+        };
+    };
+    valueStateMessage: {
+        control: {
+            type: string;
+        };
+    };
     openPicker: {
         description: string;
         table: {
             category: string;
+        };
+    };
+    "suggestion-item-preview": {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
+        };
+    };
+    "suggestion-item-select": {
+        description: string;
+        table: {
+            category: string;
+        };
+        UI5CustomData: {
+            parameters: {
+                name: string;
+                type: string;
+                description: string;
+            }[];
         };
     };
 };

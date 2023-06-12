@@ -20,6 +20,26 @@ export default {
             "Bottom",
             "Top"
         ]
+    },
+    "default": {
+        "control": {
+            "type": "text"
+        }
+    },
+    "selection-change": {
+        "description": "Fired when selection is changed by user interaction.",
+        "table": {
+            "category": "events"
+        },
+        "UI5CustomData": {
+            "parameters": [
+                {
+                    "name": "item",
+                    "type": "HTMLElement",
+                    "description": "the selected item."
+                }
+            ]
+        }
     }
 };
 export const componentInfo = {
