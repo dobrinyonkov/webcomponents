@@ -3,18 +3,8 @@ import path from "path";
 import { DirectoryUtils } from "./DirectoryUtils";
 class AssetsParser {
     parseContent(content) {
-        content = this.parseAssetsUrls(content);
-        content = this.parseImageAttributes(content);
-        return content;
-    }
-    parseAssetsUrls(content) {
         const regex = /([a-zA-Z0-9_\-]+)="([^"]*assets\/[^"]*)"/g;
         const replacement = '$1="../../../..$2"';
-        return content.replace(regex, replacement);
-    }
-    parseImageAttributes(content) {
-        const regex = /image="\.(\/[^"]+\/([^"]+))"/g;
-        const replacement = 'image="../../../../assets/$2"';
         return content.replace(regex, replacement);
     }
 }
