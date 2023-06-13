@@ -5,7 +5,7 @@ class AssetsParser {
     parseContent(content) {
         const assetsExpr = /([a-zA-Z0-9_\-]+)="([^"]*assets\/[^"]*)"/g;
         return content.replace(assetsExpr, (_, p1, p2) => {
-            return `${p1}="../../..${p2}"`;
+            return `${p1}="../../../..${p2}"`; // to /dist/assets
         });
     }
 }

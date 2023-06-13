@@ -1,5 +1,5 @@
-commit 3727bfdfc1c8c8472e2cd6f7917566550378b571
+commit f2b6e7194fd932009fd6ebe00f4035e049d64bcd
 Author: Dobrin Dimchev <dobrin.dimchev@sap.com>
-Date:   Tue Jun 13 12:55:35 2023 +0300
+Date:   Tue Jun 13 15:51:36 2023 +0300
 
-    chore: clean package json commands
+    chore: clear

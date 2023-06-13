@@ -2,8 +2,9 @@ import remarkGfm from 'remark-gfm';
 const config = {
     stories: ["../docs/**/*.mdx", "../_stories/**/*.stories.@(ts)"],
     staticDirs: [
-        { from: "../assets", to: "/assets" },
+        { from: "../assets", to: "../assets" },
         { from: "../docs/storybook-pages", to: "/" },
+        { from: "../docs/index.html", to: "../index.html" }, // from /docs/index.html to /dist/index.html
     ],
     addons: [
         "@storybook/addon-links",
