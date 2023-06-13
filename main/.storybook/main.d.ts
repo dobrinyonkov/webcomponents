@@ -1,6 +1,10 @@
 import remarkGfm from 'remark-gfm';
 declare const config: {
     stories: string[];
+    staticDirs: {
+        from: string;
+        to: string;
+    }[];
     addons: (string | {
         name: string;
         options: {
@@ -31,7 +35,6 @@ declare const config: {
     typescript: {
         reactDocgen: string;
     };
-    env: (config: any) => any;
     docs: {
         autodocs: boolean;
     };
