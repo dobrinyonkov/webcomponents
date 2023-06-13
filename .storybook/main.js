@@ -4,7 +4,7 @@ const config = {
     staticDirs: [
         { from: "../assets", to: "../assets" },
         { from: "../docs/storybook-pages", to: "/" },
-        { from: "../docs/index.html", to: "../index.html" }, // from /docs/index.html to /dist/index.html
+        { from: "../docs/landing-page.html", to: "../index.html" }, // from /docs/landing-page.html to /dist/index.html
     ],
     addons: [
         "@storybook/addon-links",
