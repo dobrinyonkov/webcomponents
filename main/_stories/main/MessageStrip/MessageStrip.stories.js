@@ -69,7 +69,7 @@ export const DynamicMessageStrip = () => html `
 export const CustomMessageStrip = Template.bind({});
 CustomMessageStrip.args = {
     design: MessageStripDesign.Negative,
-    icon: `<img src="./assets/images/loading.gif" width="16" height="16" slot="icon">`,
+    icon: `<img src="../assets/images/loading.gif" width="16" height="16" slot="icon">`,
     default: "Custom MessageStrip with animated gif",
 };
 //# sourceMappingURL=MessageStrip.stories.js.map

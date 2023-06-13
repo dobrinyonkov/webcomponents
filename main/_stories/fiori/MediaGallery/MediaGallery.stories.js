@@ -50,22 +50,22 @@ Basic.args = {
     showAllThumbnails: true,
     default: `
 	<ui5-media-gallery-item>
-		<img src="./assets/images/HT-1000.jpg" />
+		<img src="../assets/images/HT-1000.jpg" />
 	</ui5-media-gallery-item>
 	<ui5-media-gallery-item>
-		<img src="./assets/images/HT-1010.jpg" />
+		<img src="../assets/images/HT-1010.jpg" />
 	</ui5-media-gallery-item>
 	<ui5-media-gallery-item>
-		<img src="./assets/images/HT-1022.jpg" />
+		<img src="../assets/images/HT-1022.jpg" />
 	</ui5-media-gallery-item>
 	<ui5-media-gallery-item>
-		<img src="./assets/images/HT-1030.jpg" />
+		<img src="../assets/images/HT-1030.jpg" />
 	</ui5-media-gallery-item>
 	<ui5-media-gallery-item>
-		<img src="./assets/images/HT-2002.jpg" />
+		<img src="../assets/images/HT-2002.jpg" />
 	</ui5-media-gallery-item>
 	<ui5-media-gallery-item>
-		<img src="./assets/images/HT-2026.jpg" />
+		<img src="../assets/images/HT-2026.jpg" />
 	</ui5-media-gallery-item>`,
 };
 export const WithVerticalLayout = Template.bind({});
@@ -74,22 +74,22 @@ WithVerticalLayout.args = {
     layout: MediaGalleryLayout.Vertical,
     default: `
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-1000.jpg" />
+        <img src="../assets/images/HT-1000.jpg" />
     </ui5-media-gallery-item>
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-1010.jpg" />
+        <img src="../assets/images/HT-1010.jpg" />
     </ui5-media-gallery-item>
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-1022.jpg" />
+        <img src="../assets/images/HT-1022.jpg" />
     </ui5-media-gallery-item>
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-1030.jpg" />
+        <img src="../assets/images/HT-1030.jpg" />
     </ui5-media-gallery-item>
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-2002.jpg" />
+        <img src="../assets/images/HT-2002.jpg" />
     </ui5-media-gallery-item>
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-2026.jpg" />
+        <img src="../assets/images/HT-2026.jpg" />
     </ui5-media-gallery-item>`,
 };
 export const WithThumbnailsOnTheRight = Template.bind({});
@@ -99,31 +99,31 @@ WithThumbnailsOnTheRight.args = {
     menuHorizontalAlign: MediaGalleryMenuHorizontalAlign.Right,
     default: `
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-1000.jpg" />
+        <img src="../assets/images/HT-1000.jpg" />
     </ui5-media-gallery-item>
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-1010.jpg" />
+        <img src="../assets/images/HT-1010.jpg" />
     </ui5-media-gallery-item>
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-1022.jpg" />
+        <img src="../assets/images/HT-1022.jpg" />
     </ui5-media-gallery-item>
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-1030.jpg" />
+        <img src="../assets/images/HT-1030.jpg" />
     </ui5-media-gallery-item>
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-2002.jpg" />
+        <img src="../assets/images/HT-2002.jpg" />
     </ui5-media-gallery-item>
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-2026.jpg" />
+        <img src="../assets/images/HT-2026.jpg" />
     </ui5-media-gallery-item>`,
 };
 export const WithSeparateImageThumbnail = Template.bind({});
 WithSeparateImageThumbnail.args = {
     default: `
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-1000.jpg" />
+        <img src="../assets/images/HT-1000.jpg" />
         <img
-            src="./assets/images/HT-1000-small.jpg"
+            src="../assets/images/HT-1000-small.jpg"
             slot="thumbnail"
         />
     </ui5-media-gallery-item>`,
@@ -140,7 +140,7 @@ WithVideoContent.args = {
             allowfullscreen=""
         ></iframe>
         <img
-            src="./assets/images/sap-logo-square.svg"
+            src="../assets/images/sap-logo-square.svg"
             slot="thumbnail"
             alt="SAP Video"
         />
@@ -150,20 +150,20 @@ export const WithDisabledContent = Template.bind({});
 WithDisabledContent.args = {
     default: `
     <ui5-media-gallery-item disabled="">
-        <img src="./assets/images/HT-1000.jpg" />
+        <img src="../assets/images/HT-1000.jpg" />
     </ui5-media-gallery-item>
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-1010.jpg" />
+        <img src="../assets/images/HT-1010.jpg" />
     </ui5-media-gallery-item>`,
 };
 export const WithInitiallySelected = Template.bind({});
 WithInitiallySelected.args = {
     default: `
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-1000.jpg" />
+        <img src="../assets/images/HT-1000.jpg" />
     </ui5-media-gallery-item>
     <ui5-media-gallery-item selected="">
-        <img src="./assets/images/HT-1010.jpg" />
+        <img src="../assets/images/HT-1010.jpg" />
     </ui5-media-gallery-item>`,
 };
 export const WithThumbnailOverflow = Template.bind({});
@@ -220,22 +220,22 @@ WithThumbnailOverflow.decorators = [
     </ui5-bar>
     <ui5-media-gallery show-all-thumbnails="">
         <ui5-media-gallery-item>
-            <img src="./assets/images/HT-1000.jpg" />
+            <img src="../assets/images/HT-1000.jpg" />
         </ui5-media-gallery-item>
         <ui5-media-gallery-item>
-            <img src="./assets/images/HT-1010.jpg" />
+            <img src="../assets/images/HT-1010.jpg" />
         </ui5-media-gallery-item>
         <ui5-media-gallery-item>
-            <img src="./assets/images/HT-1022.jpg" />
+            <img src="../assets/images/HT-1022.jpg" />
         </ui5-media-gallery-item>
         <ui5-media-gallery-item>
-            <img src="./assets/images/HT-1030.jpg" />
+            <img src="../assets/images/HT-1030.jpg" />
         </ui5-media-gallery-item>
         <ui5-media-gallery-item>
-            <img src="./assets/images/HT-2002.jpg" />
+            <img src="../assets/images/HT-2002.jpg" />
         </ui5-media-gallery-item>
         <ui5-media-gallery-item>
-            <img src="./assets/images/HT-2026.jpg" />
+            <img src="../assets/images/HT-2026.jpg" />
         </ui5-media-gallery-item>
     </ui5-media-gallery>
     <div slot="footer" class="dialog-footer">
@@ -266,22 +266,22 @@ WithThumbnailOverflow.args = {
     interactiveDisplayArea: true,
     default: `
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-1000.jpg" />
+        <img src="../assets/images/HT-1000.jpg" />
     </ui5-media-gallery-item>
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-1010.jpg" />
+        <img src="../assets/images/HT-1010.jpg" />
     </ui5-media-gallery-item>
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-1022.jpg" />
+        <img src="../assets/images/HT-1022.jpg" />
     </ui5-media-gallery-item>
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-1030.jpg" />
+        <img src="../assets/images/HT-1030.jpg" />
     </ui5-media-gallery-item>
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-2002.jpg" />
+        <img src="../assets/images/HT-2002.jpg" />
     </ui5-media-gallery-item>
     <ui5-media-gallery-item>
-        <img src="./assets/images/HT-2026.jpg" />
+        <img src="../assets/images/HT-2026.jpg" />
     </ui5-media-gallery-item>`,
 };
 WithThumbnailOverflow.parameters = {

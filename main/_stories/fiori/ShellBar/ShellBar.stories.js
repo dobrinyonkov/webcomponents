@@ -39,7 +39,7 @@ Basic.args = {
     primaryTitle: "Corporate Portal",
     secondaryTitle: "secondary title",
     profile: `<ui5-avatar slot="profile" icon="customer"></ui5-avatar>`,
-    logo: `<img slot="logo" src="./assets/images/sap-logo-svg.svg" />`,
+    logo: `<img slot="logo" src="../assets/images/sap-logo-svg.svg" />`,
     startButton: `<ui5-button icon="nav-back" slot="startButton"></ui5-button>`,
 };
 export const SearchAndNotifications = Template.bind({});
@@ -50,9 +50,9 @@ SearchAndNotifications.args = {
     notificationsCount: "99+",
     profile: `
 	<ui5-avatar slot="profile">
-		<img src="./assets/images/avatars/woman_avatar_5.png" />
+		<img src="../assets/images/avatars/woman_avatar_5.png" />
 	</ui5-avatar>`,
-    logo: `<img slot="logo" src="./assets/images/sap-logo-svg.svg" />`,
+    logo: `<img slot="logo" src="../assets/images/sap-logo-svg.svg" />`,
     searchField: `<ui5-input slot="searchField" placeholder="Enter service..."></ui5-input>`,
 };
 export const WithCoPilot = Template.bind({});
@@ -62,9 +62,9 @@ WithCoPilot.args = {
     showCoPilot: true,
     profile: `
 	<ui5-avatar slot="profile">
-		<img src="./assets/images/avatars/woman_avatar_5.png" />
+		<img src="../assets/images/avatars/woman_avatar_5.png" />
 	</ui5-avatar>`,
-    logo: `<img slot="logo" src="./assets/images/sap-logo-svg.svg" />`,
+    logo: `<img slot="logo" src="../assets/images/sap-logo-svg.svg" />`,
 };
 let index = 0;
 export const Advanced = () => {
@@ -80,9 +80,9 @@ export const Advanced = () => {
             show-co-pilot=""
         >
             <ui5-avatar slot="profile">
-                <img src="./assets/images/avatars/woman_avatar_5.png" />
+                <img src="../assets/images/avatars/woman_avatar_5.png" />
             </ui5-avatar>
-            <img slot="logo" src="./assets/images/sap-logo-svg.svg" />
+            <img slot="logo" src="../assets/images/sap-logo-svg.svg" />
             <ui5-button icon="nav-back" slot="startButton"></ui5-button>
 
             <ui5-input slot="searchField"></ui5-input>
