@@ -1,5 +1,5 @@
-commit 2169d6be7fa02e046025d2e27131e11362577bd4
+commit 07d10bd95811d9bab1d0822dbccef6533a4fbab0
 Author: Dobrin Dimchev <dobrin.dimchev@sap.com>
-Date:   Fri Jun 16 14:11:08 2023 +0300
+Date:   Fri Jun 16 14:51:23 2023 +0300
 
-    chore: add favicon
+    chore: clean-exlcude only for root main
