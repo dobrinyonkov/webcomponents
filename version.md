@@ -1,5 +1,5 @@
-commit e2936b958d4eeb041be73b8528984c18e3e63aec
+commit 2169d6be7fa02e046025d2e27131e11362577bd4
 Author: Dobrin Dimchev <dobrin.dimchev@sap.com>
-Date:   Tue Jun 13 16:06:45 2023 +0300
+Date:   Fri Jun 16 14:11:08 2023 +0300
 
-    chore: restore landing page name
+    chore: add favicon
