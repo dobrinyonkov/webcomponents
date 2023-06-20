@@ -4,55 +4,32 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Popover</title>
 
 	<script data-ui5-config type="application/json">
 		{
 			"language": "EN",
-			"libs": "sap.ui.webcomponents.main"
+			"libs": "sap.ui.webc.main"
 		}
 	</script>
 
 
-	<script src="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/bundle.esm.js" type="module"></script>
+	
 
 
-	<link rel="stylesheet" type="text/css" href="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/styles/Popover.css">
+	
 
 	<script>
 		// delete Document.prototype.adoptedStyleSheets
 	</script>
+  <script type="module" crossorigin src="../../../../assets/bundle.common.c36cae07.js"></script>
+  <link rel="stylesheet" href="../../../../assets/Popover.366b9193.css">
 </head>
 
 <body class="popover2auto">
-	<!-- <ui5-button id="btnOpenPopover" design="Emphasized" icon="employee">Open Popover</ui5-button>
-
-	<ui5-popover id="popoverToOpen" header-text="Popover">
-		<div class="popover3auto">
-			<ui5-title level="H2">Hello World!</ui5-title>
-		</div>
-		<ui5-textarea
-			placeholder="Type some text"
-			max-length="2"
-			show-exceeded-text>
-		</ui5-textarea>
-		<div slot="footer" class="popover4auto">
-			<div class="popover5auto"></div>
-			<ui5-button id="btnInPopover">Close</ui5-button>
-
-
-			<ui5-select id="test">
-				<ui5-option>Hello</ui5-option>
-				<ui5-option>World</ui5-option>
-			</ui5-select>
-		</div>
-	</ui5-popover>
-
-	<ui5-input id="field"></ui5-input> -->
+	<iframe id="clickThisIframe" src="//localhost:8080"></iframe>
 
 	<ui5-button id="btn">Click me !</ui5-button>
-
 
 	<ui5-popover id="pop" class="popover6auto" placement-type="Top" accessible-name="This popover is important">
 		<div slot="header">
@@ -71,7 +48,6 @@
 		<ui5-button id="popbtn">Open Popover</ui5-button>
 
 		<ui5-popover placement-type="Bottom" hide-arrow id="danger">
-
 
 			<ui5-list>
 				<ui5-li>Hello</ui5-li>
@@ -104,8 +80,6 @@
 		<br>
 		<br>
 
-		<!-- <ui5-date-picker></ui5-date-picker> -->
-
 		<div slot="footer">
 			<ui5-button>I am in the footer</ui5-button>
 		</div>
@@ -135,7 +109,6 @@
 	<br>
 	<br>
 
-
 	<ui5-multi-combobox>
 		<ui5-cb-item text="Hello"></ui5-cb-item>
 		<ui5-cb-item text="World"></ui5-cb-item>
@@ -155,6 +128,22 @@
 
 	<ui5-popover placement-type="Bottom" id="big-popover" header-text="hello world">
 		<ui5-list id="bigList"></ui5-list>
+	</ui5-popover>
+
+	<ui5-button id="acc-role-popover-button">
+		Open Popover ACC role - AlertDialog
+	</ui5-button>
+
+	<ui5-button id="acc-role-popover-button2">
+		Open Popover ACC role - None
+	</ui5-button>
+
+	<ui5-popover placement-type="Bottom" id="acc-role-popover" header-text="Test ACC world" accessible-role="AlertDialog">
+		<ui5-list id="bigList2"></ui5-list>
+	</ui5-popover>
+
+	<ui5-popover placement-type="Bottom" id="acc-role-popover2" header-text="Test ACC world" accessible-role="None">
+		<ui5-list id="bigList3"></ui5-list>
 	</ui5-popover>
 
 	<ui5-button id="btnPopModal">Opens modal popover!</ui5-button>
@@ -330,51 +319,12 @@
 			<ui5-li>Audit Log Settings</ui5-li>
 			<ui5-li>OData API Audit</ui5-li>
 			<ui5-li-groupheader>Products</ui5-li-groupheader>
-			<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-1010.jpg" icon="navigation-right-arrow" additional-text="Re-stock" description="#12331232131" additional-text-state="Error">Laptop Lenovo</ui5-li>
-			<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-1022.jpg" icon="navigation-right-arrow" additional-text="Re-stock" description="#12331232131"  additional-text-state="Error">IPhone 3</ui5-li>
-			<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-1030.jpg"  icon-end icon="navigation-right-arrow" description="#12331232131"  additional-text="Reuqired" additional-text-state="Error">HP Monitor 24</ui5-li>
+			<ui5-li image="./img/HT-1010.jpg" icon="navigation-right-arrow" additional-text="Re-stock" description="#12331232131" additional-text-state="Error">Laptop Lenovo</ui5-li>
+			<ui5-li image="./img/HT-1022.jpg" icon="navigation-right-arrow" additional-text="Re-stock" description="#12331232131"  additional-text-state="Error">IPhone 3</ui5-li>
+			<ui5-li image="./img/HT-1030.jpg"  icon-end icon="navigation-right-arrow" description="#12331232131"  additional-text="Reuqired" additional-text-state="Error">HP Monitor 24</ui5-li>
 		</ui5-list>
 	</ui5-popover>
 
-	<br>
-	<br>
-	<div id="targetOpener" class="popover9auto"></div>
-
-	<ui5-button id="btnOpenXLeft">Open Popup Left aligned</ui5-button>
-
-	<ui5-popover
-		header-text="My Heading"
-		id="popXLeft" horizontal-align="Left"
-		class="popover6auto">
-		<div slot="header">
-			<ui5-button id="first-focusable">I am in the header</ui5-button>
-		</div>
-		<div>
-			<ui5-button id="first-focusable">I am in the header</ui5-button>
-		</div>
-		<div>
-			<ui5-button id="first-focusable">I am in the header</ui5-button>
-		</div>
-	</ui5-popover>
-
-	<div id="targetOpener2" class="popover10auto"></div>
-
-	<ui5-button id="btnOpenXRight">Open Popup Right aligned</ui5-button>
-
-	<ui5-popover
-		header-text="My Heading"
-		id="popXRight" horizontal-align="Right"
-		class="popover6auto">
-		<div slot="header">
-			<ui5-button id="first-focusable">I am in the header</ui5-button>
-		</div>
-		<div>
-			<ui5-button id="first-focusable">I am in the header</ui5-button>
-		</div>
-		<div>
-			<ui5-button id="first-focusable">I am in the header</ui5-button>
-		</div>
-	</ui5-popover>
 
 	<div class="popover11auto">
 		<p>Right-aligned Popover, wider than button, arrow should be centered on the button</p>
@@ -427,6 +377,63 @@
 	<ui5-popover id="popAccNameRef" accessible-name-ref="lblAccNameRef" header-text="Header text">
 		<span>Hello world</span>
 	</ui5-popover>
+
+	<br>
+	<br>
+
+	<ui5-button id="openChainedPopover1">Open chained popover 1</ui5-button>
+	<ui5-popover id="chainedPopover1">
+		Chained Popover 1
+		<ui5-list id="openChainedPopover2List">
+			<ui5-li>Open chained popover 2</ui5-li>
+		</ui5-list>
+	</ui5-popover>
+	<ui5-popover id="chainedPopover2" placement-type="Bottom">
+		Chained Popover 2
+		<ui5-button id="closeChainedPopover2">Close chained popover 2</ui5-button>
+	</ui5-popover>
+
+	<!-- Sample when Popover is created in order different than "header, content, footer" sequence -->
+	<ui5-button id="popoverFocusButton">Dialog Focus</ui5-button>
+	<ui5-popover id="popoverFocus">
+		<div slot="header">Header text</div>
+	
+		<div slot="footer" class="dialog-footer">
+			<div style="flex: 1"></div>
+			<ui5-button id="closeButton" design="Emphasized">Close</ui5-button>
+		</div>
+
+		<span>Some message</span>
+		<ui5-button id="fistButtonInPopover">Confirm</ui5-button>
+	</ui5-popover>
+
+	<h2>Horizontal Align</h2>
+	<div>
+		<ui5-radio-button name="horizontalAlign" checked text="Center"></ui5-radio-button>
+		<ui5-radio-button name="horizontalAlign" text="Stretch"></ui5-radio-button>
+		<ui5-radio-button name="horizontalAlign" text="Left"></ui5-radio-button>
+		<ui5-radio-button name="horizontalAlign" text="Right"></ui5-radio-button>
+	</div>
+	<div>
+		<ui5-checkbox id="rtlCb" text="rtl"></ui5-checkbox>
+	</div>
+	
+	<div id="horizontalAlignContainer">
+		<div id="targetOpener" class="popover10auto">
+			<span>Target opener</span>
+		</div>
+		<ui5-popover id="popoverHorizontalAlign" placement-type="Top">
+			<span></span>
+		</ui5-popover>
+	</div>
+	<ui5-button id="horizontalAlignBtn">Open horizontally aligned popover</ui5-button>
+
+	<br>
+	<br>
+	<ui5-button id="createAndRemove">Create a popover and then remove it</ui5-button>
+	<span id="createAndRemoveResult" style="display: none;"></span>
+	<br>
+	<br>
 
 	<script>
 		btn.addEventListener("click", function (event) {
@@ -481,8 +488,24 @@
 			return "<ui5-li>" + item + "</ui5-li>";
 		}).join("");
 
+		document.getElementById("bigList2").innerHTML = [].map.call("Ullamco ea ad fugiat enim elit dolore ullamco ad magna excepteur cupidatat.", function (item, index) {
+			return "<ui5-li>" + item + "</ui5-li>";
+		}).join("");
+
+		document.getElementById("bigList3").innerHTML = [].map.call("Ullamco ea ad fugiat enim elit dolore ullamco ad magna excepteur cupidatat.", function (item, index) {
+			return "<ui5-li>" + item + "</ui5-li>";
+		}).join("");
+
 		document.getElementById("big-popover-button").addEventListener("click", function (event) {
 			document.getElementById("big-popover").showAt(event.target);
+		});
+
+		document.getElementById("acc-role-popover-button").addEventListener("click", function (event) {
+			document.getElementById("acc-role-popover").showAt(event.target);
+		});
+
+		document.getElementById("acc-role-popover-button2").addEventListener("click", function (event) {
+			document.getElementById("acc-role-popover2").showAt(event.target);
 		});
 
 		btnFullWidth.addEventListener("click", function (event) {
@@ -526,12 +549,6 @@
 
 			btnQuickViewCardOpener.setAttribute("hidden", true);
 		})
-		btnOpenXLeft.addEventListener("click", function (event) {
-			popXLeft.showAt(targetOpener);
-		});
-		btnOpenXRight.addEventListener("click", function (event) {
-			popXRight.showAt(targetOpener2);
-		});
 
 		firstBtn.addEventListener("click", function (event) {
 			popNoFocusableContent.innerHTML = "First button is clicked";
@@ -571,6 +588,68 @@
 
 		btnAccNameRef.addEventListener("click", function () {
 			popAccNameRef.showAt(btnAccNameRef);
+		});
+
+		openChainedPopover1.addEventListener("click", function () {
+			chainedPopover1.showAt(openChainedPopover1);
+		});
+
+		openChainedPopover2List.addEventListener("ui5-item-click", function () {
+			chainedPopover1.close();
+			chainedPopover2.showAt(openChainedPopover1);
+		});
+
+		closeChainedPopover2.addEventListener("click", function () {
+			chainedPopover2.close();
+		});
+
+		chainedPopover2.addEventListener("ui5-after-close", function () {
+			var toast = document.createElement("ui5-toast");
+			toast.appendChild(document.createTextNode("Closed chained popover 2"));
+			document.body.appendChild(toast);
+			toast.show();
+		});
+
+		popoverFocusButton.addEventListener("click", function () {
+			popoverFocus.showAt(popoverFocusButton);
+		});
+
+		horizontalAlignBtn.addEventListener("click", function () {
+			var selectedAlign = document.querySelector("[ui5-radio-button][name='horizontalAlign'][checked]").text;
+
+			popoverHorizontalAlign.horizontalAlign = selectedAlign;
+			popoverHorizontalAlign.firstElementChild.innerText = "Horizontal alignment is: " + selectedAlign;
+			popoverHorizontalAlign.showAt(targetOpener);
+		});
+
+		rtlCb.addEventListener("ui5-change", function (e) {
+			horizontalAlignContainer.setAttribute("dir", rtlCb.checked ? "rtl" : "")
+		});
+
+		createAndRemove.addEventListener("click", function () {
+			var pop = document.createElement("ui5-popover");
+	
+			pop.setAttribute("open", true);
+			pop.setAttribute("opener", "createAndRemove");
+
+			var inp = document.createElement("ui5-input");
+			inp.setAttribute("slot", "header")
+			pop.appendChild(inp)
+
+			document.body.appendChild(pop)
+
+			pop.addEventListener("ui5-before-open", async () => {
+				var applyFocusResult = pop.applyFocus();
+				pop.remove();
+
+				try {
+					await applyFocusResult;
+					createAndRemoveResult.innerText = "No uncaught errors";
+ 				} catch (e) {
+					createAndRemoveResult.innerText = e.toString();
+				}
+				createAndRemoveResult.style.display = "";
+			})
 		});
 
 	</script>

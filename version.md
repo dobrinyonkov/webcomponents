@@ -1,5 +1,5 @@
-commit 07d10bd95811d9bab1d0822dbccef6533a4fbab0
+commit 8fcaac3373f4849063ce5cb504f59dd00f235d70
 Author: Dobrin Dimchev <dobrin.dimchev@sap.com>
-Date:   Fri Jun 16 14:51:23 2023 +0300
+Date:   Tue Jun 20 12:20:17 2023 +0300
 
-    chore: clean-exlcude only for root main
+    build: change main build folder name to nightly

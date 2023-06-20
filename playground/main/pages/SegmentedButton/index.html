@@ -2,19 +2,20 @@
 <html>
 
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<meta charset="utf-8">
 
 	<title>ui5-segmented-button</title>
 
 
-	<script src="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/bundle.esm.js" type="module"></script>
+	
 
 
 	<script>// delete Document.prototype.adoptedStyleSheets;</script>
 
-<link rel="stylesheet" type="text/css" href="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/styles/SegmentedButton.css">
+
+  <script type="module" crossorigin src="../../../../assets/bundle.common.c36cae07.js"></script>
+  <link rel="stylesheet" href="../../../../assets/SegmentedButton.654bc4ab.css">
 </head>
 
 <body>
@@ -41,7 +42,7 @@
 				<section>
 					<h1>Example with 4 items</h1>
 
-					<ui5-segmented-button>
+					<ui5-segmented-button id="segButtonMulti" mode="MultiSelect">
 						<ui5-segmented-button-item>Item</ui5-segmented-button-item>
 						<ui5-segmented-button-item>Item</ui5-segmented-button-item>
 						<ui5-segmented-button-item>Click</ui5-segmented-button-item>
@@ -111,5 +112,40 @@
 			<ui5-segmented-button-item icon="accept"></ui5-segmented-button-item>
 		</ui5-segmented-button>
 	</section>
+
+	<section>
+		<h3>Programatical change test</h3>
+		<ui5-segmented-button id="segButtonProg">
+			<ui5-segmented-button-item id="sbpItem1" pressed>First</ui5-segmented-button-item>
+			<ui5-segmented-button-item id="sbpItem2">Second</ui5-segmented-button-item>
+			<ui5-segmented-button-item id="sbpItem3">Third</ui5-segmented-button-item>
+		</ui5-segmented-button>
+		<ui5-button id="progSetButton1">Press second item</ui5-button>
+		<ui5-button id="progSetButton2">Press multiple items</ui5-button>
+		<ui5-button id="progSetButton3">Press pressed item</ui5-button>
+		<ui5-button id="progSetButton4">Press first item</ui5-button>
+	</section>
+
+	<script>
+
+		progSetButton1.addEventListener("click", function() {
+			segButtonProg.items[1].pressed = true;
+		});
+
+		progSetButton2.addEventListener("click", function() {
+			segButtonProg.items[0].pressed = true;
+			segButtonProg.items[2].pressed = true;
+		});
+
+		progSetButton3.addEventListener("click", function() {
+			segButtonProg.selectedItem.pressed = true;
+		});
+
+		progSetButton4.addEventListener("click", function() {
+			segButtonProg.items[0].pressed = true;
+		});
+
+	</script>
+
 </body>
 </html>

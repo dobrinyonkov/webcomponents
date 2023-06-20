@@ -3,13 +3,14 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Input Quick View</title>
 
-	<script src="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/bundle.esm.js" type="module"></script>
+	
 
 	<script>// delete Document.prototype.adoptedStyleSheets;</script>
-<link rel="stylesheet" type="text/css" href="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/styles/Input_quickview.css">
+
+  <script type="module" crossorigin src="../../../../assets/bundle.common.c36cae07.js"></script>
+  <link rel="stylesheet" href="../../../../assets/Input_quickview.fa68e418.css">
 </head>
 
 <body class="input_quickview1auto">
@@ -45,9 +46,9 @@
 			<ui5-li>Audit Log Settings</ui5-li>
 			<ui5-li>OData API Audit</ui5-li>
 			<ui5-li-groupheader>Products</ui5-li-groupheader>
-			<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-1010.jpg" icon="navigation-right-arrow" additional-text="Re-stock" description="#12331232131" additional-text-state="Error">Laptop Lenovo</ui5-li>
-			<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-1022.jpg" icon="navigation-right-arrow" additional-text="Re-stock" description="#12331232131"  additional-text-state="Error">IPhone 3</ui5-li>
-			<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-1030.jpg"  icon-end icon="navigation-right-arrow" description="#12331232131"  additional-text="Reuqired" additional-text-state="Error">HP Monitor 24</ui5-li>
+			<ui5-li image="./img/HT-1010.jpg" icon="navigation-right-arrow" additional-text="Re-stock" description="#12331232131" additional-text-state="Error">Laptop Lenovo</ui5-li>
+			<ui5-li image="./img/HT-1022.jpg" icon="navigation-right-arrow" additional-text="Re-stock" description="#12331232131"  additional-text-state="Error">IPhone 3</ui5-li>
+			<ui5-li image="./img/HT-1030.jpg"  icon-end icon="navigation-right-arrow" description="#12331232131"  additional-text="Reuqired" additional-text-state="Error">HP Monitor 24</ui5-li>
 		</ui5-list>
 	</ui5-popover>
 
@@ -89,9 +90,9 @@
 			<ui5-li>Audit Log Settings</ui5-li>
 			<ui5-li>OData API Audit</ui5-li>
 			<ui5-li-groupheader>Products</ui5-li-groupheader>
-			<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-1010.jpg" icon="navigation-right-arrow" additional-text="Re-stock" description="#12331232131" additional-text-state="Error">Laptop Lenovo</ui5-li>
-			<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-1022.jpg" icon="navigation-right-arrow" additional-text="Re-stock" description="#12331232131"  additional-text-state="Error">IPhone 3</ui5-li>
-			<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-1030.jpg"  icon-end icon="navigation-right-arrow" description="#12331232131"  additional-text="Reuqired" additional-text-state="Error">HP Monitor 24</ui5-li>
+			<ui5-li image="./img/HT-1010.jpg" icon="navigation-right-arrow" additional-text="Re-stock" description="#12331232131" additional-text-state="Error">Laptop Lenovo</ui5-li>
+			<ui5-li image="./img/HT-1022.jpg" icon="navigation-right-arrow" additional-text="Re-stock" description="#12331232131"  additional-text-state="Error">IPhone 3</ui5-li>
+			<ui5-li image="./img/HT-1030.jpg"  icon-end icon="navigation-right-arrow" description="#12331232131"  additional-text="Reuqired" additional-text-state="Error">HP Monitor 24</ui5-li>
 		</ui5-list>
 	</ui5-popover>
 
@@ -104,7 +105,7 @@
 		/*
 		 * Open quickviewCard on suggestion-item-preview
 		 */
-		inputPreview.addEventListener("suggestion-item-preview", function (event) {
+		inputPreview.addEventListener("ui5-suggestion-item-preview", function (event) {
 			const targetRef = event.detail.targetRef;
 
 			quickViewCard.close();
@@ -115,14 +116,14 @@
 		 * Toggle quickviewCard on mouseover/mouseout
 		 */
 		 [].slice.call(document.querySelectorAll("#inputPreview .suggestionItem")).forEach(function(el) {
-			el.addEventListener("mouseover", function (event) {
+			el.addEventListener("ui5-mouseover", function (event) {
 				const targetRef = event.detail.targetRef;
 
 				quickViewCard.close();
 				quickViewCard.showAt(targetRef, true /* preventInitialFocus */);
 			});
 
-			el.addEventListener("mouseout", function (event) {
+			el.addEventListener("ui5-mouseout", function (event) {
 			});
 		});
 
@@ -142,7 +143,7 @@
 		/*
 		 * Restore the focus to the input on ESC
 		 */
-		quickViewCard.addEventListener("before-close", async event => {
+		quickViewCard.addEventListener("ui5-before-close", async event => {
 			const esc = event.detail.escPressed;
 
 			if (esc) {

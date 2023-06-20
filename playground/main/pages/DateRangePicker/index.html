@@ -3,7 +3,6 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>DateRangePicker test page</title>
 
 	<script>
@@ -11,7 +10,7 @@
 	</script>
 
 
-	<script src="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/bundle.esm.js" type="module"></script>
+	
 
 
 	<script data-id="sap-ui-config" type="application/json">
@@ -23,12 +22,15 @@
 		}
 	</script>
 
-	<link rel="stylesheet" type="text/css" href="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/styles/DateRangePicker.css">
+	
+  <script type="module" crossorigin src="../../../../assets/bundle.common.c36cae07.js"></script>
+  <link rel="stylesheet" href="../../../../assets/DateRangePicker.0e44d4a3.css">
 </head>
 <body class="daterangepicker1auto">
 	<div style='width:500px;'>
 		<div>
 			<label id='labelChange'>0</label>
+			<label id='labelDate'></label>
 		</div>
 		<ui5-daterange-picker id="daterange-picker1"></ui5-daterange-picker>
 		<h3>daterange-picker with delimiter @</h3>
@@ -47,11 +49,18 @@
 		<ui5-daterange-picker id="daterange-picker6" format-pattern="yyyy-MM-dd"></ui5-daterange-picker>
 		<h3>DateRange Picker with one date selected as first & last</h3>
 		<ui5-daterange-picker id="daterange-picker7" value="Aug 20, 2020 - Aug 20, 2020"></ui5-daterange-picker>
+		<h3>DateRange Picker with no format pattern & min-max dates in ISO format</h3>
+		<ui5-daterange-picker id="daterange-picker8" min-date="2023-02-10" max-date="2023-07-22"></ui5-daterange-picker>
+
 
 	</div>
 	<script>
 		document.getElementById('daterange-picker1').addEventListener('ui5-change', function(e) {
 			document.getElementById("labelChange").innerHTML = Number(document.getElementById("labelChange").innerHTML) + 1;
+		});
+
+		document.getElementById('daterange-picker4').addEventListener('ui5-change', function(e) {
+			document.getElementById("labelDate").innerHTML = e.detail.value;
 		});
 	</script>
 </body>

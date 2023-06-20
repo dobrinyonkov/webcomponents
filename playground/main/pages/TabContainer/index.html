@@ -4,7 +4,6 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Tab Container</title>
 
 	<script data-ui5-config type="application/json">
@@ -13,12 +12,10 @@
 			"language": "EN"
 		}
 	</script>
-
-
-	<script src="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/bundle.esm.js" type="module"></script>
-
-
-	<link rel="stylesheet" type="text/css" href="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/styles/TabContainer.css">
+	
+	
+  <script type="module" crossorigin src="../../../../assets/bundle.common.c36cae07.js"></script>
+  <link rel="stylesheet" href="../../../../assets/TabContainer.718b814c.css">
 </head>
 
 <body class="tabcontainer1auto">
@@ -27,6 +24,7 @@
 		<h1 class="header-title">ui5-tabcontainer</h1>
 	</header>
 	<ui5-toggle-button id="densityToggle">Compact</ui5-toggle-button>
+
 	<section>
 		<h2>Nested Tabs</h2>
 		<ui5-tabcontainer id="tabContainerNestedTabs" collapsed>
@@ -128,7 +126,7 @@
 					<ui5-tab slot="subTabs" text="Fourteen 1.1">1.1</ui5-tab>
 				</ui5-tab>
 				<ui5-tab slot="subTabs" text="Fourteen 2">2
-					<ui5-tab  slot="subTabs" text="Fourteen 2.1">2.1
+					<ui5-tab slot="subTabs" text="Fourteen 2.1">2.1
 						<ui5-tab slot="subTabs" text="Fourteen 2.1.1">2.1.1</ui5-tab>
 					</ui5-tab>
 					<ui5-tab slot="subTabs" text="Fourteen 2.2">2.2</ui5-tab>
@@ -235,11 +233,12 @@
 
 	<section>
 		<h2>Tab Container</h2>
+		<ui5-checkbox text="prevent tab-select event" id="cbPrevent"></ui5-checkbox>
 		<ui5-tabcontainer id="tabContainer1" fixed collapsed>
 			<ui5-tab stable-dom-ref="products-ref" text="Products" additional-text="125"></ui5-tab>
 			<ui5-tab-separator></ui5-tab-separator>
 			<ui5-tab icon="sap-icon://menu2" text="Laptops" design="Positive" additional-text="25"></ui5-tab>
-			<ui5-tab icon="sap-icon://menu" text="Monitors" selected design="Critical" additional-text="45"></ui5-tab>
+			<ui5-tab icon="sap-icon://menu" text="Monitors" selected design="Critical"></ui5-tab>
 			<ui5-tab icon="sap-icon://menu2" text="Keyboards" design="Negative" additional-text="15"></ui5-tab>
 			<ui5-tab icon="sap-icon://menu2" disabled text="Disabled" design="Negative" additional-text="40"></ui5-tab>
 			<ui5-tab icon="sap-icon://menu2" text="Neutral" design="Neutral" additional-text="40"></ui5-tab>
@@ -317,13 +316,13 @@
 			<ui5-tab text="Availability">
 				<ui5-button>Button 2</ui5-button>
 			</ui5-tab>
-			<ui5-tab text="Date of Expire">
+			<ui5-tab text="Expiration Date">
 				<ui5-button>Button 3</ui5-button>
 			</ui5-tab>
 			<ui5-tab text="Date of Delivery">
 				<ui5-button>Button 4</ui5-button>
 			</ui5-tab>
-			<ui5-tab text="Date of Manifacture">
+			<ui5-tab text="Date of Manufacture">
 				<ui5-button>Button 4</ui5-button>
 			</ui5-tab>
 			<ui5-tab text="Value">
@@ -332,10 +331,10 @@
 			<ui5-tab text="Price">
 				<ui5-button>Button 4</ui5-button>
 			</ui5-tab>
-			<ui5-tab text="Net profit">
+			<ui5-tab text="Net Profit">
 				<ui5-button>Button 4</ui5-button>
 			</ui5-tab>
-			<ui5-tab text="Company name">
+			<ui5-tab text="Company Name">
 				<ui5-button>Button 4</ui5-button>
 			</ui5-tab>
 			<ui5-tab text="Warehouse Location">
@@ -510,44 +509,44 @@
 		<h3>TabContainer in Compact</h3>
 		<div>
 			<ui5-tabcontainer>
-			<ui5-tab text="Products ID">
-				<ui5-button>Button 11</ui5-button>
-				<ui5-button>Button 12</ui5-button>
-			</ui5-tab>
-			<ui5-tab text="Availability">
-				<ui5-button>Button 2</ui5-button>
-			</ui5-tab>
-			<ui5-tab text="Date of Expire">
-				<ui5-button>Button 3</ui5-button>
-			</ui5-tab>
-			<ui5-tab text="Date of Delivery">
-				<ui5-button>Button 4</ui5-button>
-			</ui5-tab>
-			<ui5-tab text="Date of Manifacture">
-				<ui5-button>Button 4</ui5-button>
-			</ui5-tab>
-			<ui5-tab text="Value">
-				<ui5-button>Button 4</ui5-button>
-			</ui5-tab>
-			<ui5-tab text="Price">
-				<ui5-button>Button 4</ui5-button>
-			</ui5-tab>
-			<ui5-tab text="Net profit">
-				<ui5-button>Button 4</ui5-button>
-			</ui5-tab>
-			<ui5-tab text="Company name">
-				<ui5-button>Button 4</ui5-button>
-			</ui5-tab>
-			<ui5-tab text="Warehouse Location">
-				<ui5-button>Button 4</ui5-button>
-			</ui5-tab>
-			<ui5-tab text="Address">
-				<ui5-button>Button 4</ui5-button>
-			</ui5-tab>
-			<ui5-tab text="Country">
-				<ui5-button>Button 4</ui5-button>
-			</ui5-tab>
-		</ui5-tabcontainer>
+				<ui5-tab text="Products ID">
+					<ui5-button>Button 11</ui5-button>
+					<ui5-button>Button 12</ui5-button>
+				</ui5-tab>
+				<ui5-tab text="Availability">
+					<ui5-button>Button 2</ui5-button>
+				</ui5-tab>
+				<ui5-tab text="Expiration Date">
+					<ui5-button>Button 3</ui5-button>
+				</ui5-tab>
+				<ui5-tab text="Date of Delivery">
+					<ui5-button>Button 4</ui5-button>
+				</ui5-tab>
+				<ui5-tab text="Date of Manufacture">
+					<ui5-button>Button 4</ui5-button>
+				</ui5-tab>
+				<ui5-tab text="Value">
+					<ui5-button>Button 4</ui5-button>
+				</ui5-tab>
+				<ui5-tab text="Price">
+					<ui5-button>Button 4</ui5-button>
+				</ui5-tab>
+				<ui5-tab text="Net Profit">
+					<ui5-button>Button 4</ui5-button>
+				</ui5-tab>
+				<ui5-tab text="Company Name">
+					<ui5-button>Button 4</ui5-button>
+				</ui5-tab>
+				<ui5-tab text="Warehouse Location">
+					<ui5-button>Button 4</ui5-button>
+				</ui5-tab>
+				<ui5-tab text="Address">
+					<ui5-button>Button 4</ui5-button>
+				</ui5-tab>
+				<ui5-tab text="Country">
+					<ui5-button>Button 4</ui5-button>
+				</ui5-tab>
+			</ui5-tabcontainer>
 
 			<ui5-tabcontainer id="tabContainer1Compact" fixed collapsed>
 				<ui5-tab stable-dom-ref="products-ref" text="Products" additional-text="125"></ui5-tab>
@@ -676,6 +675,36 @@
 	</section>
 
 	<section>
+		<h2>Background design</h2>
+		<div class="design-options">
+			<div role="radiogroup" id="radioGroup-headerDesign" class="radio-button-group">
+				<ui5-label>Header Background</ui5-label>
+				<ui5-radio-button text="Solid" checked name="Group1"></ui5-radio-button>
+				<ui5-radio-button text="Transparent" name="Group1"></ui5-radio-button>
+				<ui5-radio-button text="Translucent" name="Group1"></ui5-radio-button>
+			</div>
+
+			<div role="radiogroup2" id="radioGroup-contentDesign" class="radio-button-group">
+				<ui5-label>Content Background</ui5-label>
+				<ui5-radio-button text="Solid" name="Group2"></ui5-radio-button>
+				<ui5-radio-button text="Transparent" checked name="Group2"></ui5-radio-button>
+				<ui5-radio-button text="Translucent" name="Group2"></ui5-radio-button>
+			</div>
+		</div>
+		<ui5-tabcontainer id="tabContainerBackgroundDesign" header-background-design="Solid" content-background-design="Transparent">
+			<ui5-tab text="Tab 1" selected>
+				<ui5-label>Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita voluptates accusamus est quibusdam inventore ipsam?</ui5-label>
+			</ui5-tab>
+			<ui5-tab text="Tab 2">
+				<ui5-label>Accusamus minus aperiam sunt ipsam eos quos et maxime facilis tempora neque ratione nemo laborum expedita aliquid officiis nisi, necessitatibus quasi distinctio?</ui5-label>
+			</ui5-tab>
+			<ui5-tab text="Tab 3">
+				<ui5-label>Dolores totam perferendis numquam incidunt obcaecati, id quo at alias rem deserunt praesentium repellat ipsum commodi consequuntur veniam et ducimus animi qui nobis accusantium tenetur eveniet culpa non!</ui5-label>
+			</ui5-tab>
+		</ui5-tabcontainer>
+	</section>
+
+	<section>
 		<h2>Text only Start And End Overflow Custom Overflow Buttons</h2>
 		<ui5-tabcontainer id="tabContainerCustomOverflowButtons" tabs-overflow-mode="StartAndEnd" collapsed fixed>
 				<ui5-button slot="startOverflowButton" id="startOverflowButton">Start</ui5-button>
@@ -726,17 +755,149 @@
 				<ui5-button>Button 1</ui5-button>
 			</ui5-tab>
 		</ui5-tabcontainer>
+
+		<section>
+			<ui5-title>Select tabs programmatically</ui5-title>
+			<ui5-tabcontainer id="tcSmall" style="width: 200px;">
+				<ui5-tab id="firstTab" text="First tab">
+					<ui5-button>Button 1</ui5-button>
+				</ui5-tab>
+				<ui5-tab text="Second tab">
+					<ui5-button>Button 1</ui5-button>
+				</ui5-tab>
+				<ui5-tab text="Third tab" selected>
+					<ui5-button>Button 1</ui5-button>
+				</ui5-tab>
+				<ui5-tab text="Fourth tab">
+					<ui5-button>Button 1</ui5-button>
+				</ui5-tab>
+				<ui5-tab text="Fifth tab">
+					<ui5-button>Button 1</ui5-button>
+				</ui5-tab>
+				<ui5-tab text="Sixth tab">
+					<ui5-button>Button 1</ui5-button>
+				</ui5-tab>
+				<ui5-tab id="nestedTabParent" text="Seventh tab">
+					<ui5-button>Button 1</ui5-button>
+
+					<ui5-tab id="nestedTab" slot="subTabs" text="Nested tab">
+						<ui5-button>Button 1</ui5-button>
+					</ui5-tab>
+				</ui5-tab>
+				<ui5-tab id="lastTab" text="Eighth tab">
+					<ui5-button>Button 1</ui5-button>
+				</ui5-tab>
+			</ui5-tabcontainer>
+
+			<ui5-button id="selectFirst">Select First Tab</ui5-button>
+			<ui5-button id="selectLast">Select Last Tab</ui5-button>
+			<ui5-button id="selectNested">Select a Nested Tab</ui5-button>
+		</section>
+		<section>
+			<ui5-title>Empty Tab Container</ui5-title>
+			<ui5-tabcontainer id="tabContainerEmpty">
+			</ui5-tabcontainer>
+		</section>
+		<section>
+			<h3>Add new selected tab programmatically</h3>
+			<ui5-tabcontainer id="tabContainerAddTabsProgrammatically">
+				<ui5-tab text="Tab 0" selected></ui5-tab>
+				<ui5-tab text="Tab 1"></ui5-tab>
+			</ui5-tabcontainer>
+			<ui5-button id="buttonAddTabs">add tabs</ui5-button>
+		</section>
+
 	</section>
 
 	<script>
-		document.getElementById("tabContainer1").addEventListener("ui5-tabSelect", function (event) {
+		document.getElementById("tabContainer1").addEventListener("ui5-tab-select", async function (event) {
 			result.innerHTML = event.detail.tab.text;
 			resultIdx.innerHTML = event.detail.tabIndex;
 		});
 
-		document.getElementById("densityToggle").addEventListener("click", function (event) {
+		let preventTabSelect = false;
+		document.getElementById("cbPrevent").addEventListener("ui5-change", event => {
+			preventTabSelect = event.target.checked;
+		});
+
+		document.getElementById("tabContainer1").addEventListener("ui5-tab-select", event => {
+			if (preventTabSelect) {
+				event.preventDefault();
+			}
+		});
+
+		document.getElementById("densityToggle").addEventListener("ui5-click", function (event) {
 			document.body.classList.toggle("sapUiSizeCompact")
+		});
+
+		const selectFirstTabBtn = document.getElementById("selectFirst");
+		const selectLastTabBtn = document.getElementById("selectLast");
+		const selectNestedTabBtn = document.getElementById("selectNested");
+
+		function walk(tabs, callback) {
+			[...tabs].forEach(tab => {
+				callback(tab);
+				if (tab.subTabs) {
+					walk(tab.subTabs, callback);
+			}});
+		};
+
+		function getTabSelectorCallback(target) {
+			return (tab) => tab.selected = tab === target;
+		}
+
+		selectFirstTabBtn.addEventListener("click", () => {
+			const tabContainer = document.getElementById("tcSmall");
+			const firstTab = tabContainer.querySelector("#firstTab");
+
+			walk(tabContainer.items, getTabSelectorCallback(firstTab));
 		})
+
+		selectLastTabBtn.addEventListener("click", () => {
+			const tabContainer = document.getElementById("tcSmall");
+			const lastTab = tabContainer.querySelector("#lastTab");
+
+			walk(tabContainer.items, getTabSelectorCallback(lastTab));
+		});
+
+		selectNestedTabBtn.addEventListener("click", () => {
+			const tabContainer = document.getElementById("tcSmall");
+			const nestedTab = tabContainer.querySelector("#nestedTab");
+
+			walk(tabContainer.items, getTabSelectorCallback(nestedTab));
+		});
+
+		const radioGroupHeaderDesign = document.getElementById("radioGroup-headerDesign");
+		const radioGroupContentDesign = document.getElementById("radioGroup-contentDesign");
+		const tabContainerBackgroundDesign = document.getElementById("tabContainerBackgroundDesign");
+		radioGroupHeaderDesign.addEventListener("change", function (e) {
+			tabContainerBackgroundDesign.headerBackgroundDesign = e.target.text;
+		});
+
+		radioGroupContentDesign.addEventListener("change", function (e) {
+			tabContainerBackgroundDesign.contentBackgroundDesign = e.target.text;
+		});
+
+		let tabIndex = 1;
+		document.getElementById("buttonAddTabs").addEventListener("click", function () {
+			const tabcontainer = document.getElementById("tabContainerAddTabsProgrammatically");
+
+			tabcontainer.items.forEach(item => (item.selected = false));
+
+			function addTab(selected = false) {
+				tabcontainer.appendChild(
+					Object.assign(document.createElement("ui5-tab"), {
+						text: `Tab ${++tabIndex}`,
+						selected
+					})
+				);
+			}
+
+			addTab(true);
+			addTab();
+			addTab();
+		});
+
 	</script>
 </body>
 

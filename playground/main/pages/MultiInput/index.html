@@ -4,16 +4,17 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>ui5-multi-input</title>
 
 
-	<script src="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/bundle.esm.js" type="module"></script>
+	
 
 
 	<script>// delete Document.prototype.adoptedStyleSheets;</script>
 
-	<link rel="stylesheet" type="text/css" href="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/styles/MultiInput.css">
+	
+  <script type="module" crossorigin src="../../../../assets/bundle.common.c36cae07.js"></script>
+  <link rel="stylesheet" href="../../../../assets/MultiInput.715aafd5.css">
 </head>
 
 <body class="multiinput1auto ui5-content-density-compact" >
@@ -43,9 +44,21 @@
 		<br>
 
 		<h1 class="sample-container-title">Multi Input with 1 token</h1>
-		<ui5-multi-input>
+		<ui5-multi-input id="one-token">
 			<ui5-token slot="tokens" text="Amet"></ui5-token>
 		</ui5-multi-input>
+
+		<br>
+		<br>
+
+		<h1 class="sample-container-title">Readonly Multi Input with tokens</h1>
+		<ui5-multi-input id="readonly-mi" readonly>
+			<ui5-token slot="tokens" text="Amet"></ui5-token>
+			<ui5-token slot="tokens" text="Dolor"></ui5-token>
+			<ui5-token slot="tokens" text="Lorem"></ui5-token>
+			<ui5-token slot="tokens" text="Ipsum"></ui5-token>
+		</ui5-multi-input>
+
 
 		<br>
 		<br>
@@ -197,8 +210,8 @@
 
 		<h1 class="sample-container-title">Multi Input with 2 tokens</h1>
 		<ui5-multi-input id="two-tokens" value="abc">
-			<ui5-token slot="tokens" id="firstToken" text="a"></ui5-token>
-			<ui5-token slot="tokens" id="secondToken" text="b"></ui5-token>
+			<ui5-token slot="tokens" id="firstToken" text="aa"></ui5-token>
+			<ui5-token slot="tokens" id="secondToken" text="bb"></ui5-token>
 		</ui5-multi-input>
 		<br>
 		<br>
@@ -247,6 +260,13 @@
 	</div>
 
 	<div class="sample-container">
+		<ui5-multi-input show-suggestions id="token-unique" show-value-help-icon style="width: 50%">
+			<div slot="valueStateMessage" id="value-state-wrapper">Token is already in the list</div>
+			<ui5-suggestion-item text="Argentina"></ui5-suggestion-item>
+		</ui5-multi-input>
+	</div>
+
+	<div class="sample-container">
 		<h1>Test value-help-trigger with F4 and Alt + ArrowUp/Down</h1>
 
 		<ui5-multi-input id="multi-with-value-help-icon" show-value-help-icon>
@@ -263,6 +283,33 @@
 			<ui5-token slot="tokens" text="Not a menu">
 			</ui5-token>
 		</ui5-multi-input>
+	</div>
+
+	<div class="sample-container">
+
+		<h1 class="sample-container-title">Eventing</h1>
+
+		<ui5-multi-input id="mi-event">
+			<ui5-token slot="tokens" text="ea"></ui5-token>
+			<ui5-token slot="tokens" text="eu"></ui5-token>
+			<ui5-token slot="tokens" text="Incididunt"></ui5-token>
+			<ui5-token slot="tokens" text="laboris"></ui5-token>
+			<ui5-token slot="tokens" text="ipsum"></ui5-token>
+		</ui5-multi-input>
+
+		<br>
+		<span>Event:</span>
+		<br>
+		<input id="event-type">
+		<br>
+		<span>Count:</span>
+		<br>
+		<input id="event-count">
+		<br>
+		<span>Event target text:</span>
+		<br>
+		<input id="event-target-text">
+
 	</div>
 
 	<script>
@@ -346,6 +393,58 @@
 
 		document.getElementById("suggestion-token").addEventListener("ui5-token-delete", handleTokenDelete);
 		document.getElementById("two-tokens").addEventListener("ui5-token-delete", handleTokenDelete);
+		document.getElementById("readonly-mi").addEventListener("ui5-token-delete", handleTokenDelete);
+
+		const handleTokenDelete2 = (event) => {
+			const eventType = document.getElementById("event-type");
+			const eventCount = document.getElementById("event-count");
+			const eventTargetText = document.getElementById("event-target-text");
+
+			eventType.value = event.type;
+			eventTargetText.value = event.detail.token.text;
+
+			if (!eventCount.value || isNaN(eventCount.value)) {
+				eventCount.value = 1;
+			} else {
+				eventCount.value = parseInt(eventCount.value) + 1;
+			}
+		}
+		document.getElementById("mi-event").addEventListener("ui5-token-delete", handleTokenDelete2);
+
+		document.getElementById("token-unique").addEventListener("ui5-token-delete", function (event) {
+				const token = event.detail?.token;
+				token && token.remove();
+			});
+		
+			document.getElementById("token-unique").addEventListener("ui5-change", function (event) {
+				if (!event.target.value) {
+					return;
+				}
+		
+				var isDuplicate = event.target.tokens.some(function(token) {
+					return token.text === event.target.value
+				});
+		
+				if (isDuplicate) {
+					event.target.valueState = "Error";
+		
+					setTimeout(function () {
+						event.target.valueState = "None";
+					}, 2000);
+		
+					return;
+				}
+		
+				event.target.appendChild(createTokenFromText(event.target.value));
+		
+				event.target.value = "";
+			});
+
+		document
+			.getElementById("token-unique")
+			.addEventListener("ui5-value-help-trigger", function (event) {
+				event.target.openPicker();
+			});
 	</script>
 </body>
 

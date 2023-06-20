@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<meta charset="utf-8">
 	<title>ui5-list / ui5-li</title>
 
 
-	<script src="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/bundle.esm.js" type="module"></script>
+	
 
 
-<link rel="stylesheet" type="text/css" href="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/styles/List_test_page.css">
+
+  <script type="module" crossorigin src="../../../../assets/bundle.common.c36cae07.js"></script>
+  <link rel="stylesheet" href="../../../../assets/List_test_page.bd80d576.css">
 </head>
 
 <body class="list_test_page1auto">
@@ -49,7 +50,24 @@
 	</ui5-list>
 	<ui5-input id="itemClickResultField" placeholder="itemClick result"></ui5-input>
 	<ui5-input id="selectionChangeResultField" placeholder="selectionChange result"></ui5-input>
+	<ui5-input id="selectionChangeResultFieldRadio" placeholder="selectionComponentPressed result "></ui5-input>
 	<ui5-input id="selectionChangeResultPreviousItemsParameter" placeholder="selectionChange previousSelection result"></ui5-input>
+
+	<br><br><br>
+
+	<br>
+	<ui5-list id="listPreventSelectionChangeSingleSelect" mode="SingleSelect" header-text="Prevent ui5-selection-change on SingleSelect">
+		<ui5-li id="country1" >Argentina</ui5-li>
+		<ui5-li id="country2" >Bulgaria</ui5-li>
+		<ui5-li id="country3" selected >China</ui5-li>
+	</ui5-list>
+
+	<br/>
+	<ui5-list id="listPreventSelectionChangeMultiSelect" mode="MultiSelect" header-text="Prevent ui5-selection-change on MultiSelect">
+		<ui5-li id="country1" >Argentina</ui5-li>
+		<ui5-li id="country2" selected >Bulgaria</ui5-li>
+		<ui5-li id="country3" selected >China</ui5-li>
+	</ui5-list>
 
 	<br><br><br>
 
@@ -91,22 +109,22 @@
 	<br><br><br>
 	<ui5-list id="list1" header-text="API: GroupHeaderListItem">
 		<ui5-li-groupheader>New Items</ui5-li-groupheader>
-		<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-1000.jpg" >Laptop HP</ui5-li>
-		<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-1010.jpg" >Laptop Lenovo</ui5-li>
-		<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-1022.jpg" >IPhone 3</ui5-li>
+		<ui5-li image="./img/HT-1000.jpg" >Laptop HP</ui5-li>
+		<ui5-li image="./img/HT-1010.jpg" >Laptop Lenovo</ui5-li>
+		<ui5-li image="./img/HT-1022.jpg" >IPhone 3</ui5-li>
 
 		<ui5-li-groupheader>Discounted Items</ui5-li-groupheader>
-		<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-1030.jpg"  icon="navigation-right-arrow">HP Monitor 24</ui5-li>
-		<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-2026.jpg"  icon="navigation-right-arrow">Audio cabel</ui5-li>
-		<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-2002.jpg"  icon="navigation-right-arrow">DVD set</ui5-li>
+		<ui5-li image="./img/HT-1030.jpg"  icon="navigation-right-arrow">HP Monitor 24</ui5-li>
+		<ui5-li image="./img/HT-2026.jpg"  icon="navigation-right-arrow">Audio cabel</ui5-li>
+		<ui5-li image="./img/HT-2002.jpg"  icon="navigation-right-arrow">DVD set</ui5-li>
 	</ui5-list>
 
 	<label id="lblResult">0</label>
 
 	<ui5-list id="listWithDesc">
-		<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-1000.jpg"  description="2GB RAM, Intel i7 4.5 GHz">Laptop HP</ui5-li>
-		<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-2026.jpg"  description="2GB RAM, Intel i7 4.5 GHz">Audio cabel</ui5-li>
-		<ui5-li image="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/img/HT-2002.jpg"  description="2GB RAM, Intel i7 4.5 GHz">DVD set</ui5-li>
+		<ui5-li image="./img/HT-1000.jpg"  description="2GB RAM, Intel i7 4.5 GHz">Laptop HP</ui5-li>
+		<ui5-li image="./img/HT-2026.jpg"  description="2GB RAM, Intel i7 4.5 GHz">Audio cabel</ui5-li>
+		<ui5-li image="./img/HT-2002.jpg"  description="2GB RAM, Intel i7 4.5 GHz">DVD set</ui5-li>
 	</ui5-list>
 
 	<ui5-list id="listMultiSel" mode="MultiSelect">
@@ -141,6 +159,19 @@
 	</ui5-list>
 	<ui5-button id="afterBtn">After button</ui5-button>
 
+	<ui5-list id="focusAfterList">
+		<ui5-li>Test</ui5-li>
+		<ui5-li class="breadcrumbsItem">
+			<div style="max-width: 20px">
+				<ui5-breadcrumbs>
+					<ui5-breadcrumbs-item href="#">Link1</ui5-breadcrumbs-item>
+					<ui5-breadcrumbs-item>Location</ui5-breadcrumbs-item>
+				</ui5-breadcrumbs>
+			</div>
+		</ui5-li>
+	</ui5-list>
+	<ui5-button id="afterFocusListBtn">After button</ui5-button>
+
 	<ui5-list id="no-data-list" header-text="API: noDataText" separators="None" no-data-text="No Data Available"></ui5-list>
 
 	<ui5-list
@@ -155,6 +186,21 @@
 		</div>
 
 	</ui5-list>
+
+	<br/><br/>
+
+	<ui5-list>
+		<ui5-li id="imageContent-slot-li"> Avatar inside imageContent slot
+			<div slot="imageContent">
+				<ui5-avatar id="imageContent-slot-avatar">
+					<img src="../../../../assets/woman_avatar_5.7316a316.png" alt="Woman image">
+				</ui5-avatar>
+			</div>
+		</ui5-li>
+
+	</ui5-list>
+
+	<br/><br/>
 
 	<ui5-list id="inactiveMultiSelect" header-text="API: ListItem type='Inactive'" mode="MultiSelect">
 		<ui5-li type="Inactive">Inactive item</ui5-li>
@@ -223,7 +269,7 @@
 	<ui5-responsive-popover id="popup" placement-type="Bottom" class="list_test_page5auto">
 		<ui5-list>
 			<div slot="header">
-				<ui5-button id="btnInHeader" icon="refresh" />
+				<ui5-button id="btnInHeader" icon="refresh"></ui5-button>
 			</div>
 		</ui5-list>
 
@@ -236,6 +282,13 @@
 		<ui5-li>Laptop HP</ui5-li>
 		<ui5-li>Audio cabel</ui5-li>
 		<ui5-li>DVD set</ui5-li>
+	</ui5-list>
+
+	<ui5-list id="listWithAnchorTag">
+		<ui5-li>
+			<a id="linkInListItem" tabindex="-1" href="https://sap.github.io/ui5-webcomponents/playground/components" rel="noopener" target="_self">
+				Link1</a>
+		</ui5-li>
 	</ui5-list>
 
 	<script>
@@ -251,34 +304,35 @@
 			document.querySelector("#lblResult").innerHTML = e.detail.item.innerHTML + ": " + ++itemDeleteCounter;
 		}
 
-		list1.addEventListener("ui5-itemDelete", deleteItemHandler);
+		list1.addEventListener("ui5-item-delete", deleteItemHandler);
 
-		listEvents.addEventListener("ui5-itemClick", function (event) {
+		listEvents.addEventListener("ui5-item-click", function (event) {
 			itemClickCounter += 1;
 			itemClickResultField.value = itemClickCounter;
 		});
 
-		listEvents.addEventListener("ui5-selectionChange", function (event) {
+		listEvents.addEventListener("ui5-selection-change", function (event) {
 			selectionChangeCounter += 1;
 			selectionChangeResultField.value = selectionChangeCounter;
+			selectionChangeResultFieldRadio.value = event.detail.selectionComponentPressed;
 		});
 
-		listEvents.addEventListener("ui5-selectionChange", function(event) {
+		listEvents.addEventListener("ui5-selection-change", function(event) {
 			selectionChangeResultPreviousItemsParameter.value = event.detail.previouslySelectedItems[0].id;
 		})
 
-		listEvents2.addEventListener("ui5-itemClick", function (event) {
+		listEvents2.addEventListener("ui5-item-click", function (event) {
 			itemClickCounter2 += 1;
 			itemClickResultField2.value = itemClickCounter2;
 		});
 
-		listEvents2.addEventListener("ui5-selectionChange", function (event) {
+		listEvents2.addEventListener("ui5-selection-change", function (event) {
 			selectionChangeCounter2 += 1;
 			selectionChangeResultField2.value = selectionChangeCounter2;
 		});
 
 
-		listMultiSel.addEventListener("ui5-selectionChange", function(event) {
+		listMultiSel.addEventListener("ui5-selection-change", function(event) {
 			fieldMultiSelResult.value = event.detail.selectionComponentPressed;
 		})
 
@@ -291,9 +345,17 @@
 			emptyItem.textContent = "updated";
 		});
 
-		listPreventClickEvent.addEventListener("ui5-itemClick", function (event) {
+		listPreventClickEvent.addEventListener("ui5-item-click", function (event) {
 			event.preventDefault();
 			itemClickPreventedResultField.value = event.detail.item.id;
+		});
+
+		listPreventSelectionChangeSingleSelect.addEventListener("ui5-selection-change", function (event) {
+			event.preventDefault();
+		});
+
+		listPreventSelectionChangeMultiSelect.addEventListener("ui5-selection-change", function (event) {
+			event.preventDefault();
 		});
 
 		var loadMoreCounter = 0;
@@ -306,7 +368,7 @@
 			loadMoreResult.value= ++loadMoreCounter;
 		});
 
-		detailListItem.addEventListener("ui5-detailClick", function(e) {
+		detailListItem.addEventListener("ui5-detail-click", function(e) {
 			detailPressCounter.innerHTML = parseInt(detailPressCounter.innerHTML) + 1;
 		});
 

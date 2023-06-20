@@ -4,7 +4,6 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>DateTimePicker Test Page</title>
 
     <script>
@@ -12,10 +11,12 @@
     </script>
 
 
-	<script src="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/bundle.esm.js" type="module"></script>
+	
 
 
-	<link rel="stylesheet" type="text/css" href="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/styles/DateTimePicker.css">
+	
+  <script type="module" crossorigin src="../../../../assets/bundle.common.c36cae07.js"></script>
+  <link rel="stylesheet" href="../../../../assets/DateTimePicker.81c1bacc.css">
 </head>
 
 <body class="datetimepicker1auto">
@@ -56,8 +57,8 @@
 
 		<br><ui5-label>yyyy-MM-dd-hh:mm:ss aa</ui5-label><br>
 		<ui5-datetime-picker
+			id="dtPreventDefault"
 			format-pattern="yyyy-MM-dd-hh:mm:ss aa"
-			value="2020-04-13-04:16:16 AM"
 		></ui5-datetime-picker>
 
 		<br>
@@ -82,6 +83,15 @@
 		<ui5-datetime-picker
 			format-pattern="dd/MM/yyyy"
 			value="Apr 10, 2020"
+		></ui5-datetime-picker>
+	</section>
+
+	<section>
+		<ui5-title wrapping-type="Normal">DateTimePicker with no format pattern & min-max dates in ISO format</ui5-title><br>
+		<ui5-datetime-picker
+				id="dtMinMaxDatesISO"
+				min-date="2023-05-01"
+				max-date="2023-05-31"
 		></ui5-datetime-picker>
 	</section>
 
@@ -126,9 +136,8 @@
 	<ui5-datetime-picker
 			id="dtTest12PM"
 			format-pattern="dd/MM/yyyy, hh:mm:ss aa"
-			value="13/04/2020, 03:16:16 AM"
-		></ui5-datetime-picker>
-	</section>
+			value="13/04/2020, 03:16:16 AM">
+		</ui5-datetime-picker>
 
 	<section>
 		<ui5-title wrapping-type="Normal">DateTimePicker states</ui5-title>
@@ -167,7 +176,11 @@
 		var counter = 0;
 		dt1.addEventListener("ui5-change", function(event) {
 			input1.value = ++counter;
-			input2.value = "{ value: " + dt1.value + " , valid: " + event.detail.valid + " }";
+			input2.value = "{ value: " + event.detail.value + " , valid: " + event.detail.valid + " }";
+		});
+
+		dtPreventDefault.addEventListener("ui5-change", function(event) {
+			event.preventDefault();
 		});
 
 		var counter2 = 0;

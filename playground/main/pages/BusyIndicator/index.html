@@ -2,7 +2,6 @@
 <html>
 
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<meta charset="utf-8">
 
@@ -18,10 +17,12 @@
 	</script>
 
 
-	<script src="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/bundle.esm.js" type="module"></script>
+	
 
 
-<link rel="stylesheet" type="text/css" href="https://sap.github.io/ui5-webcomponents/assets/js/ui5-webcomponents/main/styles/BusyIndicator.css">
+
+  <script type="module" crossorigin src="../../../../assets/bundle.common.c36cae07.js"></script>
+  <link rel="stylesheet" href="../../../../assets/BusyIndicator.26348187.css">
 </head>
 
 <body class="busyindicator1auto">
@@ -131,12 +132,12 @@
 				<ui5-title>Dynamic tree</ui5-title>
 			</div>
 
+			<ui5-tree-item text="Has no children at all"></ui5-tree-item>
+
 			<ui5-tree-item text="Has preloaded children">
 				<ui5-tree-item text="Child 1"></ui5-tree-item>
 				<ui5-tree-item text="Child 2"></ui5-tree-item>
 			</ui5-tree-item>
-
-			<ui5-tree-item text="Has no children at all"></ui5-tree-item>
 
 			<ui5-tree-item id="dynamicNode" text="Has children, but not yet loaded" has-children></ui5-tree-item>
 		</ui5-tree>
@@ -186,6 +187,29 @@
 		<ui5-button id="dialog-delayed-indicator-focus-stop">focus stop</ui5-button>
 	</ui5-dialog>
 
+	<br>
+	<br>
+    <div style="display: flex;">
+      <div style="border: 1px solid black;">
+        <ui5-busy-indicator active style="height: 100%;">
+          <div style="background-color: orange; width: 200px; height: 100%;">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis
+            quasi, minus ullam aut eaque dolorem eos rem itaque unde, veritatis
+            consequuntur numquam! Repellat sunt, dignissimos fugit voluptate
+            animi repudiandae placeat?
+          </div>
+        </ui5-busy-indicator>
+      </div>
+      <div style="border: 1px solid black;">
+        <ui5-busy-indicator id="busy-indicator-height"  active style="height: 100%;">
+          <div style="background-color: orange; width: 200px; height: 100%;">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+          </div>
+        </ui5-busy-indicator>
+      </div>
+    </div>
+    <br />
+
 	<script>
 		document.getElementById("fetch-btn").addEventListener("click", function(event) {
 			var busyIndicator = document.getElementById("busy-container");
@@ -210,7 +234,7 @@
 		var input = document.getElementById("tree-input");
 		var inputValue = 0;
 
-		dynamicTree.addEventListener("ui5-itemToggle", function(event) {
+		dynamicTree.addEventListener("ui5-item-toggle", function(event) {
 			var item = event.detail.item; // get the node that is toggled
 			console.log(item);
 			// Only for the dynamic node, only when it's empty
@@ -227,7 +251,7 @@
 			}
 		});
 
-		dynamicTree.addEventListener("ui5-itemClick", function(event) {
+		dynamicTree.addEventListener("ui5-item-click", function(event) {
 			var item = event.detail.item; // get the node that is toggled
 
 			// Only for the dynamic node, only when it's empty
