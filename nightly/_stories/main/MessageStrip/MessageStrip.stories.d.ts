@@ -1,0 +1,11 @@
+import type { Meta, StoryFn } from "@storybook/web-components";
+import type { StoryArgsSlots } from "./argTypes.js";
+import type { UI5StoryArgs } from "../../../types.js";
+import MessageStrip from "@ui5/webcomponents/dist/MessageStrip.js";
+declare const _default: Meta<MessageStrip>;
+export default _default;
+export declare const Basic: UI5StoryArgs<MessageStrip, StoryArgsSlots>;
+export declare const MessageStripWithNoCloseButton: UI5StoryArgs<MessageStrip, StoryArgsSlots>;
+export declare const MessageStripWithNoIcon: UI5StoryArgs<MessageStrip, StoryArgsSlots>;
+export declare const DynamicMessageStrip: StoryFn;
+export declare const CustomMessageStrip: UI5StoryArgs<MessageStrip, StoryArgsSlots>;

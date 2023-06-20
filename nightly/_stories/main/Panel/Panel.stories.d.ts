@@ -1,0 +1,10 @@
+import type { Meta } from "@storybook/web-components";
+import type { StoryArgsSlots } from "./argTypes.js";
+import type { UI5StoryArgs } from "../../../types.js";
+import type Panel from "@ui5/webcomponents/dist/Panel.js";
+declare const _default: Meta<Panel>;
+export default _default;
+export declare const BasicPanel: UI5StoryArgs<Panel, StoryArgsSlots>;
+export declare const PanelWithList: UI5StoryArgs<Panel, StoryArgsSlots>;
+export declare const FixedPanel: UI5StoryArgs<Panel, StoryArgsSlots>;
+export declare const PanelCustomHeader: UI5StoryArgs<Panel, StoryArgsSlots>;

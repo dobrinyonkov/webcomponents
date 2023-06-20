@@ -1,0 +1,10 @@
+import type { Meta } from "@storybook/web-components";
+import type { StoryArgsSlots } from "./argTypes.js";
+import type { UI5StoryArgs } from "../../../types.js";
+import type MultiInput from "@ui5/webcomponents/dist/MultiInput.js";
+declare const _default: Meta<MultiInput>;
+export default _default;
+export declare const BasicMultiInput: UI5StoryArgs<MultiInput, StoryArgsSlots>;
+export declare const BasicMultiInputVHDIcon: UI5StoryArgs<MultiInput, StoryArgsSlots>;
+export declare const MultiInputTokens: UI5StoryArgs<MultiInput, StoryArgsSlots>;
+export declare const MultiInputTokenCreation: UI5StoryArgs<MultiInput, StoryArgsSlots>;

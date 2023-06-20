@@ -1,0 +1,11 @@
+import type { Meta, StoryFn } from "@storybook/web-components";
+import type { StoryArgsSlots } from "./argTypes.js";
+import type { UI5StoryArgs } from "../../../types.js";
+import type Input from "@ui5/webcomponents/dist/Input.js";
+declare const _default: Meta<Input>;
+export default _default;
+export declare const BasicInput: UI5StoryArgs<Input, StoryArgsSlots>;
+export declare const InputSuggestions: UI5StoryArgs<Input, StoryArgsSlots>;
+export declare const InputSuggestionsValueStateMessage: UI5StoryArgs<Input, StoryArgsSlots>;
+export declare const InputLabel: UI5StoryArgs<Input, StoryArgsSlots>;
+export declare const InputWithVHD: StoryFn;
