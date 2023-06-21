@@ -1,5 +1,5 @@
-commit 8fcaac3373f4849063ce5cb504f59dd00f235d70
+commit 0a6d19a82c36a53f698774518c5267c403fddc8f
 Author: Dobrin Dimchev <dobrin.dimchev@sap.com>
-Date:   Tue Jun 20 12:20:17 2023 +0300
+Date:   Wed Jun 21 15:14:23 2023 +0300
 
-    build: change main build folder name to nightly
+    docs: update links
