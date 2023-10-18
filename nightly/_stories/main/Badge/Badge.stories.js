@@ -6,7 +6,7 @@ import { DocsPage } from "../../../.storybook/docs";
 const component = "ui5-badge";
 export default {
     title: "Main/Badge",
-    component,
+    component: "Badge",
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component })

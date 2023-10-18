@@ -1,5 +1,8 @@
-commit 42f0fe2a75faf3771ad56d44dff9169afe3be7d9
-Author: Dobrin Dimchev <dobrin.dimchev@sap.com>
-Date:   Wed Jun 21 15:45:05 2023 +0300
+commit 17a5b122926720c3c2b07fc322cb480e867eb63a
+Author: Boyan Rakilovski <boyan.rakilovski@sap.com>
+Date:   Tue Oct 17 14:49:08 2023 +0300
 
-    docs: change story links to nightly
+    fix(ui5-date-picker): align value state colors with the spec (#7676)
+    
+    Additionally the read only and disabled state background colors
+    are aligned with those of the ui5-input.

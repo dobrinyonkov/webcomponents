@@ -8,7 +8,7 @@ import LinkDesign from "@ui5/webcomponents/dist/types/LinkDesign.js";
 const component = "ui5-link";
 export default {
     title: "Main/Link",
-    component,
+    component: "Link",
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component })

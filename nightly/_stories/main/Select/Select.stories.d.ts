@@ -7,3 +7,4 @@ export default _default;
 export declare const Basic: UI5StoryArgs<Select, StoryArgsSlots>;
 export declare const ValueStateAndValueStateMessage: StoryFn;
 export declare const TwoColumnLayout: StoryFn;
+export declare const CustomOptions: StoryFn;

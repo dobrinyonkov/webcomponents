@@ -5,8 +5,8 @@ import argTypes, { componentInfo } from "./argTypes.js";
 import { DocsPage } from "../../../.storybook/docs";
 const component = "ui5-responsive-popover";
 export default {
-    title: "Main/ResponsivePopover",
-    component,
+    title: "Main/Responsive Popover",
+    component: "ResponsivePopover",
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component }),
@@ -57,8 +57,6 @@ Basic.decorators = [
     (story) => {
         return html `<style>
 	.popover-content {
-		width: auto;
-		padding: 2rem;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -66,6 +64,8 @@ Basic.decorators = [
 
 	.popover-footer {
 		display: flex;
+		justify-content: flex-end;
+		width: 100%;
 		align-items: center;
 		padding: 0.5rem 0;
 	}

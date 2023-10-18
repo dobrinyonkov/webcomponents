@@ -8,7 +8,7 @@ import WrappingType from "@ui5/webcomponents/dist/types/WrappingType.js";
 const component = "ui5-title";
 export default {
     title: "Main/Title",
-    component,
+    component: "Title",
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component })

@@ -5,6 +5,6 @@ import type ShellBar from "@ui5/webcomponents-fiori/dist/ShellBar.js";
 declare const _default: Meta<ShellBar>;
 export default _default;
 export declare const Basic: UI5StoryArgs<ShellBar, StoryArgsSlots>;
-export declare const SearchAndNotifications: UI5StoryArgs<ShellBar, StoryArgsSlots>;
+export declare const Search: UI5StoryArgs<ShellBar, StoryArgsSlots>;
 export declare const WithCoPilot: UI5StoryArgs<ShellBar, StoryArgsSlots>;
 export declare const Advanced: StoryFn;

@@ -7,8 +7,8 @@ import TimelineLayout from "@ui5/webcomponents-fiori/dist/types/TimelineLayout.j
 const component = "ui5-timeline";
 export default {
     title: "Fiori/Timeline",
-    component,
-    subcomponents: { 'TimelineItem': 'ui5-timeline-item' },
+    component: "Timeline",
+    subcomponents: { 'TimelineItem': 'TimelineItem' },
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component })

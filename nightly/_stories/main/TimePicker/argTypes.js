@@ -23,6 +23,12 @@ export default {
         "description": "Closes the picker",
         "table": {
             "category": "methods"
+        },
+        "UI5CustomData": {
+            "returnValue": {
+                "type": "Promise",
+                "description": "Resolves when the picker is closed"
+            }
         }
     },
     "formatValue": {

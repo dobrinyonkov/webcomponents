@@ -7,6 +7,5 @@ export default _default;
 export declare const Basic: UI5StoryArgs<TabContainer, StoryArgsSlots>;
 export declare const TextOnlyTabs: UI5StoryArgs<TabContainer, StoryArgsSlots>;
 export declare const TextOnlyEndOverflow: UI5StoryArgs<TabContainer, StoryArgsSlots>;
-export declare const WithAdditionalText: UI5StoryArgs<TabContainer, StoryArgsSlots>;
 export declare const InlineTabLayout: UI5StoryArgs<TabContainer, StoryArgsSlots>;
 export declare const NestedTabs: UI5StoryArgs<TabContainer, StoryArgsSlots>;

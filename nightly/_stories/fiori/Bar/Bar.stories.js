@@ -7,7 +7,7 @@ import BarDesign from "@ui5/webcomponents-fiori/dist/types/BarDesign.js";
 const component = "ui5-bar";
 export default {
     title: "Fiori/Bar",
-    component,
+    component: "Bar",
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component })
@@ -23,7 +23,7 @@ const Template = (args) => html `<ui5-bar
 	${unsafeHTML(args.endContent)}
 </ui5-bar>`;
 export const Basic = Template.bind({});
-Basic.storyName = "With Content and Design";
+Basic.storyName = "Basic";
 Basic.args = {
     design: BarDesign.Header,
     startContent: `<ui5-button icon="home" tooltip="Go home" design="Transparent" slot="startContent"></ui5-button>`,

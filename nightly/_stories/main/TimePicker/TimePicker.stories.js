@@ -7,7 +7,7 @@ import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 const component = "ui5-time-picker";
 export default {
     title: "Main/TimePicker",
-    component,
+    component: "TimePicker",
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component })

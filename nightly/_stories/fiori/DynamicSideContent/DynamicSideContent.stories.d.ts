@@ -5,4 +5,3 @@ import type DynamicSideContent from "@ui5/webcomponents-fiori/dist/DynamicSideCo
 declare const _default: Meta<DynamicSideContent>;
 export default _default;
 export declare const Basic: UI5StoryArgs<DynamicSideContent, StoryArgsSlots>;
-export declare const Position: UI5StoryArgs<DynamicSideContent, StoryArgsSlots>;

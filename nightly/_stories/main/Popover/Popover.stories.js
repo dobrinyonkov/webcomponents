@@ -6,7 +6,7 @@ import { DocsPage } from "../../../.storybook/docs";
 const component = "ui5-popover";
 export default {
     title: "Main/Popover",
-    component,
+    component: "Popover",
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component }),
@@ -59,12 +59,9 @@ Basic.decorators = [
     (story) => {
         return html `<style>
 	.popover-content {
-		margin: 0.5rem;
-		height: 100px;
 		display: flex;
-		flex-direction:column;
+		flex-direction: column;
 		justify-content: center;
-		align-items: center;
 	}
 
 	.flex-column {
@@ -74,6 +71,8 @@ Basic.decorators = [
 
 	.popover-footer {
 		display: flex;
+		justify-content: flex-end;
+		width: 100%;
 		align-items: center;
 		padding: 0.5rem 0;
 	}

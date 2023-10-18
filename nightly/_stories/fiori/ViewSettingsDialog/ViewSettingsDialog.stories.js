@@ -6,8 +6,8 @@ import { DocsPage } from "../../../.storybook/docs";
 const component = "ui5-view-settings-dialog";
 export default {
     title: "Fiori/ViewSettingsDialog",
-    component,
-    subcomponents: { 'SortItem': 'ui5-sort-item', 'FilterItem': 'ui5-filter-item', 'FilterItemOption': 'ui5-filter-item-option' },
+    component: "ViewSettingsDialog",
+    subcomponents: { 'SortItem': 'SortItem', 'FilterItem': 'FilterItem', 'FilterItemOption': 'FilterItemOption' },
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component })

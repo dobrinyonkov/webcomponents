@@ -7,7 +7,7 @@ import ButtonDesign from "@ui5/webcomponents/dist/types/ButtonDesign.js";
 const component = "ui5-button";
 export default {
     title: "Main/Button",
-    component,
+    component: "Button",
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component })
@@ -29,36 +29,22 @@ const Template = (args) => html `<ui5-button
 </ui5-button>`;
 export const Basic = Template.bind({});
 Basic.args = {
-    default: "Button",
+    default: "Button Text",
+    accessibleName: "Button with Accessible Name",
 };
-export const Disabled = Template.bind({});
-Disabled.args = {
-    default: "Disabled",
-    disabled: true,
-};
-export const WithIconAndDesign = Template.bind({});
-WithIconAndDesign.args = {
-    default: "Warning",
-    design: ButtonDesign.Attention,
-    icon: "message-warning",
-};
-export const WithEndIcon = Template.bind({});
-WithEndIcon.args = {
-    default: "Download",
-    icon: "download",
-    iconEnd: true,
-};
-export const IconOnly = Template.bind({});
-IconOnly.storyName = "Icon-only Button";
-IconOnly.args = {
-    design: ButtonDesign.Negative,
-    icon: "cancel",
-    accessibleName: "Cancel",
-    accessibleNameRef: "lblCancel",
-    tooltip: "Cancel",
-};
-IconOnly.decorators = [
-    (story) => html `<ui5-label style="display:none;" id="lblCancel" aria-hidden="true">Cancel</ui5-label>
-	${story()}`,
-];
+export const DifferentDesigns = () => html `
+	<ui5-button design="${ButtonDesign.Emphasized}"> Emphasized </ui5-button>
+	<ui5-button design="${ButtonDesign.Attention}"> Attention </ui5-button>
+	<ui5-button design="${ButtonDesign.Positive}"> Positive </ui5-button>
+	<ui5-button design="${ButtonDesign.Negative}"> Negative </ui5-button>
+	<ui5-button design="${ButtonDesign.Transparent}"> Transparent </ui5-button>
+`;
+export const IconOnlyButtons = () => html `
+	<ui5-button design="${ButtonDesign.Emphasized}" icon="business-suite/icon-target"></ui5-button>
+	<ui5-button design="${ButtonDesign.Attention}" icon="message-warning" tooltip="Warning Button"></ui5-button>
+	<ui5-button design="${ButtonDesign.Positive}" icon="business-suite/icon-completed" tooltip="Positive Button"></ui5-button>
+	<ui5-button design="${ButtonDesign.Negative}" icon="cancel" tooltip="Negative Button"></ui5-button>
+	<ui5-button design="${ButtonDesign.Transparent}" icon="account" tooltip="Transparent Button"></ui5-button>
+`;
+IconOnlyButtons.storyName = "Icon-Only Buttons";
 //# sourceMappingURL=Button.stories.js.map

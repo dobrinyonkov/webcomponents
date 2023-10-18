@@ -18,6 +18,12 @@ declare const _default: {
         table: {
             category: string;
         };
+        UI5CustomData: {
+            returnValue: {
+                type: string;
+                description: string;
+            };
+        };
     };
     formatValue: {
         description: string;

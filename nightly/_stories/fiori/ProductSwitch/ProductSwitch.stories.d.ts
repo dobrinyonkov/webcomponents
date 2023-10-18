@@ -5,4 +5,4 @@ import type ProductSwitch from "@ui5/webcomponents-fiori/dist/ProductSwitch.js";
 declare const _default: Meta<ProductSwitch>;
 export default _default;
 export declare const Basic: UI5StoryArgs<ProductSwitch, StoryArgsSlots>;
-export declare const ProductSwitchWithShellBar: UI5StoryArgs<ProductSwitch, StoryArgsSlots>;
+export declare const WithShellBar: UI5StoryArgs<ProductSwitch, StoryArgsSlots>;

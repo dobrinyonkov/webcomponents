@@ -2,7 +2,7 @@ import "@ui5/webcomponents-fiori/bundle.esm.js";
 import getEffectiveContentDensity from "@ui5/webcomponents-base/dist/util/getEffectiveContentDensity.js";
 import customElements from "./custom-elements.json";
 import { setCustomElementsManifest } from "@storybook/web-components";
-import { useOptions, themes } from "./useOptions";
+import { useOptions, themes, usePreventKeys } from "./decorators";
 import { enhanceArgTypes } from "./args/enhanceArgTypes";
 import { htmlTransformation } from "./addons/html/HTMLTransformation";
 if (customElements?.modules) {
@@ -74,6 +74,6 @@ export const globalTypes = {
         },
     },
 };
-export const decorators = [useOptions];
+export const decorators = [useOptions, usePreventKeys];
 export const argTypesEnhancers = [enhanceArgTypes];
 //# sourceMappingURL=preview.js.map

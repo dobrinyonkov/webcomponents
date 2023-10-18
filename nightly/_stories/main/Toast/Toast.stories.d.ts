@@ -5,5 +5,5 @@ import type Toast from "@ui5/webcomponents/dist/Toast.js";
 declare const _default: Meta<Toast>;
 export default _default;
 export declare const Basic: UI5StoryArgs<Toast, StoryArgsSlots>;
-export declare const ToastDuration: UI5StoryArgs<Toast, StoryArgsSlots>;
-export declare const ToastPlacements: UI5StoryArgs<Toast, StoryArgsSlots>;
+export declare const Duration: UI5StoryArgs<Toast, StoryArgsSlots>;
+export declare const Placement: UI5StoryArgs<Toast, StoryArgsSlots>;

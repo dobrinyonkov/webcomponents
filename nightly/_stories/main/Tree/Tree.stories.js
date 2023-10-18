@@ -6,8 +6,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 const component = "ui5-tree";
 export default {
     title: "Main/Tree",
-    component,
-    subcomponents: { TreeItem: "ui5-tree-item" },
+    component: "Tree",
+    subcomponents: { TreeItem: "TreeItem" },
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component }),

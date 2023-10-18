@@ -4,8 +4,8 @@ import { DocsPage } from "../../../.storybook/docs";
 import { ifDefined } from "lit/directives/if-defined.js";
 const component = "ui5-range-slider";
 export default {
-    title: "Main/RangeSlider",
-    component,
+    title: "Main/Range Slider",
+    component: "RangeSlider",
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component })
@@ -24,34 +24,52 @@ const Template = (args) => html `
 	label-interval="${ifDefined(args.labelInterval)}"
 	?show-tooltip="${ifDefined(args.showTooltip)}"
 ></ui5-range-slider>`;
-export const BasicRangeSlider = Template.bind({});
-BasicRangeSlider.args = {
+export const Basic = Template.bind({});
+Basic.decorators = [
+    (story) => {
+        return html `
+			<div class="wrapper" style="margin-top:1rem;">
+				${story()}
+			</div>
+		`;
+    }
+];
+Basic.args = {
+    min: 0,
+    max: 100,
+    step: 5,
+    disabled: false,
+    showTooltip: false,
+    showTickmarks: false,
+    labelInterval: 0,
+    startValue: 0,
     endValue: 20
 };
-export const RangeSliderCustomValues = Template.bind({});
-RangeSliderCustomValues.args = {
-    min: 100,
-    max: 200,
-    startValue: 120,
-    endValue: 150
-};
-RangeSliderCustomValues.storyName = "Range Slider with Custom 'min', 'max', 'startValue' and 'endValue' Properties";
-export const RangeSliderTooltip = Template.bind({});
-RangeSliderTooltip.args = {
+export const Tooltips = Template.bind({});
+Tooltips.decorators = [
+    (story) => {
+        return html `
+			<div class="wrapper" style="margin-top:1rem;">
+				${story()}
+			</div>
+		`;
+    }
+];
+Tooltips.args = {
     startValue: 3,
     endValue: 13,
     showTooltip: true
 };
-RangeSliderTooltip.storyName = "Range Slider with Tooltips";
-export const RangeSliderTickmarksCustomStep = Template.bind({});
-RangeSliderTickmarksCustomStep.args = {
-    step: 2,
-    startValue: 12,
-    endValue: 24,
-    showTickmarks: true
-};
-RangeSliderTickmarksCustomStep.storyName = "Range Slider with Tickmarks and Custom Step";
 export const RangeSliderTickmarksTooltipLabel = Template.bind({});
+RangeSliderTickmarksTooltipLabel.decorators = [
+    (story) => {
+        return html `
+			<div class="wrapper" style="margin-top:1rem;">
+				${story()}
+			</div>
+		`;
+    }
+];
 RangeSliderTickmarksTooltipLabel.args = {
     min: 0,
     max: 112,
@@ -62,5 +80,5 @@ RangeSliderTickmarksTooltipLabel.args = {
     showTickmarks: true,
     showTooltip: true
 };
-RangeSliderTickmarksTooltipLabel.storyName = "Range Slider with Tooltips, Tickmarks and Labels";
+RangeSliderTickmarksTooltipLabel.storyName = "Tooltips, Tickmarks and Labels";
 //# sourceMappingURL=RangeSlider.stories.js.map

@@ -10,8 +10,8 @@
 
 
 
-  <script type="module" crossorigin src="../../../../assets/bundle.common.ed4e978f.js"></script>
-  <link rel="stylesheet" href="../../../../assets/List_test_page.bd80d576.css">
+  <script type="module" crossorigin src="../../../../assets/bundle.esm-ca903b6e.js"></script>
+  <link rel="stylesheet" href="../../../../assets/List_test_page-bd80d576.css">
 </head>
 
 <body class="list_test_page1auto">
@@ -193,7 +193,7 @@
 		<ui5-li id="imageContent-slot-li"> Avatar inside imageContent slot
 			<div slot="imageContent">
 				<ui5-avatar id="imageContent-slot-avatar">
-					<img src="../../../../assets/woman_avatar_5.7316a316.png" alt="Woman image">
+					<img src="../../../../assets/woman_avatar_5-7316a316.png" alt="Woman image">
 				</ui5-avatar>
 			</div>
 		</ui5-li>
@@ -290,6 +290,18 @@
 				Link1</a>
 		</ui5-li>
 	</ui5-list>
+
+	<ui5-list id="listWithCustomItems">
+		<ui5-li-custom id="liCustomWithSelect">
+			<ui5-select id="selectInLiCustom">
+				<ui5-option icon="iphone">Phone</ui5-option>
+				<ui5-option icon="ipad">Tablet</ui5-option>
+				<ui5-option icon="laptop" selected>Desktop</ui5-option>
+			</ui5-select>
+		</ui5-li-custom>
+	</ui5-list>
+
+	<input id="customListItemSelectResult" value="0"/>
 
 	<script>
 		'use strict';
@@ -390,6 +402,29 @@
 		growingScrollTest.addEventListener("ui5-loadMore", function(e) {
 			growingScrollTestCounter.value= ++groiwngScrollTestCounter;
 		});
+
+		listWithCustomItems.addEventListener("ui5-item-close", function(e) {
+			customListItemSelectResult.value = ++customListItemSelectResult.value
+		});
+		
+	</script>
+
+	<ui5-list growing="Scroll">
+		<ui5-li-groupheader>New Items</ui5-li-groupheader>
+		<ui5-li image="./img/HT-1000.jpg" icon="navigation-right-arrow" additional-text="Available">Voluptate do eu cupidatat elit est culpa.</ui5-li>
+		<ui5-li image="./img/portrait.jpg" icon="navigation-right-arrow" additional-text="Re-stock" description="#12331232131" additional-text-state="Error">Laptop Lenovo</ui5-li>
+		<ui5-li id="listItem" image="./img/HT-1022.jpg" icon="navigation-right-arrow" additional-text="Re-stock" description="#12331232131"  additional-text-state="Information">IPhone 3</ui5-li>
+		<ui5-li-groupheader>Discounted Items</ui5-li-groupheader>
+		<ui5-li image="./img/HT-1030.jpg"  icon-end icon="navigation-right-arrow" description="#12331232131"  additional-text="Reuqired" additional-text-state="Error">HP Monitor 24</ui5-li>
+		<ui5-li image="./img/HT-2026.jpg"  icon-end icon="navigation-right-arrow" description="#12331232131"  additional-text="Available" additional-text-state="Success">Audio cabel</ui5-li>
+		<ui5-li image="./img/HT-2002.jpg"  icon-end icon="navigation-right-arrow" additional-text="Reuqired" additional-text-state="Warning">DVD set</ui5-li>
+	</ui5-list>
+
+	<script>
+		listItem.accessibilityAttributes = {
+			ariaSetsize: 200,
+			ariaPosinset: 3,
+		};
 	</script>
 </body>
 </html>

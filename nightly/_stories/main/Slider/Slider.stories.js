@@ -5,7 +5,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 const component = "ui5-slider";
 export default {
     title: "Main/Slider",
-    component,
+    component: "Slider",
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component })
@@ -25,25 +25,51 @@ const Template = (args) => html `
 	?disabled="${ifDefined(args.disabled)}"
 	accessible-name="${ifDefined(args.accessibleName)}"
 ></ui5-slider>`;
-export const BasicSlider = Template.bind({});
-export const SliderTooltip = Template.bind({});
-SliderTooltip.args = {
+export const Basic = Template.bind({});
+Basic.decorators = [
+    (story) => {
+        return html `
+			<div class="wrapper" style="margin-top:1rem;">
+				${story()}
+			</div>
+		`;
+    }
+];
+Basic.args = {
+    min: 0,
+    max: 100,
+    step: 5,
+    disabled: false,
+    showTooltip: false,
+    showTickmarks: false,
+    labelInterval: 0
+};
+export const Tooltip = Template.bind({});
+Tooltip.decorators = [
+    (story) => {
+        return html `
+			<div class="wrapper" style="margin-top:1rem;">
+				${story()}
+			</div>
+		`;
+    }
+];
+Tooltip.args = {
     min: 0,
     max: 20,
     showTooltip: true,
     labelInterval: 5
 };
-SliderTooltip.storyName = "Slider with Tooltip";
-export const DisabledTickmarksLabel = Template.bind({});
-DisabledTickmarksLabel.args = {
-    min: 20,
-    max: 100,
-    labelInterval: 5,
-    disabled: true,
-    showTickmarks: true
-};
-DisabledTickmarksLabel.storyName = "Disabled Slider with Tickmarks and Labels";
 export const TickmarksLabelTooltip = Template.bind({});
+TickmarksLabelTooltip.decorators = [
+    (story) => {
+        return html `
+			<div class="wrapper" style="margin-top:1rem;">
+				${story()}
+			</div>
+		`;
+    }
+];
 TickmarksLabelTooltip.args = {
     min: -20,
     max: 20,
@@ -53,5 +79,5 @@ TickmarksLabelTooltip.args = {
     labelInterval: 2,
     showTickmarks: true
 };
-TickmarksLabelTooltip.storyName = "Slider Tooltip, Tickmarks and Labels";
+TickmarksLabelTooltip.storyName = "Tooltip, Tickmarks and Labels";
 //# sourceMappingURL=Slider.stories.js.map

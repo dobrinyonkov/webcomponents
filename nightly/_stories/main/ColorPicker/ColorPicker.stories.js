@@ -5,7 +5,7 @@ import { DocsPage } from "../../../.storybook/docs";
 const component = "ui5-color-picker";
 export default {
     title: "Main/ColorPicker",
-    component,
+    component: "ColorPicker",
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component })

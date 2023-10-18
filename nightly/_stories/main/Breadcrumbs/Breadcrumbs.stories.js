@@ -3,12 +3,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import argTypes, { componentInfo } from "./argTypes.js";
 import { DocsPage } from "../../../.storybook/docs";
-import BreadcrumbsDesign from "@ui5/webcomponents/dist/types/BreadcrumbsDesign.js";
 const component = "ui5-breadcrumbs";
 export default {
     title: "Main/Breadcrumbs",
-    component,
-    subcomponents: { BreadcrumbsItem: "ui5-breadcrumbs-item" },
+    component: "Breadcrumbs",
+    subcomponents: { BreadcrumbsItem: "BreadcrumbItem" },
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component }),
@@ -29,23 +28,16 @@ Basic.args = {
 	<ui5-breadcrumbs-item>Current Page</ui5-breadcrumbs-item>
 	`,
 };
-export const DesignNoCurrentPage = Template.bind({});
-DesignNoCurrentPage.args = {
-    design: BreadcrumbsDesign.NoCurrentPage,
-    default: `<ui5-breadcrumbs-item href="https://www.sap.com" target="_blank">Root Page
-</ui5-breadcrumbs-item>
-<ui5-breadcrumbs-item href="https://www.sap.com">Parent Page</ui5-breadcrumbs-item>`,
-};
 export const SeparatorStyle = () => html `
     <div>
-        <ui5-breadcrumbs separator-style="Slash">
+        <ui5-breadcrumbs design ="NoCurrentPage" separator-style="Slash">
             <ui5-breadcrumbs-item href="https://www.sap.com"
                 >Root Page
             </ui5-breadcrumbs-item>
             <ui5-breadcrumbs-item href="https://www.sap.com"
                 >Parent Page</ui5-breadcrumbs-item
             >
-            <ui5-breadcrumbs-item>Current Page</ui5-breadcrumbs-item>
+            <ui5-breadcrumbs-item>Current Page   (ui5-breadcrumbs desing="NoCurrentPage")</ui5-breadcrumbs-item>
         </ui5-breadcrumbs>
     </div>
     <div>

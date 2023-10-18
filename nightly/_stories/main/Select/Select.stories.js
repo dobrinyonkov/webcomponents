@@ -6,8 +6,12 @@ import { DocsPage } from "../../../.storybook/docs";
 const component = "ui5-select";
 export default {
     title: "Main/Select",
-    component,
-    subcomponents: { Option: "ui5-option" },
+    component: "Select",
+    subcomponents: {
+        Option: "Option",
+        SelectMenu: "SelectMenu",
+        SelectMenuOption: "SelectMenuOption",
+    },
     argTypes,
     parameters: {
         docs: {
@@ -95,4 +99,53 @@ export const TwoColumnLayout = () => html ` <ui5-select class="select">
     <ui5-option additional-text="CA">Canada</ui5-option>
   </ui5-select>`;
 TwoColumnLayout.storyName = "Two-column layout";
+export const CustomOptions = () => html `
+  <ui5-select menu="selectMenu"></ui5-select>
+
+
+
+  <template id="selectMenuTemplate">
+    <style>
+      .optionContent {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width:100%;
+      }
+    </style>
+
+    <ui5-select-menu id="selectMenu">
+      <ui5-select-menu-option display-text="AR">
+          <div class="optionContent">
+              <ui5-icon name="soccer"></ui5-icon>
+              Argentina
+              <ui5-icon name="employee"></ui5-icon>
+          </div>
+      </ui5-select-menu-option>
+
+      <ui5-select-menu-option display-text="BE">
+          <div class="optionContent">
+              <ui5-icon name="soccer"></ui5-icon>
+              Belgium
+              <ui5-icon name="employee"></ui5-icon>
+          </div>
+      </ui5-select-menu-option>
+
+      <ui5-select-menu-option display-text="BR">
+          <div class="optionContent">
+              <ui5-icon name="soccer"></ui5-icon>
+              Brazil
+              <ui5-icon name="employee"></ui5-icon>
+          </div>
+      </ui5-select-menu-option>
+  </ui5-select-menu>
+</template>
+
+<script>
+    const template = document.querySelector("#selectMenuTemplate");
+    const clone = template.content.cloneNode(true);
+
+    document.body.appendChild(clone);
+</script>`;
+CustomOptions.storyName = "Custom Options";
 //# sourceMappingURL=Select.stories.js.map

@@ -6,8 +6,8 @@ import { DocsPage } from "../../../.storybook/docs";
 import MessageStripDesign from "@ui5/webcomponents/dist/types/MessageStripDesign.js";
 const component = "ui5-message-strip";
 export default {
-    title: "Main/MessageStrip",
-    component,
+    title: "Main/Message Strip",
+    component: "MessageStrip",
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component })
@@ -29,19 +29,7 @@ Basic.args = {
     design: MessageStripDesign.Information,
     default: "Information MessageStrip",
 };
-export const MessageStripWithNoCloseButton = Template.bind({});
-MessageStripWithNoCloseButton.args = {
-    design: MessageStripDesign.Positive,
-    hideCloseButton: true,
-    default: "Positive MessageStrip With No Close Button",
-};
-export const MessageStripWithNoIcon = Template.bind({});
-MessageStripWithNoIcon.args = {
-    design: MessageStripDesign.Warning,
-    hideIcon: true,
-    default: "Warning MessageStrip With No Icon",
-};
-export const DynamicMessageStrip = () => html `
+export const Dynamic = () => html `
 <div class="wrapper">
 	<ui5-button id="button1">Generate MessageStrip</ui5-button>
 </div>
@@ -66,8 +54,8 @@ export const DynamicMessageStrip = () => html `
 	});
 </script>
 `;
-export const CustomMessageStrip = Template.bind({});
-CustomMessageStrip.args = {
+export const Custom = Template.bind({});
+Custom.args = {
     design: MessageStripDesign.Negative,
     icon: `<img src="../assets/images/loading.gif" width="16" height="16" slot="icon">`,
     default: "Custom MessageStrip with animated gif",

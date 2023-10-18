@@ -6,8 +6,8 @@ import { DocsPage } from "../../../.storybook/docs";
 const component = "ui5-segmented-button";
 export default {
     title: "Main/SegmentedButton",
-    component,
-    subcomponents: { 'SegmentedButtonItem': 'ui5-segmented-button-item' },
+    component: "SegmentedButton",
+    subcomponents: { 'SegmentedButtonItem': 'SegmentedButtonItem' },
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component })
@@ -17,6 +17,7 @@ export default {
 };
 const Template = (args) => html `<ui5-segmented-button
 	accessible-name="${ifDefined(args.accessibleName)}"
+	mode="${ifDefined(args.mode)}"
 >
 	${unsafeHTML(args.default)}
 </ui5-segmented-button>`;

@@ -57,7 +57,7 @@ export default {
         }
     },
     "item-click": {
-        "description": "Fired when an item is being clicked.",
+        "description": "Fired when an item is being clicked. <b>Note:</b> Since 1.17.0 the event is preventable, allowing the menu to remain open after an item is pressed.",
         "table": {
             "category": "events"
         },

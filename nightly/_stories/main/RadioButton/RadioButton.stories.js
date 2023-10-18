@@ -5,8 +5,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import WrappingType from "@ui5/webcomponents/dist/types/WrappingType.js";
 const component = "ui5-radio-button";
 export default {
-    title: "Main/RadioButton",
-    component,
+    title: "Main/Radio Button",
+    component: "RadioButton",
     parameters: {
         docs: {
             page: DocsPage({ ...componentInfo, component })

@@ -5,16 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<title>DatePicker test page</title>
 
-	<script>
-		// delete Document.prototype.adoptedStyleSheets;
-	</script>
-
 	
-
-	<script
-	src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-	integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
-	crossorigin="anonymous"></script>
 
 	<script data-ui5-config type="application/json">
 		{
@@ -30,10 +21,9 @@
             }
 		}
 	</script>
-
 	
-  <script type="module" crossorigin src="../../../../assets/bundle.common.ed4e978f.js"></script>
-  <link rel="stylesheet" href="../../../../assets/DatePicker.975133a2.css">
+  <script type="module" crossorigin src="../../../../assets/bundle.esm-ca903b6e.js"></script>
+  <link rel="stylesheet" href="../../../../assets/DatePicker-975133a2.css">
 </head>
 <body class="datepicker1auto">
 	<div style='width:600px;'>
@@ -193,12 +183,13 @@
 			labelLiveChangePrevent.innerHTML = 'input: ' + JSON.stringify(e.detail);
 		});
 
-		$('#ui5-datepicker--startDate').on('ui5-input change', (function(e) {
-			var dp = $('#ui5-datepicker--startDate')[0];
+		function datePickerInputChangeHandler(e) {
+			var dp = e.currentTarget;
 			dp.setAttribute('value-state', e.detail.valid ? 'None' : 'Error');
-			$('#startDate').val($('#ui5-datepicker--startDate').val());
-			$('#startDate').trigger('change');
-		}));
+		}
+
+		document.getElementById('ui5-datepicker--startDate').addEventListener('ui5-input change', datePickerInputChangeHandler);
+		document.getElementById('ui5-datepicker--startDate').addEventListener('change', datePickerInputChangeHandler);
 
 		var dp11 = document.getElementById('dp11');
 
