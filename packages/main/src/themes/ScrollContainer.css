@@ -1,0 +1,6 @@
+:host {
+    position: relative;
+    display: block;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
