@@ -2,10 +2,13 @@ const fs = require("fs").promises;
 const path = require('path');
 const assets = require("../../assets-meta.js");
 
+const isTypeScript = process.env.UI5_TS;
+const ext = isTypeScript ? 'ts' : 'js';
+
 const generate = async () => {
 	const inputFolder = path.normalize(process.argv[2]);
-	const outputFile = path.normalize(`${process.argv[3]}/Themes-static.js`);
-	const outputFileDynamic = path.normalize(`${process.argv[3]}/Themes.js`);
+	const outputFile = path.normalize(`${process.argv[3]}/Themes-static.${ext}`);
+	const outputFileDynamic = path.normalize(`${process.argv[3]}/Themes.${ext}`);
 
 // All supported optional themes
 	const allThemes = assets.themes.all;
@@ -22,11 +25,12 @@ const generate = async () => {
 	const importLines = themesOnFileSystem.map(theme => `import ${theme} from "../assets/themes/${theme}/parameters-bundle.css.json";`).join("\n");
 	const themeUrlsByName = "{\n" + themesOnFileSystem.join(",\n") + "\n}";
 	const availableThemesArray = `[${themesOnFileSystem.map(theme => `"${theme}"`).join(", ")}]`;
-	const dynamicImportLines = themesOnFileSystem.map(theme => `\t\tcase "${theme}": return (await import("../assets/themes/${theme}/parameters-bundle.css.json")).default;`).join("\n");
+	const dynamicImportLines = themesOnFileSystem.map(theme => `\t\tcase "${theme}": return (await import(/* webpackChunkName: "${packageName.replace("@", "").replace("/", "-")}-${theme.replace("_", "-")}-parameters-bundle" */"../assets/themes/${theme}/parameters-bundle.css.json")).default;`).join("\n");
 
 
 // static imports file content
-	const contentStatic = `import { registerThemePropertiesLoader } from "@ui5/webcomponents-base/dist/asset-registries/Themes.js";
+	const contentStatic = `// @ts-nocheck
+import { registerThemePropertiesLoader } from "@ui5/webcomponents-base/dist/asset-registries/Themes.js";
 
 ${importLines}
 
@@ -47,7 +51,8 @@ ${availableThemesArray}
 
 
 // dynamic imports file content
-	const contentDynamic = `import { registerThemePropertiesLoader } from "@ui5/webcomponents-base/dist/asset-registries/Themes.js";
+	const contentDynamic = `// @ts-nocheck
+import { registerThemePropertiesLoader } from "@ui5/webcomponents-base/dist/asset-registries/Themes.js";
 
 const loadThemeProperties = async (themeName) => {
 	switch (themeName) {

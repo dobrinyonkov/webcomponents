@@ -180,6 +180,10 @@ describe("General interaction", () => {
 
 		// act
 		await arrow.click();
+
+		assert.ok(await popover.getProperty("opened"), "Popover should be displayed")
+
+		listItems = await popover.$("ui5-list").$$("ui5-li");
 		await listItems[0].click();
 
 		// assert
@@ -546,6 +550,26 @@ describe("General interaction", () => {
 
 		await cb.click();
 		assert.notOk(await popover.isDisplayedInViewport(), "Popover with valueStateMessage should not be opened.");
+	});
+
+	it ("Should add items dynamically items to the picker", async () => {
+		await browser.url(`test/pages/ComboBox.html`);
+
+		const cb = await $("#dynamic-items");
+		const btn = await $("#add-items-btn");
+		const arrow = await cb.shadow$("[input-icon]");
+
+		await btn.click();
+		await arrow.click();
+
+		const staticAreaItemClassName = await browser.getStaticAreaItemClassName("#dynamic-items");
+		const initialListItems = await browser.$(`.${staticAreaItemClassName}`).shadow$("ui5-responsive-popover").$$("ui5-li");
+
+		await browser.pause(2000);
+
+		const updatedListItems = await browser.$(`.${staticAreaItemClassName}`).shadow$("ui5-responsive-popover").$$("ui5-li");
+
+		assert.notEqual(initialListItems.length, updatedListItems.length, "item count should be updated");
 	});
 });
 

@@ -1,0 +1,26 @@
+name: Release Experimental Version
+
+on:
+  workflow_dispatch
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'yarn'
+
+    - name: Install
+      run: yarn --frozen-lockfile
+
+    - name: Build
+      run: yarn ci:releasebuild
+
+    - name: Publish
+      env:
+        NPM_AUTH_TOKEN: ${{ secrets.NPM_RELEASE_AUTH_TOKEN }}
+      run: |
+        node ./.github/actions/release.js
