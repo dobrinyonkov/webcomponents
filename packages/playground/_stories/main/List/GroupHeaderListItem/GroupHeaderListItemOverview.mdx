@@ -1,0 +1,39 @@
+import { Meta } from "@storybook/blocks";
+import * as ComponentStories from "./GroupHeaderListItem.stories.ts";
+
+import { componentInfo } from "./argTypes.ts";
+
+import { Footer } from "@sb/components/footer/Footer.tsx";
+import {
+  Title,
+  Subtitle,
+  Description,
+  Primary,
+  ArgsTable,
+  Stories,
+  PRIMARY_STORY,
+} from "@storybook/addon-docs";
+
+<Meta name="Group Header List Item Overview" of={ComponentStories} />
+
+<header>
+  <span className="sb-ui5-title">
+    <Title />
+  </span>
+  {componentInfo.since && (
+    <span className="sb-ui5-component-heading-since">
+      <b>v{componentInfo.since}</b>
+    </span>
+  )}
+</header>
+<div className="sb-ui5-component-package">
+  <b>{componentInfo.package}</b>
+</div>
+<h2 className="sb-ui5-control-tag">&lt;{componentInfo.tagName}&gt;</h2>
+<Subtitle />
+<Description />
+<br />
+<Primary />
+<ArgsTable story={PRIMARY_STORY} />
+{!componentInfo.showDefaultStoryOnly && <Stories />}
+<Footer />

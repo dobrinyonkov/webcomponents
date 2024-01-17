@@ -59,6 +59,10 @@
     "build-sitemap": "vite-node ./build-scripts-storybook/sitemap-prepare.ts"
   },
   "dependencies": {
+    "@ui5/webcomponents": "1.18.0-rc.0",
+    "@ui5/webcomponents-base": "1.18.0-rc.0",
+    "@ui5/webcomponents-react": "^1.21.2",
+    "marked": "^9.1.5",
     "xmlbuilder": "^15.1.1"
   }
 }

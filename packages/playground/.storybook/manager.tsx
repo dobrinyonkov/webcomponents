@@ -1,5 +1,6 @@
 import { addons } from '@storybook/manager-api';
 import wcTheme from "./sbTheme";
+import './addons/ai/AI';
 import './addons/github/Github';
 import './addons/TitleEnhancer';
 
