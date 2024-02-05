@@ -1,8 +1,5 @@
-commit 17a5b122926720c3c2b07fc322cb480e867eb63a
-Author: Boyan Rakilovski <boyan.rakilovski@sap.com>
-Date:   Tue Oct 17 14:49:08 2023 +0300
+commit c70080e506dbb18586496240c317953f69ba7e6a
+Author: Dobrin Dimchev <dobrin.dimchev@sap.com>
+Date:   Mon Feb 5 11:37:52 2024 +0200
 
-    fix(ui5-date-picker): align value state colors with the spec (#7676)
-    
-    Additionally the read only and disabled state background colors
-    are aligned with those of the ui5-input.
+    chore: use framework's debounce method

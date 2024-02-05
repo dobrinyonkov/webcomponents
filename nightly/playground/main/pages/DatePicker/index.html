@@ -5,6 +5,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<title>DatePicker test page</title>
 
+	<script>
+		// delete Document.prototype.adoptedStyleSheets;
+	</script>
+
 	
 
 	<script data-ui5-config type="application/json">
@@ -22,11 +26,15 @@
 		}
 	</script>
 	
-  <script type="module" crossorigin src="../../../../assets/bundle.esm-ca903b6e.js"></script>
+  <script type="module" crossorigin src="../../../../assets/bundle.esm-b81e5957.js"></script>
   <link rel="stylesheet" href="../../../../assets/DatePicker-975133a2.css">
 </head>
 <body class="datepicker1auto">
 	<div style='width:600px;'>
+
+		<h3> DatePicker with value-state-change event prevented </h3>
+		<ui5-date-picker id="dpVsChangePrevented" value-state="Error"></ui5-date-picker>
+
 		<div>
 			<h3> DatePicker with no format pattern & min-max dates in ISO format</h3>
 			<ui5-date-picker id="dpMinMax-dates" min-date="2019-09-01" max-date="2019-11-01"></ui5-date-picker>
@@ -196,6 +204,12 @@
 		document.getElementById('b1').addEventListener("click", function(e) {
 			dp11.setAttribute("value", dp11.formatValue(new Date(2018, 11, 11)));
 		});
+
+		const datePickerValueStateChangePrevented = document.getElementById("dpVsChangePrevented");
+	
+		datePickerValueStateChangePrevented.addEventListener("value-state-change", function(e) {
+			e.preventDefault();
+	});
 
 	</script>
 </body>

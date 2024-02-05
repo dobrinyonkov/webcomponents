@@ -10,7 +10,7 @@
 
 
 
-  <script type="module" crossorigin src="../../../../assets/bundle.esm-ca903b6e.js"></script>
+  <script type="module" crossorigin src="../../../../assets/bundle.esm-b81e5957.js"></script>
   <link rel="stylesheet" href="../../../../assets/FormSupport-54f70933.css">
 </head>
 
@@ -19,8 +19,13 @@
 <form method="get">
     <ui5-input name="input" value="ok"></ui5-input>
     <ui5-input name="input_disabled" disabled value="ok"></ui5-input>
+    <ui5-select name="sel">
+        <ui5-option value="cozy">Cozy</ui5-option>
+        <ui5-option value="compact">Compact</ui5-option>
+        <ui5-option value="condensed" selected>Condensed</ui5-option>
+    </ui5-select>
     <br><br>
-    <ui5-textarea name="ta" value="ok"></ui5-textarea>
+    <ui5-textarea id="ta" name="ta" value="ok"></ui5-textarea>
     <ui5-textarea name="ta_disabled" disabled value="ok"></ui5-textarea>
     <br><br>
     <ui5-date-picker name="dp" value="Apr 10, 2019"></ui5-date-picker>

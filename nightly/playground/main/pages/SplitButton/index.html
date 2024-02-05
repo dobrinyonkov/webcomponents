@@ -12,14 +12,26 @@
 
 
 
-  <script type="module" crossorigin src="../../../../assets/bundle.esm-ca903b6e.js"></script>
+  <script type="module" crossorigin src="../../../../assets/bundle.esm-b81e5957.js"></script>
   <link rel="stylesheet" href="../../../../assets/SplitButton-d2e2e966.css">
 </head>
 
-<body>
+<body style="background-color: var(--sapBackgroundColor);">
 	<header class="header">
-		<h1 class="header-title">ui5-split-button</h1>
+		<h3 class="header-title">Wrapped Split Buttons</h3>
 	</header>
+
+	<div style="border: 1px solid red; display: inline-block; width: 80px">
+		<ui5-split-button style="width: 100%" icon="picture">Random Text</ui5-split-button>
+	</div>
+
+	<div style="border: 1px solid red; display: inline-block; width: 120px">
+		<ui5-split-button style="width: 100%" icon="picture">Random Text</ui5-split-button>
+	</div>
+
+	<div style="border: 1px solid red; display: inline-block; width: 160px">
+		<ui5-split-button style="width: 100%" icon="picture">Random Text</ui5-split-button>
+	</div>
 
 	<header class="header">
 		<h3 class="header-title">Button Types</h3>
@@ -73,10 +85,15 @@
 	<ui5-split-button id="emptySpBtn" design="Default"></ui5-split-button>
 	<ui5-split-button id="defaultSpBtn" design="Default">Default</ui5-split-button>
 
-	<ui5-split-button id="splitBtnWithMenuDefaultActionDefaultAction" design="Default">openMenu</ui5-split-button>
+	<ui5-split-button id="splitBtnWithMenuDefaultActionDefaultAction">openMenu</ui5-split-button>
 	<ui5-menu id="menu">
 		<ui5-menu-item text="New File" accessible-name="Opens a file explorer" additional-text="Ctrl+Alt+Shift+N" icon="add-document"></ui5-menu-item>
 		<ui5-menu-item text="New Folder with very long title for a menu item" additional-text="Ctrl+F" icon="add-folder" disabled></ui5-menu-item>
+		<ui5-menu-item text="Open" icon="open-folder" starts-section="">
+			<ui5-menu-item text="Open Locally" icon="open-folder"></ui5-menu-item>
+			<ui5-menu-item text="Open from Cloud"></ui5-menu-item>
+		</ui5-menu-item>
+		<ui5-menu-item text="Save" icon="save"></ui5-menu-item>
 	</ui5-menu>
 
 	<ui5-split-button id="splitBtnWithMenuWithAssociatedLastAction" design="Default">openMenu</ui5-split-button>
@@ -87,6 +104,23 @@
 	</ui5-menu>
 </body>
 <script>
+const splitBtn = document.getElementById("splitBtnWithMenuDefaultActionDefaultAction");
+const menu = document.getElementById("menu");
+
+splitBtn.addEventListener("ui5-arrow-click", function() {
+	if (menu.open) {
+		menu.close();
+		splitBtn.activeArrowButton = false;
+	} else {
+		menu.showAt(splitBtn);
+		splitBtn.activeArrowButton = true;
+	}
+});
+
+menu.addEventListener("after-close", function() {
+	splitBtn.activeArrowButton = false;
+});
+
 	var displayEvent = document.getElementById("displayEvent"),
 		displayElement = document.getElementById("displayElement"),
 		directionSwitch =  document.getElementById("direction");
@@ -96,9 +130,6 @@
 		item.addEventListener("ui5-arrow-click", displayEventDetails);
 	});
 
-	splitBtnWithMenuDefaultActionDefaultAction.addEventListener("ui5-arrow-click", function() {
-		menu.open ? menu.close() : menu.showAt(splitBtnWithMenuDefaultActionDefaultAction);
-	})
 
 	splitBtnWithMenuWithAssociatedLastAction.addEventListener("ui5-arrow-click", function() {
 		menuInSplitBtnAssociatedLastAction.open ? 

@@ -14,7 +14,7 @@
 
 
 
-  <script type="module" crossorigin src="../../../../assets/bundle.esm-ca903b6e.js"></script>
+  <script type="module" crossorigin src="../../../../assets/bundle.esm-b81e5957.js"></script>
   <link rel="stylesheet" href="../../../../assets/Select-e17517bf.css">
 </head>
 
@@ -23,7 +23,6 @@
 	<ui5-button id="add-items-btn">Add new Items</ui5-button>
 	<ui5-button id="restore-items-btn">Restore Items</ui5-button>
 	<ui5-button id="myBtn2">click</ui5-button>
-
 
 	<h2>Content size</h2>
 	<ui5-label id="lblResult"></ui5-label>
@@ -70,6 +69,14 @@
 
 	<h2>Disabled Select</h2>
 	<ui5-select id="mySelect4" disabled value-state="Success"></ui5-select>
+
+	<h2>Readonly Select</h2>
+	<ui5-select id="mySelectReadOnly" readonly>
+		<ui5-option>Cozy</ui5-option>
+		<ui5-option selected>Compact</ui5-option>
+		<ui5-option>Condensed</ui5-option>
+	</ui5-select>
+
 
 	<h2> Input with suggestions</h2>
 	<ui5-input id="myInput" show-suggestions placeholder="Search for a country ..."></ui5-input>
@@ -154,6 +161,18 @@
 			<ui5-option additional-text="AU">Australia</ui5-option>
 		</ui5-select>
 	</section>
+
+	<section>
+		<h2>Select "value" property</h2>
+		<ui5-select id="mySelect7">
+			<ui5-option>Item1</ui5-option>
+			<ui5-option>Item2</ui5-option>
+			<ui5-option selected>Item3</ui5-option>
+		</ui5-select>
+		<ui5-button id="btnSetValue">select.value = "Item2"</ui5-button>
+		<ui5-button id="btnSetInvalidValue">select.value = "NAN"</ui5-button>
+	</section>
+
 </body>
 <script>
 	var countries =  [{ key: "Aus", text: "Australia" }, { key: "Aruba", text: "Aruba" }, { key: "Antigua", text: "Antigua and Barbuda" }, { key: "Bel", text: "Belgium" }, { key: "Bg", text: "Bulgaria" }, { key: "Bra", text: "Brazil" }];
@@ -267,6 +286,13 @@
 
 	restoreItemsBtn.addEventListener("click", function(event) {
 		select.innerHTML = initialItemsHTML;
+	});
+
+	btnSetValue.addEventListener("click", function(e) {
+		mySelect7.value = "Item2";
+	});
+	btnSetInvalidValue.addEventListener("click", function(e) {
+		mySelect7.value = "NAN";
 	});
 </script>
 </html>

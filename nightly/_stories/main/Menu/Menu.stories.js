@@ -1,18 +1,10 @@
 import { html } from "lit";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import argTypes, { componentInfo } from "./argTypes.js";
-import { DocsPage } from "../../../.storybook/docs";
-const component = "ui5-menu";
+import argTypes from "./argTypes.js";
 export default {
     title: "Main/Menu",
     component: "Menu",
-    subcomponents: { 'MenuItem': 'MenuItem' },
-    parameters: {
-        docs: {
-            page: DocsPage({ ...componentInfo, component })
-        },
-    },
     argTypes,
 };
 const Template = (args) => html `<ui5-menu
@@ -36,7 +28,7 @@ Basic.args = {
 <ui5-menu-item text="Exit" icon="journey-arrive"></ui5-menu-item>`,
 };
 Basic.decorators = [
-    (story) => html `<ui5-button id="btnOpenBasic" class="samples-margin">Open Menu</ui5-button> <br/>
+    (story) => html `<ui5-button id="btnOpenBasic" class="samples-margin" icon="slim-arrow-down" icon-end>Open Menu</ui5-button> <br/>
 	${story()}
 	<script>
 		btnOpenBasic.addEventListener("click", function(event) {
@@ -78,7 +70,7 @@ SubMenu.args = {
 <ui5-menu-item text="Exit" icon="journey-arrive"></ui5-menu-item>`,
 };
 SubMenu.decorators = [
-    (story) => html `<ui5-button id="btnOpenBasic" class="samples-margin">Open Menu</ui5-button> <br/>
+    (story) => html `<ui5-button id="btnOpenBasic" class="samples-margin" icon="slim-arrow-down" icon-end>Open Menu</ui5-button> <br/>
 	${story()}
 	<script>
 		btnOpenBasic.addEventListener("click", function(event) {
@@ -105,7 +97,7 @@ AditionalText.args = {
 <ui5-menu-item text="Exit" icon="journey-arrive" additional-text="Ctrl+X"></ui5-menu-item>`,
 };
 AditionalText.decorators = [
-    (story) => html `<ui5-button id="btnOpenAdditionalText" class="samples-margin">Open Menu</ui5-button> <br/>
+    (story) => html `<ui5-button id="btnOpenAdditionalText" class="samples-margin" icon="slim-arrow-down" icon-end>Open Menu</ui5-button> <br/>
 	${story()}
 	<script>
 		btnOpenAdditionalText.addEventListener("click", function(event) {

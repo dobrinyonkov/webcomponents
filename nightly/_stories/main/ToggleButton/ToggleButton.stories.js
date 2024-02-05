@@ -1,18 +1,11 @@
 import { html } from "lit";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import argTypes, { componentInfo } from "./argTypes.js";
-import { DocsPage } from "../../../.storybook/docs";
+import argTypes from "./argTypes.js";
 import ButtonDesign from "@ui5/webcomponents/dist/types/ButtonDesign.js";
-const component = "ui5-toggle-button";
 export default {
     title: "Main/ToggleButton",
     component: "ToggleButton",
-    parameters: {
-        docs: {
-            page: DocsPage({ ...componentInfo, component })
-        },
-    },
     argTypes,
 };
 const Template = (args) => html `<ui5-toggle-button
@@ -27,19 +20,14 @@ export const Basic = Template.bind({});
 Basic.args = {
     default: "Default",
 };
-export const DifferentDesigns = () => html `
-	<ui5-toggle-button design="${ButtonDesign.Emphasized}"> Emphasized </ui5-toggle-button>
-	<ui5-toggle-button design="${ButtonDesign.Attention}"> Attention </ui5-toggle-button>
-	<ui5-toggle-button design="${ButtonDesign.Positive}"> Positive </ui5-toggle-button>
-	<ui5-toggle-button design="${ButtonDesign.Negative}"> Negative </ui5-toggle-button>
-	<ui5-toggle-button design="${ButtonDesign.Transparent}"> Transparent </ui5-toggle-button>
-`;
-export const IconOnlyToggleButtons = () => html `
-	<ui5-toggle-button design="${ButtonDesign.Emphasized}" icon="business-suite/icon-target"></ui5-toggle-button>
-	<ui5-toggle-button design="${ButtonDesign.Attention}" icon="message-warning" tooltip="Warning Button"></ui5-toggle-button>
-	<ui5-toggle-button design="${ButtonDesign.Positive}" icon="business-suite/icon-completed" tooltip="Positive Button"></ui5-toggle-button>
-	<ui5-toggle-button design="${ButtonDesign.Negative}" icon="cancel" tooltip="Negative Button"></ui5-toggle-button>
-	<ui5-toggle-button design="${ButtonDesign.Transparent}" icon="account" tooltip="Transparent Button"></ui5-toggle-button>
-`;
-IconOnlyToggleButtons.storyName = "Icon-Only Toggle Buttons";
+export const Examples = Template.bind({});
+Examples.decorators = [
+    (story, { args }) => {
+        return html `
+${story({ args: { ...args, design: args.design || ButtonDesign.Default, icon: args.icon || "paper-plane", default: args.default || "Sent" } })}
+${story({ args: { ...args, design: args.design || ButtonDesign.Default, icon: args.icon || "email-read", default: args.default || "Received" } })}
+${story({ args: { ...args, design: args.design || ButtonDesign.Transparent, icon: args.icon || "italic-text", tooltip: args.tooltip || "Italic" } })}
+${story({ args: { ...args, design: args.design || ButtonDesign.Transparent, icon: args.icon || "bold-text", tooltip: args.tooltip || "Bold" } })}`;
+    },
+];
 //# sourceMappingURL=ToggleButton.stories.js.map
