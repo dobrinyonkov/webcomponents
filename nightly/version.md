@@ -1,5 +1,5 @@
-commit c70080e506dbb18586496240c317953f69ba7e6a
+commit 276235ded3641e60984314cb6b9041bd64885c60
 Author: Dobrin Dimchev <dobrin.dimchev@sap.com>
-Date:   Mon Feb 5 11:37:52 2024 +0200
+Date:   Tue Feb 13 15:28:26 2024 +0200
 
-    chore: use framework's debounce method
+    fix(ui5-tree-item): fix background color on hover
