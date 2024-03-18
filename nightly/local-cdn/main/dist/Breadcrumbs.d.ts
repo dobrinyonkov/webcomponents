@@ -88,7 +88,7 @@ declare class Breadcrumbs extends UI5Element {
     onInvalidation(changeInfo: ChangeInfo): void;
     _getItems(): BreadcrumbsItem[];
     onBeforeRendering(): void;
-    onAfterRendering(): void;
+    onAfterRendering(): Promise<void>;
     onEnterDOM(): void;
     onExitDOM(): void;
     _initItemNavigation(): void;
