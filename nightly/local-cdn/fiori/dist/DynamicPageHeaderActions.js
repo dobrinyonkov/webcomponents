@@ -13,6 +13,10 @@ import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import Button from "@ui5/webcomponents/dist/Button.js";
 import ToggleButton from "@ui5/webcomponents/dist/ToggleButton.js";
+import "@ui5/webcomponents-icons/dist/slim-arrow-up.js";
+import "@ui5/webcomponents-icons/dist/slim-arrow-down.js";
+import "@ui5/webcomponents-icons/dist/pushpin-off.js";
+import "@ui5/webcomponents-icons/dist/pushpin-on.js";
 // Template
 import DynamicPageHeaderActionsTemplate from "./generated/templates/DynamicPageHeaderActionsTemplate.lit.js";
 // Styles
@@ -22,13 +26,13 @@ import { DYNAMIC_PAGE_ARIA_LABEL_EXPAND_HEADER, DYNAMIC_PAGE_ARIA_LABEL_SNAP_HEA
 /**
  * @class
  *
- * <h3 class="comment-api-title">Overview</h3>
+ * ### Overview
  *
- * The <code>DynamicPageHeaderActions</code> component is part of the <code>DynamicPage</code>
- * family and is holding the action buttons behind the <code>DynamicPageTitle</code> and the <code>DynamicPageHeader</code>.
+ * The `DynamicPageHeaderActions` component is part of the `DynamicPage`
+ * family and is holding the action buttons behind the `DynamicPageTitle` and the `DynamicPageHeader`.
  *
  * The "pin" action is used to attach the header to a certain state (expanded/collapsed).
- * The expand/collapse action is used to switch between the two states of <code>DynamicPageHeader</code>.
+ * The expand/collapse action is used to switch between the two states of `DynamicPageHeader`.
  *
  *
  * @constructor
@@ -72,10 +76,16 @@ let DynamicPageHeaderActions = DynamicPageHeaderActions_1 = class DynamicPageHea
     onPinClick() {
         this.fireEvent("pin-button-click");
     }
+    get showPinButton() {
+        return !this.hidePinButton && !this.snapped;
+    }
 };
 __decorate([
     property({ type: Boolean })
 ], DynamicPageHeaderActions.prototype, "pinned", void 0);
+__decorate([
+    property({ type: Boolean })
+], DynamicPageHeaderActions.prototype, "hidePinButton", void 0);
 __decorate([
     property({ type: Boolean })
 ], DynamicPageHeaderActions.prototype, "snapped", void 0);

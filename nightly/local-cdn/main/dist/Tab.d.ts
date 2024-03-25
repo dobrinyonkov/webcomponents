@@ -121,6 +121,7 @@ declare class Tab extends UI5Element implements ITab, ITabbable {
      */
     getTabInStripDomRef(): ITab | null;
     getFocusDomRef(): HTMLElement | undefined;
+    focus(focusOptions?: FocusOptions): Promise<void>;
     get isMixedModeTab(): boolean | undefined;
     get isTextOnlyTab(): boolean;
     get isIconTab(): boolean;

@@ -1,5 +1,5 @@
-commit 0862a1962b8312fc8b57bc2760b203b059019da5
+commit e98b20bc819c1d5f898de27d55680da52ae0041c
 Author: Dobrin Dimchev <dobrin.dimchev@sap.com>
-Date:   Mon Mar 18 14:55:32 2024 +0200
+Date:   Wed Mar 20 21:04:29 2024 +0200
 
-    Merge remote-tracking branch 'origin/main' into dynamic-page
+    fix: remove test code and fix bg color

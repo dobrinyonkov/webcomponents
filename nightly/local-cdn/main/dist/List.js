@@ -515,9 +515,10 @@ let List = List_1 = class List extends UI5Element {
     }
     _ondrop(e) {
         e.preventDefault();
+        const draggedElement = DragRegistry.getDraggedElement();
         this.fireEvent("move", {
             source: {
-                element: DragRegistry.getDraggedElement(),
+                element: draggedElement,
             },
             destination: {
                 element: this.dropIndicatorDOM.targetReference,
@@ -525,6 +526,7 @@ let List = List_1 = class List extends UI5Element {
             },
         });
         this.dropIndicatorDOM.targetReference = null;
+        draggedElement.focus();
     }
     isForwardElement(element) {
         const elementId = element.id;
