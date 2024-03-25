@@ -1,5 +1,5 @@
-commit d58e0fd092079348ad0e998977120cc201084c40
+commit 3b236e9d7e2387b2a875bff4ae742d9dc2aade88
 Author: Dobrin Dimchev <dobrin.dimchev@sap.com>
-Date:   Mon Mar 25 11:00:53 2024 +0200
+Date:   Mon Mar 25 10:33:37 2024 +0200
 
-    build: change to absolute urls
+    fix: minor issues and sample adjustments
