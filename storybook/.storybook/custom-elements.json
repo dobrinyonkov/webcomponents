@@ -712,6 +712,50 @@
         },
         {
             "kind": "javascript-module",
+            "path": "dist/types/BusyIndicatorTextPlacement.js",
+            "declarations": [
+                {
+                    "kind": "enum",
+                    "name": "BusyIndicatorTextPlacement",
+                    "description": "Different BusyIndicator text placements.",
+                    "_ui5privacy": "public",
+                    "members": [
+                        {
+                            "kind": "field",
+                            "static": true,
+                            "privacy": "public",
+                            "description": "The text will be displayed on top of the busy indicator.",
+                            "default": "Top",
+                            "name": "Top",
+                            "readonly": true
+                        },
+                        {
+                            "kind": "field",
+                            "static": true,
+                            "privacy": "public",
+                            "description": "The text will be displayed at the bottom of the busy indicator.",
+                            "default": "Bottom",
+                            "name": "Bottom",
+                            "readonly": true
+                        }
+                    ],
+                    "_ui5package": "@ui5/webcomponents",
+                    "tagName": "BusyIndicatorTextPlacement"
+                }
+            ],
+            "exports": [
+                {
+                    "kind": "js",
+                    "name": "default",
+                    "declaration": {
+                        "name": "BusyIndicatorTextPlacement",
+                        "module": "dist/types/BusyIndicatorTextPlacement.js"
+                    }
+                }
+            ]
+        },
+        {
+            "kind": "javascript-module",
             "path": "dist/types/ButtonAccessibleRole.js",
             "declarations": [
                 {
@@ -4063,6 +4107,24 @@
                             "default": "1000",
                             "privacy": "public",
                             "_ui5validator": "Integer"
+                        },
+                        {
+                            "kind": "field",
+                            "name": "textPlacement",
+                            "type": {
+                                "text": "BusyIndicatorTextPlacement",
+                                "references": [
+                                    {
+                                        "name": "BusyIndicatorTextPlacement",
+                                        "package": "@ui5/webcomponents",
+                                        "module": "dist/types/BusyIndicatorTextPlacement.js"
+                                    }
+                                ]
+                            },
+                            "description": "Defines the placement of the text.",
+                            "default": "\"Bottom\"",
+                            "privacy": "public",
+                            "_ui5validator": "BusyIndicatorTextPlacement"
                         }
                     ],
                     "superclass": {
@@ -24152,7 +24214,7 @@
             "declarations": [
                 {
                     "kind": "class",
-                    "description": "<h3>Overview</h3>\n\nA layout component, representing a web page, consisting of a title, header with dynamic behavior, a content area, and an optional floating footer.\n\nThe component consist of several components:\n\n<ul><li><code>DynamicPageTitle</code> consists of a heading\non the left side, content in the middle, and actions on the right. The displayed\ncontent changes based on the current mode of the DynamicPageHeader.</li>\n<li><code>DynamicPageHeader</code> is a generic container, which\ncan contain a single layout component. The header works in two modes - expanded and snapped and its\nbehavior can be adjusted with the help of different properties.</li>\n<li><code>Content area</code> is a generic container, which can have a single UI5 layout.</li>\n<li><code>Footer</code> is positioned at the bottom with a small offset and used for additional\nactions, the footer floats above the content.</li></ul>\n\n<h3>Usage</h3>\n\nUse the <code>DynamicPage</code> if you need to have a title, that is always visible\nand a header, that has configurable Expanding/Snapping functionality.\nIf you don't need the Expanding/Snapping functionality it is better to use the\n<code>ui5-page</code> as a lighter component.\n\nThe app can add to the <code>default</code> slot of the ui5-dynamic-page either content that is designed to fit its container (e.g. has 100% height),\nor content with own height that may overflow its container. In the second case the <code>DynamicPage</code> will show a scrollbar that allows the user\nscroll through the content.\n\n<ul><b>Notes:</b>\n<li>Snapping of the <code>DynamicPageTitle</code> is not supported in the following case:\nWhen the <code>DynamicPage</code> has a scroll bar, the component usually scrolls to the snapping point - the point,\nwhere the <code>DynamicPageHeader</code> is scrolled out completely.\nHowever, when there is a scroll bar, but not enough content to reach the snapping point,\nthe snapping is not possible using scrolling.</li>\n</ul>\n\n<h3>Responsive Behavior</h3>\n\nDynamic page web component implements the resposive paddings design.\n\n<h3>Keyboard Handling</h3>\n\n<h4>Basic Navigation</h4>\n<ul>\n<li>[SPACE, ENTER, RETURN] - If focus is on a button inside DynamicPageTitle its action is being triggered, once activated.\nIf focus is on the snap header button (arrow button), or on the header itself, once activated, it triggers the associated action (such as snap/expand the header).\nIf focus is on pin button (the button with pin icon on the bottom of the header), once activated, it triggers the associated action (pinning of the header). </li>\n</ul>\n\n<h4>Fast Navigation</h4>\n<ul>\n<li>This component provides a build in fast navigation group which can be used via <code>F6 / Shift + F6</code> or <code> Ctrl + Alt(Option) + Down /  Ctrl + Alt(Option) + Up</code>.\nIn order to use this functionality, you need to import the following module:\n<code>import \"@ui5/webcomponents-base/dist/features/F6Navigation.js\"</code></li>\n</ul>\n\n<h3>ES6 Module Import</h3>\n\n<code>import \"@ui5/webcomponents-fiori/dist/DynamicPage.js\";</code>",
+                    "description": "### Overview\n\nA layout component, representing a web page, consisting of a title, header with dynamic behavior, a content area, and an optional floating footer.\n\nThe component consist of several components:\n\n- `DynamicPageTitle` - a component, holding the title of the page, the navigation actions and the content. The displayed content changes based on the current mode of the `DynamicPageHeader`.\n- `DynamicPageHeader` - a generic container, which can contain a single layout component and any other HTML elements. The header works in two modes - expanded and snapped and its behavior can be adjusted with the help of different properties.\n- `Content area` - a generic container, which can have a single UI5 layout.\n- `Footer` - positioned at the bottom with a small offset and used for additional actions, the footer floats above the content.\n\n### Usage\n\nUse the `DynamicPage` if you need to have a title, that is always visible\nand a header, that has configurable Expanding/Snapping functionality.\nIf you don't need the Expanding/Snapping functionality it is better to use the\n`ui5-page` as a lighter component.\n\nThe app can add to the `default` slot of the ui5-dynamic-page either content that is designed to fit its container (e.g. has 100% height),\nor content with own height that may overflow its container. In the second case the `DynamicPage` will show a scrollbar that allows the user\nscroll through the content.\n\n## Notes:\n\n- Snapping of the `DynamicPageTitle` is not supported in the following case:\n - When the `DynamicPage` has a scroll bar, the component usually scrolls to the snapping point - the point, where the `DynamicPageHeader` is scrolled out completely. However, when there is a scroll bar, but not enough content to reach the snapping point, the snapping is not possible using scrolling.\n\n### Responsive Behavior\n\nDynamic page web component implements the responsive paddings design.\n\n### Keyboard Handling\n\n\n### Basic Navigation\n\n- [SPACE, ENTER, RETURN] - If focus is on a button inside DynamicPageTitle its action is being triggered, once activated.\nIf focus is on the snap header button (arrow button), or on the header itself, once activated, it triggers the associated action (such as snap/expand the header).\nIf focus is on pin button (the button with pin icon on the bottom of the header), once activated, it triggers the associated action (pinning of the header).\n\n### Fast Navigation\n- This component provides a build in fast navigation group which can be used via `F6 / Shift + F6` or ` Ctrl + Alt(Option) + Down /  Ctrl + Alt(Option) + Up`.\nIn order to use this functionality, you need to import the following module:\n\n- `import \"@ui5/webcomponents-base/dist/features/F6Navigation.js\"`\n\n### ES6 Module Import\n\n`import \"@ui5/webcomponents-fiori/dist/DynamicPage.js\";`",
                     "name": "DynamicPage",
                     "slots": [
                         {
@@ -24211,6 +24273,17 @@
                                 "text": "boolean"
                             },
                             "description": "Defines if the header is snapped.",
+                            "default": "false",
+                            "privacy": "public",
+                            "_ui5validator": "Boolean"
+                        },
+                        {
+                            "kind": "field",
+                            "name": "hidePinButton",
+                            "type": {
+                                "text": "boolean"
+                            },
+                            "description": "Defines if the pin button is hidden.",
                             "default": "false",
                             "privacy": "public",
                             "_ui5validator": "Boolean"
@@ -24301,7 +24374,7 @@
             "declarations": [
                 {
                     "kind": "class",
-                    "description": "Header of the DynamicPage.\n\n<h3>Overview</h3>\n\nThe DynamicPageHeader <code>ui5-dynamic-page-header</code> is part of the DynamicPage family\nand is used to serve as header of the <code>DynamicPage</code>.\n\n<h3>Usage</h3>\n\nThe <code>DynamicPageHeader</code> can hold any layout control and has two states - expanded\nand collapsed (snapped). The switching between these states happens when:\n\n<ul><li>the user scrolls below its bottom margin</li>\n<li>the user clicks on the <code>DynamicPageTitle</code></li>\n<li>through the <code>DynamicPage</code> property <code>headerSnapped</code></li></ul>\n\n<h3>Responsive Behavior</h3>\n\nThe responsive behavior of the <code>DynamicPageHeader</code> depends on the behavior of the\ncontent that is displayed.",
+                    "description": "Header of the DynamicPage.\n\n### Overview\n\nThe DynamicPageHeader `ui5-dynamic-page-header` is part of the DynamicPage family\nand is used to serve as header of the `DynamicPage`.\n\n### Usage\n\nThe `DynamicPageHeader` can hold any layout control and has two states - expanded\nand collapsed (snapped). The switching between these states happens when:\n- the user scrolls below its bottom margin\n- the user clicks on the `DynamicPageTitle`\n- through the `DynamicPage` property `headerSnapped`\n\n### Responsive Behavior\n\nThe responsive behavior of the `DynamicPageHeader` depends on the behavior of the\ncontent that is displayed.",
                     "name": "DynamicPageHeader",
                     "slots": [
                         {
@@ -24366,7 +24439,7 @@
             "declarations": [
                 {
                     "kind": "class",
-                    "description": "<h3>Overview</h3>\n\nTitle of the <code>DynamicPage</code>.\n\nThe <code>DynamicPageTitle</code> component is part of the <code>DynamicPage</code>\nfamily and is used to serve as title of the <code>DynamicPage</code>.\n\n<h3>Usage</h3>\n\nThe <code>DynamicPageTitle</code> can hold any component and displays the most important\ninformation regarding the object that will always remain visible while scrolling.\n\n<b>Note:</b> The <code>actions</code> slot accepts any UI5 web component, but it`s\nrecommended to use <code>ui5-toolbar</code>.\n\nThe user can switch between the expanded/collapsed states of the\n<code>DynamicPage</code> by clicking on the <code>DynamicPageTitle</code>\nor by using the expand/collapse visual indicators, positioned at the bottom of the\n<code>DynamicPageTitle</code> and the <code>DynamicPageHeader</code> inside <code>ui5-dynamic-page-header-actions</code>.\n\n<h3>Responsive Behavior</h3>\n\nThe responsive behavior of the <code>DynamicPageTitle</code> depends on the behavior of the\ncontent that is displayed.",
+                    "description": "### Overview\n\nTitle of the `DynamicPage`.\n\nThe `DynamicPageTitle` component is part of the `DynamicPage`\nfamily and is used to serve as title of the `DynamicPage`.\n\n### Usage\n\nThe `DynamicPageTitle` can hold any component and displays the most important\ninformation regarding the object that will always remain visible while scrolling.\n\n**Note:** The `actions` slot accepts any UI5 web component, but it's\nrecommended to use `ui5-toolbar`.\n\nThe user can switch between the expanded/collapsed states of the\n`DynamicPage` by clicking on the `DynamicPageTitle`\nor by using the expand/collapse visual indicators, positioned at the bottom of the\n`DynamicPageTitle` and the `DynamicPageHeader` inside `ui5-dynamic-page-header-actions`.\n\n### Responsive Behavior\n\nThe responsive behavior of the `DynamicPageTitle` depends on the behavior of the\ncontent that is displayed.",
                     "name": "DynamicPageTitle",
                     "slots": [
                         {

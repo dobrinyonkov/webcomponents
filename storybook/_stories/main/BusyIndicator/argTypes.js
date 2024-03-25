@@ -7,6 +7,13 @@ export default {
             "Large"
         ]
     },
+    "textPlacement": {
+        "control": "select",
+        "options": [
+            "Top",
+            "Bottom"
+        ]
+    },
     "default": {
         "control": {
             "type": "text"

@@ -3,6 +3,10 @@ declare const _default: {
         control: string;
         options: string[];
     };
+    textPlacement: {
+        control: string;
+        options: string[];
+    };
     default: {
         control: {
             type: string;
