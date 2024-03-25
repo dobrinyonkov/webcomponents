@@ -1,5 +1,5 @@
-commit e98b20bc819c1d5f898de27d55680da52ae0041c
+commit 890bc957fc443edce4495327063706e6064abbe2
 Author: Dobrin Dimchev <dobrin.dimchev@sap.com>
-Date:   Wed Mar 20 21:04:29 2024 +0200
+Date:   Mon Mar 25 10:33:37 2024 +0200
 
-    fix: remove test code and fix bg color
+    build: change to absolute urls
