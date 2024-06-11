@@ -11,20 +11,20 @@ import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
-import { isSpace, isEnter } from "@ui5/webcomponents-base/dist/Keys.js";
+import { isSpace, isEnter, isEscape, isShift, } from "@ui5/webcomponents-base/dist/Keys.js";
 import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
-import { getFeature } from "@ui5/webcomponents-base/dist/FeaturesRegistry.js";
 import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import { markEvent } from "@ui5/webcomponents-base/dist/MarkedEvents.js";
 import { getIconAccessibleName } from "@ui5/webcomponents-base/dist/asset-registries/Icons.js";
-import { isPhone, isTablet, isCombi, isDesktop, isSafari, } from "@ui5/webcomponents-base/dist/Device.js";
+import { isDesktop, isSafari, } from "@ui5/webcomponents-base/dist/Device.js";
 import willShowContent from "@ui5/webcomponents-base/dist/util/willShowContent.js";
+import { submitForm, resetForm } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import ButtonDesign from "./types/ButtonDesign.js";
 import ButtonType from "./types/ButtonType.js";
 import ButtonAccessibleRole from "./types/ButtonAccessibleRole.js";
 import ButtonTemplate from "./generated/templates/ButtonTemplate.lit.js";
 import Icon from "./Icon.js";
-import "./types/HasPopup.js";
+import IconMode from "./types/IconMode.js";
 import { BUTTON_ARIA_TYPE_ACCEPT, BUTTON_ARIA_TYPE_REJECT, BUTTON_ARIA_TYPE_EMPHASIZED } from "./generated/i18n/i18n-defaults.js";
 // Styles
 import buttonCss from "./generated/themes/Button.css.js";
@@ -86,18 +86,14 @@ let Button = Button_1 = class Button extends UI5Element {
         };
     }
     onEnterDOM() {
-        this._isTouch = (isPhone() || isTablet()) && !isCombi();
+        if (isDesktop()) {
+            this.setAttribute("desktop", "");
+        }
     }
     async onBeforeRendering() {
-        const formSupport = getFeature("FormSupport");
-        if (this.type !== ButtonType.Button && !formSupport) {
-            console.warn(`In order for the "type" property to have effect, you should also: import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`); // eslint-disable-line
-        }
-        if (this.submits && !formSupport) {
-            console.warn(`In order for the "submits" property to have effect, you should also: import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`); // eslint-disable-line
-        }
-        this.iconOnly = this.isIconOnly;
         this.hasIcon = !!this.icon;
+        this.hasEndIcon = !!this.endIcon;
+        this.iconOnly = this.isIconOnly;
         this.buttonTitle = this.tooltip || await getIconAccessibleName(this.icon);
     }
     _onclick(e) {
@@ -105,19 +101,18 @@ let Button = Button_1 = class Button extends UI5Element {
             return;
         }
         markEvent(e, "button");
-        const formSupport = getFeature("FormSupport");
-        if (formSupport && this._isSubmit) {
-            formSupport.triggerFormSubmit(this);
+        if (this._isSubmit) {
+            submitForm(this);
         }
-        if (formSupport && this._isReset) {
-            formSupport.triggerFormReset(this);
+        if (this._isReset) {
+            resetForm(this);
         }
         if (isSafari()) {
             this.getDomRef()?.focus();
         }
     }
     _onmousedown(e) {
-        if (this.nonInteractive || this._isTouch) {
+        if (this.nonInteractive) {
             return;
         }
         markEvent(e, "button");
@@ -140,12 +135,22 @@ let Button = Button_1 = class Button extends UI5Element {
         markEvent(e, "button");
     }
     _onkeydown(e) {
+        this._cancelAction = isShift(e) || isEscape(e);
         markEvent(e, "button");
         if (isSpace(e) || isEnter(e)) {
             this._setActiveState(true);
         }
+        else if (this._cancelAction) {
+            this._setActiveState(false);
+        }
     }
     _onkeyup(e) {
+        if (this._cancelAction) {
+            e.preventDefault();
+        }
+        if (isSpace(e)) {
+            markEvent(e, "button");
+        }
         if (isSpace(e) || isEnter(e)) {
             if (this.active) {
                 this._setActiveState(false);
@@ -159,18 +164,12 @@ let Button = Button_1 = class Button extends UI5Element {
         if (this.active) {
             this._setActiveState(false);
         }
-        if (isDesktop()) {
-            this.focused = false;
-        }
     }
     _onfocusin(e) {
         if (this.nonInteractive) {
             return;
         }
         markEvent(e, "button");
-        if (isDesktop()) {
-            this.focused = true;
-        }
     }
     _setActiveState(active) {
         const eventPrevented = !this.fireEvent("_active-state-change", null, true);
@@ -180,16 +179,22 @@ let Button = Button_1 = class Button extends UI5Element {
         this.active = active;
     }
     get _hasPopup() {
-        return this.accessibilityAttributes.hasPopup?.toLowerCase();
+        return this.accessibilityAttributes.hasPopup;
     }
     get hasButtonType() {
         return this.design !== ButtonDesign.Default && this.design !== ButtonDesign.Transparent;
     }
-    get iconRole() {
+    get iconMode() {
         if (!this.icon) {
             return "";
         }
-        return "presentation";
+        return IconMode.Decorative;
+    }
+    get endIconMode() {
+        if (!this.endIcon) {
+            return "";
+        }
+        return IconMode.Decorative;
     }
     get isIconOnly() {
         return !willShowContent(this.text);
@@ -204,10 +209,13 @@ let Button = Button_1 = class Button extends UI5Element {
     get buttonTypeText() {
         return Button_1.i18nBundle.getText(Button_1.typeTextMappings()[this.design]);
     }
-    get buttonAccessibleRole() {
+    get effectiveAccRole() {
         return this.accessibleRole.toLowerCase();
     }
     get tabIndexValue() {
+        if (this.disabled) {
+            return;
+        }
         const tabindex = this.getAttribute("tabindex");
         if (tabindex) {
             return tabindex;
@@ -219,6 +227,9 @@ let Button = Button_1 = class Button extends UI5Element {
     }
     get ariaLabelText() {
         return getEffectiveAriaLabelText(this);
+    }
+    get ariaDescribedbyText() {
+        return this.hasButtonType ? "ui5-button-hiddenText-type" : undefined;
     }
     get _isSubmit() {
         return this.type === ButtonType.Submit || this.submits;
@@ -240,8 +251,8 @@ __decorate([
     property()
 ], Button.prototype, "icon", void 0);
 __decorate([
-    property({ type: Boolean })
-], Button.prototype, "iconEnd", void 0);
+    property()
+], Button.prototype, "endIcon", void 0);
 __decorate([
     property({ type: Boolean })
 ], Button.prototype, "submits", void 0);
@@ -271,10 +282,10 @@ __decorate([
 ], Button.prototype, "iconOnly", void 0);
 __decorate([
     property({ type: Boolean })
-], Button.prototype, "focused", void 0);
+], Button.prototype, "hasIcon", void 0);
 __decorate([
     property({ type: Boolean })
-], Button.prototype, "hasIcon", void 0);
+], Button.prototype, "hasEndIcon", void 0);
 __decorate([
     property({ type: Boolean })
 ], Button.prototype, "nonInteractive", void 0);
@@ -291,16 +302,21 @@ __decorate([
     property({ type: Boolean })
 ], Button.prototype, "_isTouch", void 0);
 __decorate([
+    property({ type: Boolean, noAttribute: true })
+], Button.prototype, "_cancelAction", void 0);
+__decorate([
     slot({ type: Node, "default": true })
 ], Button.prototype, "text", void 0);
 Button = Button_1 = __decorate([
     customElement({
         tag: "ui5-button",
+        formAssociated: true,
         languageAware: true,
         renderer: litRender,
         template: ButtonTemplate,
         styles: buttonCss,
         dependencies: [Icon],
+        shadowRootOptions: { delegatesFocus: true },
     })
     /**
      * Fired when the component is activated either with a

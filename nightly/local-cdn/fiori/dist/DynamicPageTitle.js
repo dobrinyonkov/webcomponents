@@ -10,11 +10,13 @@ import customElement from "@ui5/webcomponents-base/dist/decorators/customElement
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
+import Integer from "@ui5/webcomponents-base/dist/types/Integer.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import { isEnter, isSpace } from "@ui5/webcomponents-base/dist/Keys.js";
 import ToolbarItemOverflowBehavior from "@ui5/webcomponents/dist/types/ToolbarItemOverflowBehavior.js";
+import { isDesktop } from "@ui5/webcomponents-base/dist/Device.js";
 // Template
 import DynamicPageTitleTemplate from "./generated/templates/DynamicPageTitleTemplate.lit.js";
 // Styles
@@ -51,7 +53,7 @@ import { DYNAMIC_PAGE_ARIA_DESCR_TOGGLE_HEADER, } from "./generated/i18n/i18n-de
  * @constructor
  * @extends UI5Element
  * @public
- * @since 1.23.0
+ * @since 2.0.0
  */
 let DynamicPageTitle = DynamicPageTitle_1 = class DynamicPageTitle extends UI5Element {
     constructor() {
@@ -63,6 +65,9 @@ let DynamicPageTitle = DynamicPageTitle_1 = class DynamicPageTitle extends UI5El
     }
     onEnterDOM() {
         ResizeHandler.register(this, this._handleResize);
+        if (isDesktop()) {
+            this.setAttribute("desktop", "");
+        }
     }
     onExitDOM() {
         ResizeHandler.deregister(this, this._handleResize);
@@ -73,30 +78,27 @@ let DynamicPageTitle = DynamicPageTitle_1 = class DynamicPageTitle extends UI5El
     get styles() {
         return {
             content: {
-                "min-width": `${this.minContentWidth || 0}px`,
+                "min-width": this.minContentWidth ? `${this.minContentWidth || 0}px` : undefined,
             },
             actions: {
-                "min-width": `${this.minActionsWidth || 0}px`,
+                "min-width": this.minActionsWidth ? `${this.minActionsWidth || 0}px` : undefined,
             },
         };
     }
     get hasContent() {
         return !!this.content.length;
     }
-    get hasHeading() {
-        return !!this.heading.length;
-    }
     get headingSlotName() {
-        if (this.hasHeading) {
-            return "heading";
-        }
         if (!this.snapped) {
-            return "expandedHeading";
+            return "heading";
         }
         return "snappedHeading";
     }
-    get contentSlotName() {
-        return !this.snapped ? "expandedContent" : "snappedContent";
+    get subheadingSlotName() {
+        return !this.snapped ? "subheading" : "snappedSubheading";
+    }
+    get _tabIndex() {
+        return this.interactive ? "0" : undefined;
     }
     get _headerExpanded() {
         return !this.snapped;
@@ -112,11 +114,11 @@ let DynamicPageTitle = DynamicPageTitle_1 = class DynamicPageTitle extends UI5El
     }
     prepareLayoutActions() {
         // all navigation/layout actions should have the NeverOverflow behavior
-        const navigationActions = this.querySelector("[ui5-toolbar][slot='navigationActions']");
-        if (!navigationActions) {
+        const navigationBar = this.querySelector("[ui5-toolbar][slot='navigationBar']");
+        if (!navigationBar) {
             return;
         }
-        navigationActions.items.forEach(action => {
+        navigationBar.items.forEach(action => {
             action.overflowPriority = ToolbarItemOverflowBehavior.NeverOverflow;
         });
     }
@@ -128,18 +130,12 @@ let DynamicPageTitle = DynamicPageTitle_1 = class DynamicPageTitle extends UI5El
         if (!slotName || slotName === "content") {
             this.minContentWidth = e.detail.minWidth;
         }
-        else if (slotName === "actions") {
+        else if (slotName === "actionsBar") {
             this.minActionsWidth = e.detail.minWidth;
         }
     }
     onTitleClick() {
         this.fireEvent("_toggle-title");
-    }
-    _onfocusout() {
-        this.focused = false;
-    }
-    _onfocusin() {
-        this.focused = true;
     }
     _onkeydown(e) {
         if (isEnter(e) || isSpace(e)) {
@@ -158,6 +154,12 @@ __decorate([
     property({ type: Boolean })
 ], DynamicPageTitle.prototype, "focused", void 0);
 __decorate([
+    property({ validator: Integer })
+], DynamicPageTitle.prototype, "minContentWidth", void 0);
+__decorate([
+    property({ validator: Integer })
+], DynamicPageTitle.prototype, "minActionsWidth", void 0);
+__decorate([
     slot({ type: HTMLElement })
 ], DynamicPageTitle.prototype, "heading", void 0);
 __decorate([
@@ -165,25 +167,25 @@ __decorate([
 ], DynamicPageTitle.prototype, "snappedHeading", void 0);
 __decorate([
     slot({ type: HTMLElement })
-], DynamicPageTitle.prototype, "expandedHeading", void 0);
+], DynamicPageTitle.prototype, "actionsBar", void 0);
 __decorate([
     slot({ type: HTMLElement })
-], DynamicPageTitle.prototype, "actions", void 0);
-__decorate([
-    slot({ type: HTMLElement })
-], DynamicPageTitle.prototype, "navigationActions", void 0);
+], DynamicPageTitle.prototype, "navigationBar", void 0);
 __decorate([
     slot({ "default": true, type: HTMLElement })
 ], DynamicPageTitle.prototype, "content", void 0);
 __decorate([
     slot({ type: HTMLElement })
-], DynamicPageTitle.prototype, "snappedContent", void 0);
+], DynamicPageTitle.prototype, "subheading", void 0);
 __decorate([
     slot({ type: HTMLElement })
-], DynamicPageTitle.prototype, "expandedContent", void 0);
+], DynamicPageTitle.prototype, "snappedSubheading", void 0);
 __decorate([
     slot({ type: HTMLElement })
 ], DynamicPageTitle.prototype, "breadcrumbs", void 0);
+__decorate([
+    property({ type: Boolean })
+], DynamicPageTitle.prototype, "interactive", void 0);
 DynamicPageTitle = DynamicPageTitle_1 = __decorate([
     customElement({
         tag: "ui5-dynamic-page-title",

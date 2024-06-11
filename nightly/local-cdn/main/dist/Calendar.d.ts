@@ -1,5 +1,5 @@
+import type UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import type { ChangeInfo } from "@ui5/webcomponents-base/dist/UI5Element.js";
-import CalendarDate from "./CalendarDate.js";
 import CalendarPart from "./CalendarPart.js";
 import type { DayPickerChangeEventDetail } from "./DayPicker.js";
 import type { MonthPickerChangeEventDetail } from "./MonthPicker.js";
@@ -20,9 +20,14 @@ interface ICalendarPicker {
     _firstYear?: number;
     _lastYear?: number;
 }
-type CalendarSelectedDatesChangeEventDetail = {
-    values: Array<string>;
-    dates: Array<number>;
+interface ICalendarSelectedDates extends UI5Element {
+    value?: string;
+    startValue?: string;
+    endValue?: string;
+}
+type CalendarSelectionChangeEventDetail = {
+    selectedValues: Array<string>;
+    selectedDates: Array<number>;
     timestamp: number | undefined;
 };
 type SpecialCalendarDateT = {
@@ -41,7 +46,7 @@ type SpecialCalendarDateT = {
  * date string, correctly formatted according to the `ui5-calendar`'s `formatPattern` property.
  * Whenever the user changes the date selection, `ui5-calendar` will automatically create/remove instances
  * of `ui5-date` in itself, unless you prevent this behavior by calling `preventDefault()` for the
- * `selected-dates-change` event. This is useful if you want to control the selected dates externally.
+ * `selection-change` event. This is useful if you want to control the selected dates externally.
  *
  * ### Usage
  *
@@ -60,38 +65,38 @@ type SpecialCalendarDateT = {
  * - Day picker:
  *
  * - [F4] - Shows month picker
- * - [SHIFT] + [F4] - Shows year picker
- * - [PAGEUP] - Navigate to the previous month
- * - [PAGEDOWN] - Navigate to the next month
- * - [SHIFT] + [PAGEUP] - Navigate to the previous year
- * - [SHIFT] + [PAGEDOWN] - Navigate to the next year
- * - [CTRL] + [SHIFT] + [PAGEUP] - Navigate ten years backwards
- * - [CTRL] + [SHIFT] + [PAGEDOWN] - Navigate ten years forwards
- * - [HOME] - Navigate to the first day of the week
- * - [END] - Navigate to the last day of the week
- * - [CTRL] + [HOME] - Navigate to the first day of the month
- * - [CTRL] + [END] - Navigate to the last day of the month
+ * - [Shift] + [F4] - Shows year picker
+ * - [Page Up] - Navigate to the previous month
+ * - [Page Down] - Navigate to the next month
+ * - [Shift] + [Page Up] - Navigate to the previous year
+ * - [Shift] + [Page Down] - Navigate to the next year
+ * - [Ctrl] + [Shift] + [Page Up] - Navigate ten years backwards
+ * - [Ctrl] + [Shift] + [Page Down] - Navigate ten years forwards
+ * - [Home] - Navigate to the first day of the week
+ * - [End] - Navigate to the last day of the week
+ * - [Ctrl] + [Home] - Navigate to the first day of the month
+ * - [Ctrl] + [End] - Navigate to the last day of the month
  *
  * - Month picker:
  *
- * - [PAGEUP] - Navigate to the previous year
- * - [PAGEDOWN] - Navigate to the next year
- * - [HOME] - Navigate to the first month of the current row
- * - [END] - Navigate to the last month of the current row
- * - [CTRL] + [HOME] - Navigate to the first month of the current year
- * - [CTRL] + [END] - Navigate to the last month of the year
+ * - [Page Up] - Navigate to the previous year
+ * - [Page Down] - Navigate to the next year
+ * - [Home] - Navigate to the first month of the current row
+ * - [End] - Navigate to the last month of the current row
+ * - [Ctrl] + [Home] - Navigate to the first month of the current year
+ * - [Ctrl] + [End] - Navigate to the last month of the year
  *
  * - Year picker:
  *
- * - [PAGEUP] - Navigate to the previous year range
- * - [PAGEDOWN] - Navigate the next year range
- * - [HOME] - Navigate to the first year of the current row
- * - [END] - Navigate to the last year of the current row
- * - [CTRL] + [HOME] - Navigate to the first year of the current year range
- * - [CTRL] + [END] - Navigate to the last year of the current year range
+ * - [Page Up] - Navigate to the previous year range
+ * - [Page Down] - Navigate the next year range
+ * - [Home] - Navigate to the first year of the current row
+ * - [End] - Navigate to the last year of the current row
+ * - [Ctrl] + [Home] - Navigate to the first year of the current year range
+ * - [Ctrl] + [End] - Navigate to the last year of the current year range
  *
  * #### Fast Navigation
- * This component provides a build in fast navigation group which can be used via `F6 / Shift + F6` or ` Ctrl + Alt(Option) + Down /  Ctrl + Alt(Option) + Up`.
+ * This component provides a build in fast navigation group which can be used via [F6] / [Shift] + [F6] / [Ctrl] + [Alt/Option] / [Down] or [Ctrl] + [Alt/Option] + [Up].
  * In order to use this functionality, you need to import the following module:
  * `import "@ui5/webcomponents-base/dist/features/F6Navigation.js"`
  *
@@ -170,7 +175,7 @@ declare class Calendar extends CalendarPart {
      * for this calendar as instances of `ui5-date`.
      * @public
      */
-    dates: Array<CalendarDate>;
+    dates: Array<ICalendarSelectedDates>;
     /**
      * Defines the special dates, visually emphasized in the calendar.
      * @public
@@ -182,11 +187,11 @@ declare class Calendar extends CalendarPart {
      * @private
      */
     _selectedItemType: `${CalendarLegendItemType}`;
+    constructor();
     /**
      * @private
      */
     get _selectedDatesTimestamps(): Array<number>;
-    constructor();
     /**
      * @private
      */
@@ -247,7 +252,7 @@ declare class Calendar extends CalendarPart {
      */
     get selectedDates(): Array<number>;
     /**
-     * Creates instances of `ui5-date` inside this `ui5-calendar` with values, equal to the provided UTC timestamps
+     * Creates instances of `ui5-date` or `ui5-date-range` inside this `ui5-calendar` with values, equal to the provided UTC timestamps
      * @protected
      * @deprecated
      * @param selectedDates Array of UTC timestamps
@@ -255,4 +260,4 @@ declare class Calendar extends CalendarPart {
     set selectedDates(selectedDates: Array<number>);
 }
 export default Calendar;
-export type { ICalendarPicker, CalendarSelectedDatesChangeEventDetail, SpecialCalendarDateT, };
+export type { ICalendarPicker, ICalendarSelectedDates, CalendarSelectionChangeEventDetail, SpecialCalendarDateT, };

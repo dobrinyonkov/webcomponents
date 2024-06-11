@@ -18,7 +18,7 @@ import SideNavigationItemBase from "./SideNavigationItemBase.js";
 import SideNavigationGroupTemplate from "./generated/templates/SideNavigationGroupTemplate.lit.js";
 import { SIDE_NAVIGATION_GROUP_HEADER_DESC, } from "./generated/i18n/i18n-defaults.js";
 // Styles
-import SideNavigationItemCss from "./generated/themes/SideNavigationItem.css.js";
+import SideNavigationGroupCss from "./generated/themes/SideNavigationGroup.css.js";
 /**
  * @class
  *
@@ -102,7 +102,7 @@ let SideNavigationGroup = SideNavigationGroup_1 = class SideNavigationGroup exte
         return this.expanded ? "navigation-down-arrow" : "navigation-right-arrow";
     }
     get belowGroupClassName() {
-        if (this.previousElementSibling instanceof SideNavigationGroup_1) {
+        if (isInstanceOfSideNavigationGroup(this.previousElementSibling)) {
             return "ui5-sn-item-group-below-group";
         }
         return "";
@@ -112,6 +112,9 @@ let SideNavigationGroup = SideNavigationGroup_1 = class SideNavigationGroup exte
     }
     _toggle() {
         this.expanded = !this.expanded;
+    }
+    get isSideNavigationGroup() {
+        return true;
     }
     static async onDefine() {
         [SideNavigationGroup_1.i18nBundle] = await Promise.all([
@@ -131,12 +134,16 @@ SideNavigationGroup = SideNavigationGroup_1 = __decorate([
         tag: "ui5-side-navigation-group",
         renderer: litRender,
         template: SideNavigationGroupTemplate,
-        styles: SideNavigationItemCss,
+        styles: SideNavigationGroupCss,
         dependencies: [
             Icon,
         ],
     })
 ], SideNavigationGroup);
 SideNavigationGroup.define();
+const isInstanceOfSideNavigationGroup = (object) => {
+    return "isSideNavigationGroup" in object;
+};
 export default SideNavigationGroup;
+export { isInstanceOfSideNavigationGroup };
 //# sourceMappingURL=SideNavigationGroup.js.map

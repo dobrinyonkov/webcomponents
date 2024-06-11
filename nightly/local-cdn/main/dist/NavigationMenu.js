@@ -8,14 +8,12 @@ var NavigationMenu_1;
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
-import { isDesktop, isPhone, isTablet, } from "@ui5/webcomponents-base/dist/Device.js";
+import { isDesktop, } from "@ui5/webcomponents-base/dist/Device.js";
 import Menu from "./Menu.js";
-import "./StandardListItem.js";
-import "./MenuItem.js";
-import staticAreaMenuTemplate from "./generated/templates/NavigationMenuTemplate.lit.js";
+import menuTemplate from "./generated/templates/NavigationMenuTemplate.lit.js";
 // Styles
-import staticAreaNavigationMenuCss from "./generated/themes/NavigationMenu.css.js";
-import staticAreaMenuCss from "./generated/themes/Menu.css.js";
+import navigationMenuCss from "./generated/themes/NavigationMenu.css.js";
+import menuCss from "./generated/themes/Menu.css.js";
 import { NAVIGATION_MENU_POPOVER_HIDDEN_TEXT, } from "./generated/i18n/i18n-defaults.js";
 /**
  * @class
@@ -41,57 +39,9 @@ let NavigationMenu = NavigationMenu_1 = class NavigationMenu extends Menu {
     _itemMouseOver(e) {
         if (isDesktop()) {
             // respect mouseover only on desktop
-            const opener = e.target;
-            let item = opener.associatedItem;
-            if (!item) {
-                // for nested <a>
-                const test = opener.parentElement;
-                if (opener.parentElement) {
-                    item = test.associatedItem;
-                }
-            }
+            const item = e.target;
             // Opens submenu with 300ms delay
-            this._startOpenTimeout(item, opener);
-        }
-    }
-    _clonedItemsFragment(item) {
-        const fragment = document.createDocumentFragment();
-        for (let i = 0; i < item.items.length; ++i) {
-            const subItem = item.items[i];
-            const clonedItem = item.items[i].cloneNode(true);
-            if (subItem.associatedItem) {
-                clonedItem.associatedItem = subItem.associatedItem;
-            }
-            fragment.appendChild(clonedItem);
-        }
-        return fragment;
-    }
-    _itemClick(e) {
-        const opener = e.detail.item;
-        const item = opener.associatedItem;
-        const mainMenu = this._findMainMenu(item);
-        const prevented = !mainMenu.fireEvent("item-click", {
-            "item": item,
-            "text": item.text,
-        }, true, false);
-        if (!prevented) {
-            let openerMenuItem = item;
-            let parentMenu = openerMenuItem.parentElement;
-            do {
-                openerMenuItem._preventSubMenuClose = false;
-                this._closeItemSubMenu(openerMenuItem);
-                parentMenu = openerMenuItem.parentElement;
-                openerMenuItem = parentMenu._parentMenuItem;
-            } while (parentMenu._parentMenuItem);
-            mainMenu._popover.close();
-        }
-        if (isPhone()) {
-            // prepares and opens sub-menu on phone
-            this._prepareSubMenuPhone(item);
-        }
-        else if (isTablet()) {
-            // prepares and opens sub-menu on tablet
-            this._prepareSubMenuDesktopTablet(item, opener);
+            this._startOpenTimeout(item);
         }
     }
     get accSideNavigationPopoverHiddenText() {
@@ -105,8 +55,8 @@ NavigationMenu = NavigationMenu_1 = __decorate([
     customElement({
         tag: "ui5-navigation-menu",
         renderer: litRender,
-        staticAreaStyles: [staticAreaMenuCss, staticAreaNavigationMenuCss],
-        staticAreaTemplate: staticAreaMenuTemplate,
+        styles: [menuCss, navigationMenuCss],
+        template: menuTemplate,
     })
 ], NavigationMenu);
 NavigationMenu.define();

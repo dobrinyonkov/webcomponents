@@ -2,6 +2,7 @@ import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import ItemNavigation from "@ui5/webcomponents-base/dist/delegate/ItemNavigation.js";
 import type { ITabbable } from "@ui5/webcomponents-base/dist/delegate/ItemNavigation.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import type { AccessibilityAttributes } from "@ui5/webcomponents-base/dist/types.js";
 import Button from "./Button.js";
 import AvatarSize from "./types/AvatarSize.js";
 import AvatarGroupType from "./types/AvatarGroupType.js";
@@ -17,6 +18,7 @@ interface IAvatarGroupItem extends HTMLElement, ITabbable {
     effectiveSize: AvatarSize;
     interactive: boolean;
 }
+type AvatarGroupAccessibilityAttributes = Pick<AccessibilityAttributes, "hasPopup">;
 type AvatarGroupClickEventDetail = {
     targetRef: HTMLElement;
     overflowButtonClicked: boolean;
@@ -39,13 +41,6 @@ type AvatarGroupClickEventDetail = {
  * - `Individual` type: The avatars are displayed side-by-side and each
  * avatar has its own click/tap area.
  *
- * ### Responsive Behavior
- *
- * When the available space is less than the width required to display all avatars,
- * an overflow visualization appears as a button placed at the end with the same shape
- * and size as the avatars. The visualization displays the number of avatars that have overflowed
- * and are not currently visible.
- *
  * ### Usage
  *
  * Use the `AvatarGroup` if:
@@ -59,6 +54,13 @@ type AvatarGroupClickEventDetail = {
  * - You want to display a gallery for simple images.
  * - You want to use it for other visual content than avatars.
  *
+ * ### Responsive Behavior
+ *
+ * When the available space is less than the width required to display all avatars,
+ * an overflow visualization appears as a button placed at the end with the same shape
+ * and size as the avatars. The visualization displays the number of avatars that have overflowed
+ * and are not currently visible.
+ *
  * ### Keyboard Handling
  * The component provides advanced keyboard handling.
  * When focused, the user can use the following keyboard
@@ -66,17 +68,17 @@ type AvatarGroupClickEventDetail = {
  *
  * `type` Individual:
  *
- * - [TAB] - Move focus to the overflow button
- * - [LEFT] - Navigate one avatar to the left
- * - [RIGHT] - Navigate one avatar to the right
- * - [HOME] - Navigate to the first avatar
- * - [END] - Navigate to the last avatar
- * - [SPACE],[ENTER],[RETURN] - Trigger `ui5-click` event
+ * - [Tab] - Move focus to the overflow button
+ * - [Left] - Navigate one avatar to the left
+ * - [Right] - Navigate one avatar to the right
+ * - [Home] - Navigate to the first avatar
+ * - [End] - Navigate to the last avatar
+ * - [Space] / [Enter] or [Return] - Trigger `ui5-click` event
  *
  * `type` Group:
  *
- * - [TAB] - Move focus to the next interactive element after the component
- * - [SPACE],[ENTER],[RETURN] - Trigger `ui5-click` event
+ * - [Tab] - Move focus to the next interactive element after the component
+ * - [Space] / [Enter] or [Return] - Trigger `ui5-click` event
  * @constructor
  * @extends UI5Element
  * @since 1.0.0-rc.11
@@ -90,14 +92,17 @@ declare class AvatarGroup extends UI5Element {
      */
     type: `${AvatarGroupType}`;
     /**
-     * Defines the aria-haspopup value of the component on:
+     * Defines the additional accessibility attributes that will be applied to the component.
+     * The following field is supported:
      *
-     * -  the whole container when `type` property is `Group`
-     * -  the default "More" overflow button when `type` is `Individual`
-     * @since 1.0.0-rc.15
-     * @protected
+     * - **hasPopup**: Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by the button.
+     * Accepts the following string values: `dialog`, `grid`, `listbox`, `menu` or `tree`.
+     *
+     * @public
+     * @since 2.0.0
+     * @default {}
      */
-    ariaHaspopup: string;
+    accessibilityAttributes: AvatarGroupAccessibilityAttributes;
     /**
      * @private
      */
@@ -144,16 +149,16 @@ declare class AvatarGroup extends UI5Element {
     get _customOverflowButton(): IButton | undefined;
     get _ariaLabelText(): string;
     get _overflowButtonAriaLabelText(): string | undefined;
-    get _containerAriaHasPopup(): string | undefined;
+    get _containerAriaHasPopup(): ("dialog" | "grid" | "listbox" | "menu" | "tree") | undefined;
     get _overflowButtonAccAttributes(): {
-        hasPopup: string | undefined;
+        hasPopup: ("dialog" | "grid" | "listbox" | "menu" | "tree") | undefined;
     };
     get _role(): "button" | "group";
     get _hiddenStartIndex(): number;
     get _overflowBtnHidden(): boolean;
     get _isGroup(): boolean;
     get _itemsCount(): number;
-    get _groupTabIndex(): "0" | "-1";
+    get _groupTabIndex(): "-1" | "0";
     get _overflowButton(): Button | null;
     /**
      * Return the effective overflow button width
@@ -206,7 +211,7 @@ declare class AvatarGroup extends UI5Element {
     _overflowItems(): void;
     _getNextBackgroundColor(): number;
     _setHiddenItems(hiddenItems: number): void;
-    _getAriaHasPopup(): string | undefined;
+    _getAriaHasPopup(): ("dialog" | "grid" | "listbox" | "menu" | "tree") | undefined;
 }
 export default AvatarGroup;
-export type { AvatarGroupClickEventDetail, IAvatarGroupItem, };
+export type { AvatarGroupClickEventDetail, AvatarGroupAccessibilityAttributes, IAvatarGroupItem, };

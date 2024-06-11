@@ -9,7 +9,7 @@ import WizardStep from "./WizardStep.js";
 type WizardStepChangeEventDetail = {
     step: WizardStep;
     previousStep: WizardStep;
-    changeWithClick: boolean;
+    withScroll: boolean;
 };
 type AccessibilityInformation = {
     ariaSetsize: number;
@@ -58,14 +58,14 @@ type StepInfo = {
  *
  * #### Wizard Progress Navigation
  *
- * 	- [LEFT], [DOWN] - Focus moves backward to the WizardProgressNavAnchors.
- * 	- [UP], [RIGHT] - Focus moves forward to the WizardProgressNavAnchor.
- * 	- [SPACE] or [ENTER], [RETURN] - Selects an active step
- * 	- [HOME] or [PAGE UP] - Focus goes to the first step
- * 	- [END] or [PAGE DOWN] - Focus goes to the last step
+ * 	- [Left] or [Down] - Focus moves backward to the WizardProgressNavAnchors.
+ * 	- [Up] or [Right] - Focus moves forward to the WizardProgressNavAnchor.
+ * 	- [Space] / [Enter] or [Return] - Selects an active step
+ * 	- [Home] or [PAGE UP] - Focus goes to the first step
+ * 	- [End] or [PAGE DOWN] - Focus goes to the last step
  *
  * #### Fast Navigation
- * This component provides a build in fast navigation group which can be used via `F6 / Shift + F6` or ` Ctrl + Alt(Option) + Down /  Ctrl + Alt(Option) + Up`.
+ * This component provides a build in fast navigation group which can be used via [F6] / [Shift] + [F6] / [Ctrl] + [Alt/Option] / [Down] or [Ctrl] + [Alt/Option] + [Up].
  * In order to use this functionality, you need to import the following module:
  * `import "@ui5/webcomponents-base/dist/features/F6Navigation.js"`
  *
@@ -252,11 +252,11 @@ declare class Wizard extends UI5Element {
     _adjustHeaderOverflow(): void;
     _isGroupAtStart(selectedStep: WizardTab): boolean;
     _isGroupAtEnd(selectedStep: WizardTab): boolean;
-    _showPopover(oDomTarget: WizardTab, isAtStart: boolean): Promise<void>;
-    _onGroupedTabClick(e: MouseEvent): Promise<void>;
+    _showPopover(oDomTarget: WizardTab, isAtStart: boolean): void;
+    _onGroupedTabClick(e: MouseEvent): void;
     _onOverflowStepButtonClick(e: MouseEvent): void;
-    _closeRespPopover(): Promise<void>;
-    _respPopover(): Promise<ResponsivePopover>;
+    _closeRespPopover(): void;
+    _respPopover(): ResponsivePopover;
     /**
      * Called upon `onScroll`.
      * Selects the closest step, based on the user scroll position.
@@ -347,15 +347,15 @@ declare class Wizard extends UI5Element {
      * @param selectedStep the old step
      * @param stepToSelect the step to be selected
      * @param stepToSelectIndex the index of the newly selected step
-     * @param changeWithClick the selection changed due to user click in the step navigation
+     * @param withScroll the selection changed due to user scrolling
      * @private
      */
-    switchSelectionFromOldToNewStep(selectedStep: WizardStep | null, stepToSelect: WizardStep, stepToSelectIndex: number, changeWithClick: boolean): void;
+    switchSelectionFromOldToNewStep(selectedStep: WizardStep | null, stepToSelect: WizardStep, stepToSelectIndex: number, withScroll: boolean): void;
     /**
      * Sorter method for sorting an array in ascending order.
      * @private
      */
-    sortAscending(a: number, b: number): 1 | 0 | -1;
+    sortAscending(a: number, b: number): 1 | -1 | 0;
 }
 export type { WizardStepChangeEventDetail, };
 export default Wizard;

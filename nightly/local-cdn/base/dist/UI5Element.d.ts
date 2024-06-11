@@ -1,10 +1,10 @@
 import "@ui5/webcomponents-base/dist/ssr-dom.js";
-import UI5ElementMetadata, { Slot, SlotValue, State, PropertyValue, Metadata } from "./UI5ElementMetadata.js";
+import UI5ElementMetadata from "./UI5ElementMetadata.js";
+import type { Slot, SlotValue, State, PropertyValue, Metadata } from "./UI5ElementMetadata.js";
 import EventProvider from "./EventProvider.js";
-import StaticAreaItem from "./StaticAreaItem.js";
 import type { TemplateFunction, TemplateFunctionResult } from "./renderer/executeTemplate.js";
-import type { PromiseResolve, ComponentStylesData, ClassMap } from "./types.js";
-type Renderer = (templateResult: TemplateFunctionResult, container: HTMLElement | DocumentFragment, styleStrOrHrefsArr: string | Array<string> | undefined, forStaticArea: boolean, options: RendererOptions) => void;
+import type { AccessibilityInfo, PromiseResolve, ComponentStylesData, ClassMap } from "./types.js";
+type Renderer = (templateResult: TemplateFunctionResult, container: HTMLElement | DocumentFragment, options: RendererOptions) => void;
 type RendererOptions = {
     /**
      * An object to use as the `this` value for event listeners. It's often
@@ -42,22 +42,18 @@ declare abstract class UI5Element extends HTMLElement {
     _inDOM: boolean;
     _fullyConnected: boolean;
     _childChangeListeners: Map<string, ChildChangeListener>;
+    _slotsAssignedNodes: WeakMap<HTMLSlotElement, Array<SlotValue>>;
     _slotChangeListeners: Map<string, SlotChangeListener>;
     _domRefReadyPromise: Promise<void> & {
         _deferredResolve?: PromiseResolve;
     };
     _doNotSyncAttributes: Set<string>;
     _state: State;
+    _internals?: ElementInternals;
     _getRealDomRef?: () => HTMLElement;
-    staticAreaItem?: StaticAreaItem;
     static template?: TemplateFunction;
-    static staticAreaTemplate?: TemplateFunction;
     static _metadata: UI5ElementMetadata;
-    /**
-     * @deprecated
-     */
-    static render: Renderer;
-    static renderer?: Renderer;
+    static renderer: Renderer;
     constructor();
     /**
      * Returns a unique ID for this UI5 Element
@@ -67,7 +63,6 @@ declare abstract class UI5Element extends HTMLElement {
      */
     get _id(): string;
     render(): object;
-    renderStatic(): object;
     /**
      * Do not call this method from derivatives of UI5Element, use "onEnterDOM" only
      * @private
@@ -147,6 +142,8 @@ declare abstract class UI5Element extends HTMLElement {
      * @private
      */
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
+    formAssociatedCallback(): void;
+    static get formAssociated(): boolean;
     /**
      * @private
      */
@@ -176,7 +173,7 @@ declare abstract class UI5Element extends HTMLElement {
     /**
      * @private
      */
-    _attachSlotChange(child: HTMLSlotElement, slotName: string): void;
+    _attachSlotChange(slot: HTMLSlotElement, slotName: string, invalidateOnChildChange: boolean): void;
     /**
      * @private
      */
@@ -203,9 +200,9 @@ declare abstract class UI5Element extends HTMLElement {
      *   1) children: immediate children (HTML elements or text nodes) were added, removed or reordered in the slot
      *   2) textcontent: text nodes in the slot changed value (or nested text nodes were added or changed value). Can only trigger for slots of "type: Node"
      *   3) slotchange: a slot element, slotted inside that slot had its "slotchange" event listener called. This practically means that transitively slotted children changed.
-     *      Can only trigger if the child of a slot is a slot element itself.
+     *	  Can only trigger if the child of a slot is a slot element itself.
      *   4) childchange: indicates that a UI5Element child in that slot was invalidated and in turn invalidated the component.
-     *      Can only trigger for slots with "invalidateOnChildChange" metadata descriptor
+     *	  Can only trigger for slots with "invalidateOnChildChange" metadata descriptor
      *
      *  - newValue: the new value of the property (for type="property" only)
      *
@@ -304,6 +301,11 @@ declare abstract class UI5Element extends HTMLElement {
     get isUI5Element(): boolean;
     get classes(): ClassMap;
     /**
+     * Returns the component accessibility info.
+     * @private
+     */
+    get accessibilityInfo(): AccessibilityInfo;
+    /**
      * Do not override this method in derivatives of UI5Element, use metadata properties instead
      * @private
      */
@@ -312,14 +314,6 @@ declare abstract class UI5Element extends HTMLElement {
      * @private
      */
     static _needsShadowDOM(): boolean;
-    /**
-     * @private
-     */
-    static _needsStaticArea(): boolean;
-    /**
-     * @public
-     */
-    getStaticAreaItemDomRef(): Promise<ShadowRoot | null>;
     /**
      * @private
      */
@@ -334,11 +328,6 @@ declare abstract class UI5Element extends HTMLElement {
      * @protected
      */
     static styles: ComponentStylesData;
-    /**
-     * Returns the Static Area CSS for this UI5 Web Component Class
-     * @protected
-     */
-    static get staticAreaStyles(): ComponentStylesData;
     /**
      * Returns an array with the dependencies for this UI5 Web Component, which could be:
      *  - composed components (used in its shadow root or static area item)
@@ -374,11 +363,15 @@ declare abstract class UI5Element extends HTMLElement {
      * @public
      */
     static getMetadata(): UI5ElementMetadata;
+    get validity(): ValidityState | undefined;
+    get validationMessage(): string | undefined;
+    checkValidity(): boolean | undefined;
+    reportValidity(): boolean | undefined;
 }
 /**
  * Always use duck-typing to cover all runtimes on the page.
  */
 declare const instanceOfUI5Element: (object: any) => object is UI5Element;
 export default UI5Element;
-export { instanceOfUI5Element };
+export { instanceOfUI5Element, };
 export type { ChangeInfo, Renderer, RendererOptions, };

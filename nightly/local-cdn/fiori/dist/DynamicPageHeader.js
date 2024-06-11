@@ -38,7 +38,7 @@ import DynamicPageHeaderCss from "./generated/themes/DynamicPageHeader.css.js";
  * @constructor
  * @extends UI5Element
  * @public
- * @since 1.23.0
+ * @since 2.0.0
  */
 let DynamicPageHeader = class DynamicPageHeader extends UI5Element {
 };

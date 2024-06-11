@@ -21,7 +21,6 @@ import "@ui5/webcomponents-icons/dist/pushpin-on.js";
  * @constructor
  * @extends UI5Element
  * @private
- * @since 1.23.0
  */
 declare class DynamicPageHeaderActions extends UI5Element {
     /**
@@ -57,7 +56,7 @@ declare class DynamicPageHeaderActions extends UI5Element {
     static i18nBundle: I18nBundle;
     static onDefine(): Promise<void>;
     get arrowButtonIcon(): "slim-arrow-down" | "slim-arrow-up";
-    get pinButtonIcon(): "pushpin-on" | "pushpin-off";
+    get pinButtonIcon(): "pushpin-off" | "pushpin-on";
     get expandButton(): Button | null;
     get pinButton(): ToggleButton | null;
     get pinLabel(): string;
@@ -66,6 +65,8 @@ declare class DynamicPageHeaderActions extends UI5Element {
     focusPinButton(): void;
     onExpandClick(): void;
     onPinClick(): void;
+    onExpandHoverIn(): void;
+    onExpandHoverOut(): void;
     get showPinButton(): boolean;
 }
 export default DynamicPageHeaderActions;

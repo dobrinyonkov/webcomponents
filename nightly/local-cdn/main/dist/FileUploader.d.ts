@@ -1,9 +1,9 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import Input from "./Input.js";
 import Popover from "./Popover.js";
-import type { IFormElement } from "./features/InputElementsFormSupport.js";
 type FileUploaderChangeEventDetail = {
     files: FileList | null;
 };
@@ -31,7 +31,7 @@ type FileUploaderChangeEventDetail = {
  * @extends UI5Element
  * @public
  */
-declare class FileUploader extends UI5Element implements IFormElement {
+declare class FileUploader extends UI5Element implements IFormInputElement {
     /**
      * Comma-separated list of file types that the component should accept.
      *
@@ -61,14 +61,9 @@ declare class FileUploader extends UI5Element implements IFormElement {
      */
     multiple: boolean;
     /**
-     * Determines the name with which the component will be submitted in an HTML form.
+     * Determines the name by which the component will be identified upon submission in an HTML form.
      *
-     * **Important:** For the `name` property to have effect, you must add the following import to your project:
-     * `import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`
-     *
-     * **Note:** When set, a native `input` HTML element
-     * will be created inside the component so that it can be submitted as
-     * part of an HTML form. Do not use this property unless you need to submit a form.
+     * **Note:** This property is only applicable within the context of an HTML Form element.
      * @default ""
      * @public
      */
@@ -116,22 +111,17 @@ declare class FileUploader extends UI5Element implements IFormElement {
      * @public
      */
     valueStateMessage: Array<HTMLElement>;
-    /**
-     * The slot is used to render native `input` HTML element within Light DOM to enable form submit,
-     * when `name` property is set.
-     * @private
-     */
-    formSupport: Array<HTMLElement>;
-    _internals: ElementInternals;
     static emptyInput: HTMLInputElement;
     static i18nBundle: I18nBundle;
-    static get formAssociated(): boolean;
-    constructor();
+    formElementAnchor(): Promise<HTMLElement | undefined>;
+    get formFormattedValue(): FormData | null;
     _onmouseover(): void;
     _onmouseout(): void;
     _onclick(e: MouseEvent): void;
     _onkeydown(e: KeyboardEvent): void;
     _onkeyup(e: KeyboardEvent): void;
+    _ondrag(e: DragEvent): void;
+    _ondrop(e: DragEvent): void;
     _onfocusin(): void;
     _onfocusout(): void;
     /**
@@ -140,16 +130,13 @@ declare class FileUploader extends UI5Element implements IFormElement {
      * @default null
      */
     get files(): FileList | null;
-    onBeforeRendering(): void;
     onAfterRendering(): void;
-    _enableFormSupport(): void;
     _onChange(e: Event): void;
     _updateValue(files: FileList | null): void;
-    _setFormValue(): void;
     toggleValueStatePopover(open: boolean): void;
-    openValueStatePopover(): Promise<void>;
-    closeValueStatePopover(): Promise<void>;
-    _getPopover(): Promise<Popover>;
+    openValueStatePopover(): void;
+    closeValueStatePopover(): void;
+    _getPopover(): Popover;
     /**
      * in case when the component is not placed in the DOM, return empty FileList, like native input would do
      * @private
@@ -157,8 +144,6 @@ declare class FileUploader extends UI5Element implements IFormElement {
     static get _emptyFilesList(): FileList | null;
     get browseText(): string;
     get titleText(): string;
-    get _canUseNativeFormSupport(): boolean;
-    get _keepInputInShadowDOM(): boolean;
     get _input(): HTMLInputElement;
     get valueStateTextMappings(): Record<string, string>;
     get valueStateText(): string;

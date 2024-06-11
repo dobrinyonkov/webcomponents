@@ -1,15 +1,15 @@
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import CalendarPickersMode from "./types/CalendarPickersMode.js";
-import type FormSupportT from "./features/InputElementsFormSupport.js";
-import type { IFormElement } from "./features/InputElementsFormSupport.js";
 import "@ui5/webcomponents-icons/dist/appointment-2.js";
 import "@ui5/webcomponents-icons/dist/decline.js";
 import DateComponentBase from "./DateComponentBase.js";
 import ResponsivePopover from "./ResponsivePopover.js";
-import type { CalendarSelectedDatesChangeEventDetail } from "./Calendar.js";
+import type { CalendarSelectionChangeEventDetail } from "./Calendar.js";
 import Input from "./Input.js";
 import InputType from "./types/InputType.js";
+import IconMode from "./types/IconMode.js";
 import "@ui5/webcomponents-localization/dist/features/calendar/Gregorian.js";
 type DatePickerChangeEventDetail = {
     value: string;
@@ -57,8 +57,8 @@ type DatePickerInputEventDetail = {
  * ### Keyboard Handling
  * The `ui5-date-picker` provides advanced keyboard handling.
  * If the `ui5-date-picker` is focused,
- * you can open or close the drop-down by pressing `F4`, `ALT+UP` or `ALT+DOWN` keys.
- * Once the drop-down is opened, you can use the `UP`, `DOWN`, `LEFT`, `RIGHT` arrow keys
+ * you can open or close the drop-down by pressing [F4], [Alt] + [Up] or [Alt] + [Down] keys.
+ * Once the drop-down is opened, you can use the [Up], [Down], [Left] or [Right] arrow keys
  * to navigate through the dates and select one by pressing the `Space` or `Enter` keys. Moreover you can
  * use TAB to reach the buttons for changing month and year.
  *
@@ -66,12 +66,12 @@ type DatePickerInputEventDetail = {
  * then users can increment or decrement the date referenced by `dateValue` property
  * by using the following shortcuts:
  *
- * - [PAGEDOWN] - Decrements the corresponding day of the month by one
- * - [SHIFT] + [PAGEDOWN] - Decrements the corresponding month by one
- * - [SHIFT] + [CTRL] + [PAGEDOWN] - Decrements the corresponding year by one
- * - [PAGEUP] - Increments the corresponding day of the month by one
- * - [SHIFT] + [PAGEUP] - Increments the corresponding month by one
- * - [SHIFT] + [CTRL] + [PAGEUP] - Increments the corresponding year by one
+ * - [Page Down] - Decrements the corresponding day of the month by one
+ * - [Shift] + [Page Down] - Decrements the corresponding month by one
+ * - [Shift] + [Ctrl] + [Page Down] - Decrements the corresponding year by one
+ * - [Page Up] - Increments the corresponding day of the month by one
+ * - [Shift] + [Page Up] - Increments the corresponding month by one
+ * - [Shift] + [Ctrl] + [Page Up] - Increments the corresponding year by one
  *
  * ### Calendar types
  * The component supports several calendar types - Gregorian, Buddhist, Islamic, Japanese and Persian.
@@ -103,7 +103,7 @@ type DatePickerInputEventDetail = {
  * @extends DateComponentBase
  * @public
  */
-declare class DatePicker extends DateComponentBase implements IFormElement {
+declare class DatePicker extends DateComponentBase implements IFormInputElement {
     /**
      * Defines a formatted date value.
      * @default ""
@@ -148,14 +148,9 @@ declare class DatePicker extends DateComponentBase implements IFormElement {
      */
     placeholder?: string;
     /**
-     * Determines the name with which the component will be submitted in an HTML form.
+     * Determines the name by which the component will be identified upon submission in an HTML form.
      *
-     * **Important:** For the `name` property to have effect, you must add the following import to your project:
-     * `import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`
-     *
-     * **Note:** When set, a native `input` HTML element
-     * will be created inside the component so that it can be submitted as
-     * part of an HTML form. Do not use this property unless you need to submit a form.
+     * **Note:** This property is only applicable within the context of an HTML Form element.
      * @default ""
      * @public
      */
@@ -171,6 +166,13 @@ declare class DatePicker extends DateComponentBase implements IFormElement {
      */
     hideWeekNumbers: boolean;
     /**
+     * Defines the open or closed state of the popover.
+     * @public
+     * @default false
+     * @since 2.0.0
+     */
+    open: boolean;
+    /**
      * Defines the aria-label attribute for the component.
      * @default ""
      * @public
@@ -184,7 +186,6 @@ declare class DatePicker extends DateComponentBase implements IFormElement {
      * @since 1.0.0-rc.15
      */
     accessibleNameRef: string;
-    _isPickerOpen: boolean;
     _respPopoverConfig: object;
     _calendarCurrentPicker: string;
     liveValue?: string;
@@ -199,19 +200,17 @@ declare class DatePicker extends DateComponentBase implements IFormElement {
      * @public
      */
     valueStateMessage: Array<HTMLElement>;
-    /**
-     * The slot is used to render native `input` HTML element within Light DOM to enable form submit,
-     * when `name` property is set.
-     * @private
-     */
-    formSupport: Array<HTMLElement>;
     responsivePopover?: ResponsivePopover;
-    FormSupport?: typeof FormSupportT;
     static i18nBundle: I18nBundle;
+    get formValidityMessage(): string;
+    get formValidity(): ValidityStateFlags;
+    formElementAnchor(): Promise<HTMLElement | undefined>;
+    get formFormattedValue(): FormData | string | null;
     /**
      * @protected
      */
     onResponsivePopoverAfterClose(): void;
+    onResponsivePopoverBeforeOpen(): void;
     onBeforeRendering(): void;
     /**
      * Override in derivatives to change calendar selection mode
@@ -241,7 +240,6 @@ declare class DatePicker extends DateComponentBase implements IFormElement {
     _modifyDateValue(amount: number, unit: string, preserveDate?: boolean): void;
     _updateValueAndFireEvents(value: string, normalizeValue: boolean, events: Array<string>, updateValue?: boolean): void;
     _updateValueState(): void;
-    _toggleAndFocusInput(): void;
     _getInput(): Input;
     /**
      * The ui5-input "submit" event handler - fire change event when the user presses enter
@@ -313,8 +311,8 @@ declare class DatePicker extends DateComponentBase implements IFormElement {
      * Defines whether the value help icon is hidden
      * @private
      */
-    get _ariaHidden(): boolean;
-    _respPopover(): Promise<ResponsivePopover>;
+    get _iconMode(): IconMode.Decorative | IconMode.Interactive;
+    _respPopover(): ResponsivePopover;
     _canOpenPicker(): boolean;
     get _calendarPickersMode(): CalendarPickersMode;
     /**
@@ -322,7 +320,7 @@ declare class DatePicker extends DateComponentBase implements IFormElement {
      * @param e
      * @protected
      */
-    onSelectedDatesChange(e: CustomEvent<CalendarSelectedDatesChangeEventDetail>): void;
+    onSelectedDatesChange(e: CustomEvent<CalendarSelectionChangeEventDetail>): void;
     /**
      * The user clicked the "month" button in the header
      */
@@ -339,24 +337,8 @@ declare class DatePicker extends DateComponentBase implements IFormElement {
      * @returns The date as string
      */
     formatValue(date: Date): string;
-    /**
-     * Closes the picker.
-     * @public
-     */
-    closePicker(): void;
-    /**
-     * Opens the picker.
-     * @public
-     * @returns Resolves when the picker is open
-     */
-    openPicker(): Promise<void>;
-    togglePicker(): void;
-    /**
-     * Checks if the picker is open.
-     * @public
-     * @returns true if the picker is open, false otherwise
-     */
-    isOpen(): boolean;
+    _togglePicker(): void;
+    _toggleAndFocusInput(): void;
     /**
      * Currently selected date represented as a Local JavaScript Date instance.
      * @public

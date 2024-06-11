@@ -7,12 +7,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var SegmentedButtonItem_1;
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
+import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
+import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import { isDesktop } from "@ui5/webcomponents-base/dist/Device.js";
+import { isSpaceShift } from "@ui5/webcomponents-base/dist/Keys.js";
+import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
+import willShowContent from "@ui5/webcomponents-base/dist/util/willShowContent.js";
+import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
+import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import Integer from "@ui5/webcomponents-base/dist/types/Integer.js";
-import SegmentedButtonItemTemplate from "./generated/templates/SegmentedButtonItemTemplate.lit.js";
-import ToggleButton from "./ToggleButton.js";
-import ButtonDesign from "./types/ButtonDesign.js";
-import Icon from "./Icon.js";
 import { SEGMENTEDBUTTONITEM_ARIA_DESCRIPTION } from "./generated/i18n/i18n-defaults.js";
+import SegmentedButtonItemTemplate from "./generated/templates/SegmentedButtonItemTemplate.lit.js";
+import Icon from "./Icon.js";
+import segmentedButtonItemCss from "./generated/themes/SegmentedButtonItem.css.js";
 /**
  * @class
  *
@@ -20,7 +27,7 @@ import { SEGMENTEDBUTTONITEM_ARIA_DESCRIPTION } from "./generated/i18n/i18n-defa
  *
  * Users can use the `ui5-segmented-button-item` as part of a `ui5-segmented-button`.
  *
- * Clicking or tapping on a `ui5-segmented-button-item` changes its state to `pressed`.
+ * Clicking or tapping on a `ui5-segmented-button-item` changes its state to `selected`.
  * The item returns to its initial state when the user clicks or taps on it again.
  * By applying additional custom CSS-styling classes, apps can give a different style to any
  * `ui5-segmented-button-item`.
@@ -29,34 +36,93 @@ import { SEGMENTEDBUTTONITEM_ARIA_DESCRIPTION } from "./generated/i18n/i18n-defa
  *
  * `import "@ui5/webcomponents/dist/SegmentedButtonItem.js";`
  * @constructor
- * @extends ToggleButton
+ * @extends UI5Element
  * @implements { ISegmentedButtonItem }
+ * @implements { IButton }
  * @public
  */
-let SegmentedButtonItem = SegmentedButtonItem_1 = class SegmentedButtonItem extends ToggleButton {
+let SegmentedButtonItem = SegmentedButtonItem_1 = class SegmentedButtonItem extends UI5Element {
     get ariaDescription() {
         return SegmentedButtonItem_1.i18nBundle.getText(SEGMENTEDBUTTONITEM_ARIA_DESCRIPTION);
     }
+    constructor() {
+        super();
+    }
+    _onclick() {
+        this.selected = !this.selected;
+    }
+    onEnterDOM() {
+        if (isDesktop()) {
+            this.setAttribute("desktop", "");
+        }
+    }
+    onBeforeRendering() {
+        this.iconOnly = !willShowContent(this.text);
+    }
+    _onkeyup(e) {
+        if (isSpaceShift(e)) {
+            e.preventDefault();
+        }
+    }
+    get tabIndexValue() {
+        const tabindex = this.getAttribute("tabindex");
+        if (tabindex) {
+            return tabindex;
+        }
+        return this.forcedTabIndex;
+    }
+    get ariaLabelText() {
+        return getEffectiveAriaLabelText(this);
+    }
+    get showIconTooltip() {
+        return this.iconOnly && !this.tooltip;
+    }
+    static async onDefine() {
+        SegmentedButtonItem_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
+    }
 };
 __decorate([
-    property({ type: ButtonDesign, defaultValue: ButtonDesign.Default })
-], SegmentedButtonItem.prototype, "design", void 0);
+    property({ type: Boolean })
+], SegmentedButtonItem.prototype, "disabled", void 0);
 __decorate([
     property({ type: Boolean })
-], SegmentedButtonItem.prototype, "iconEnd", void 0);
+], SegmentedButtonItem.prototype, "selected", void 0);
+__decorate([
+    property()
+], SegmentedButtonItem.prototype, "tooltip", void 0);
+__decorate([
+    property({ defaultValue: undefined })
+], SegmentedButtonItem.prototype, "accessibleName", void 0);
+__decorate([
+    property({ defaultValue: "" })
+], SegmentedButtonItem.prototype, "accessibleNameRef", void 0);
+__decorate([
+    property()
+], SegmentedButtonItem.prototype, "icon", void 0);
 __decorate([
     property({ type: Boolean })
-], SegmentedButtonItem.prototype, "submits", void 0);
+], SegmentedButtonItem.prototype, "iconOnly", void 0);
+__decorate([
+    property({ type: Boolean })
+], SegmentedButtonItem.prototype, "nonInteractive", void 0);
+__decorate([
+    property({ type: String, defaultValue: "0", noAttribute: true })
+], SegmentedButtonItem.prototype, "forcedTabIndex", void 0);
 __decorate([
     property({ validator: Integer, defaultValue: 0 })
 ], SegmentedButtonItem.prototype, "posInSet", void 0);
 __decorate([
     property({ validator: Integer, defaultValue: 0 })
 ], SegmentedButtonItem.prototype, "sizeOfSet", void 0);
+__decorate([
+    slot({ type: Node, "default": true })
+], SegmentedButtonItem.prototype, "text", void 0);
 SegmentedButtonItem = SegmentedButtonItem_1 = __decorate([
     customElement({
         tag: "ui5-segmented-button-item",
+        renderer: litRender,
         template: SegmentedButtonItemTemplate,
+        styles: segmentedButtonItemCss,
         dependencies: [Icon],
     })
 ], SegmentedButtonItem);

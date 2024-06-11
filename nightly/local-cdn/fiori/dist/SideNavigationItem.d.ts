@@ -1,6 +1,7 @@
 import "@ui5/webcomponents-icons/dist/navigation-right-arrow.js";
 import "@ui5/webcomponents-icons/dist/navigation-down-arrow.js";
 import "@ui5/webcomponents-icons/dist/circle-task-2.js";
+import "@ui5/webcomponents-icons/dist/arrow-right.js";
 import type SideNavigationItemBase from "./SideNavigationItemBase.js";
 import SideNavigationSelectableItemBase from "./SideNavigationSelectableItemBase.js";
 import type SideNavigationSubItem from "./SideNavigationSubItem.js";
@@ -73,5 +74,8 @@ declare class SideNavigationItem extends SideNavigationSelectableItemBase {
     _onfocusout: () => void;
     _onmouseenter: () => void;
     _onmouseleave: () => void;
+    get isSideNavigationItem(): boolean;
 }
+declare const isInstanceOfSideNavigationItem: (object: any) => object is SideNavigationItem;
 export default SideNavigationItem;
+export { isInstanceOfSideNavigationItem };

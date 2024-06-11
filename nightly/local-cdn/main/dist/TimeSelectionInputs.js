@@ -6,13 +6,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
-import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import "@ui5/webcomponents-localization/dist/features/calendar/Gregorian.js"; // default calendar for bundling
 import Integer from "@ui5/webcomponents-base/dist/types/Integer.js";
 import { isEnter, isNumber, } from "@ui5/webcomponents-base/dist/Keys.js";
 import TimePickerInternals from "./TimePickerInternals.js";
 import Input from "./Input.js";
 import SegmentedButton from "./SegmentedButton.js";
+import SegmentedButtonItem from "./SegmentedButtonItem.js";
 import InputType from "./types/InputType.js";
 import { TIMEPICKER_INPUTS_ENTER_HOURS, TIMEPICKER_INPUTS_ENTER_MINUTES, TIMEPICKER_INPUTS_ENTER_SECONDS, } from "./generated/i18n/i18n-defaults.js";
 // Template
@@ -297,12 +297,12 @@ __decorate([
 TimeSelectionInputs = __decorate([
     customElement({
         tag: "ui5-time-selection-inputs",
-        renderer: litRender,
         styles: TimeSelectionInputsCss,
         template: TimeSelectionInputsTemplate,
         dependencies: [
             Input,
             SegmentedButton,
+            SegmentedButtonItem,
         ],
     })
 ], TimeSelectionInputs);

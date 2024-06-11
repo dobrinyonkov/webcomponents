@@ -1,4 +1,4 @@
-import DataType from "./types/DataType.js";
+import type DataType from "./types/DataType.js";
 type SlotInvalidation = {
     properties: boolean | Array<string>;
     slots: boolean | Array<string>;
@@ -31,6 +31,8 @@ type Metadata = {
     fastNavigation?: boolean;
     themeAware?: boolean;
     languageAware?: boolean;
+    formAssociated?: boolean;
+    shadowRootOptions?: Partial<ShadowRootInit>;
 };
 type State = Record<string, PropertyValue | Array<SlotValue>>;
 /**
@@ -129,6 +131,11 @@ declare class UI5ElementMetadata {
      * Determines whether this UI5 Element has any theme dependant carachteristics.
      */
     isThemeAware(): boolean;
+    getShadowRootOptions(): Partial<ShadowRootInit>;
+    /**
+     * Determines whether this UI5 Element has any theme dependant carachteristics.
+     */
+    isFormAssociated(): boolean;
     /**
      * Matches a changed entity (property/slot) with the given name against the "invalidateOnChildChange" configuration
      * and determines whether this should cause and invalidation

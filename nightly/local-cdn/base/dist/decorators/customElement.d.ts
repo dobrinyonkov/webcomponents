@@ -14,10 +14,10 @@ declare const customElement: (tagNameOrComponentSettings?: string | {
     styles?: Styles;
     template?: Template;
     dependencies?: Array<typeof UI5Element>;
-    staticAreaStyles?: Styles;
-    staticAreaTemplate?: Template;
     languageAware?: boolean;
     themeAware?: boolean;
     fastNavigation?: boolean;
+    formAssociated?: boolean;
+    shadowRootOptions?: Partial<ShadowRootInit>;
 }) => ClassDecorator;
 export default customElement;

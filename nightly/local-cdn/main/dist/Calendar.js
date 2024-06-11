@@ -16,7 +16,9 @@ import { isF4, isF4Shift, } from "@ui5/webcomponents-base/dist/Keys.js";
 import getCachedLocaleDataInstance from "@ui5/webcomponents-localization/dist/getCachedLocaleDataInstance.js";
 import getLocale from "@ui5/webcomponents-base/dist/locale/getLocale.js";
 import DateFormat from "@ui5/webcomponents-localization/dist/DateFormat.js";
+import UI5Date from "@ui5/webcomponents-localization/dist/dates/UI5Date.js";
 import CalendarDate from "./CalendarDate.js";
+import CalendarDateRange from "./CalendarDateRange.js";
 import CalendarPart from "./CalendarPart.js";
 import CalendarHeader from "./CalendarHeader.js";
 import DayPicker from "./DayPicker.js";
@@ -25,7 +27,7 @@ import YearPicker from "./YearPicker.js";
 import CalendarSelectionMode from "./types/CalendarSelectionMode.js";
 import CalendarPickersMode from "./types/CalendarPickersMode.js";
 import CalendarLegend from "./CalendarLegend.js";
-import "./SpecialCalendarDate.js";
+import SpecialCalendarDate from "./SpecialCalendarDate.js";
 import CalendarLegendItemType from "./types/CalendarLegendItemType.js";
 // Default calendar for bundling
 import "@ui5/webcomponents-localization/dist/features/calendar/Gregorian.js";
@@ -45,7 +47,7 @@ import calendarCSS from "./generated/themes/Calendar.css.js";
  * date string, correctly formatted according to the `ui5-calendar`'s `formatPattern` property.
  * Whenever the user changes the date selection, `ui5-calendar` will automatically create/remove instances
  * of `ui5-date` in itself, unless you prevent this behavior by calling `preventDefault()` for the
- * `selected-dates-change` event. This is useful if you want to control the selected dates externally.
+ * `selection-change` event. This is useful if you want to control the selected dates externally.
  *
  * ### Usage
  *
@@ -64,38 +66,38 @@ import calendarCSS from "./generated/themes/Calendar.css.js";
  * - Day picker:
  *
  * - [F4] - Shows month picker
- * - [SHIFT] + [F4] - Shows year picker
- * - [PAGEUP] - Navigate to the previous month
- * - [PAGEDOWN] - Navigate to the next month
- * - [SHIFT] + [PAGEUP] - Navigate to the previous year
- * - [SHIFT] + [PAGEDOWN] - Navigate to the next year
- * - [CTRL] + [SHIFT] + [PAGEUP] - Navigate ten years backwards
- * - [CTRL] + [SHIFT] + [PAGEDOWN] - Navigate ten years forwards
- * - [HOME] - Navigate to the first day of the week
- * - [END] - Navigate to the last day of the week
- * - [CTRL] + [HOME] - Navigate to the first day of the month
- * - [CTRL] + [END] - Navigate to the last day of the month
+ * - [Shift] + [F4] - Shows year picker
+ * - [Page Up] - Navigate to the previous month
+ * - [Page Down] - Navigate to the next month
+ * - [Shift] + [Page Up] - Navigate to the previous year
+ * - [Shift] + [Page Down] - Navigate to the next year
+ * - [Ctrl] + [Shift] + [Page Up] - Navigate ten years backwards
+ * - [Ctrl] + [Shift] + [Page Down] - Navigate ten years forwards
+ * - [Home] - Navigate to the first day of the week
+ * - [End] - Navigate to the last day of the week
+ * - [Ctrl] + [Home] - Navigate to the first day of the month
+ * - [Ctrl] + [End] - Navigate to the last day of the month
  *
  * - Month picker:
  *
- * - [PAGEUP] - Navigate to the previous year
- * - [PAGEDOWN] - Navigate to the next year
- * - [HOME] - Navigate to the first month of the current row
- * - [END] - Navigate to the last month of the current row
- * - [CTRL] + [HOME] - Navigate to the first month of the current year
- * - [CTRL] + [END] - Navigate to the last month of the year
+ * - [Page Up] - Navigate to the previous year
+ * - [Page Down] - Navigate to the next year
+ * - [Home] - Navigate to the first month of the current row
+ * - [End] - Navigate to the last month of the current row
+ * - [Ctrl] + [Home] - Navigate to the first month of the current year
+ * - [Ctrl] + [End] - Navigate to the last month of the year
  *
  * - Year picker:
  *
- * - [PAGEUP] - Navigate to the previous year range
- * - [PAGEDOWN] - Navigate the next year range
- * - [HOME] - Navigate to the first year of the current row
- * - [END] - Navigate to the last year of the current row
- * - [CTRL] + [HOME] - Navigate to the first year of the current year range
- * - [CTRL] + [END] - Navigate to the last year of the current year range
+ * - [Page Up] - Navigate to the previous year range
+ * - [Page Down] - Navigate the next year range
+ * - [Home] - Navigate to the first year of the current row
+ * - [End] - Navigate to the last year of the current row
+ * - [Ctrl] + [Home] - Navigate to the first year of the current year range
+ * - [Ctrl] + [End] - Navigate to the last year of the current year range
  *
  * #### Fast Navigation
- * This component provides a build in fast navigation group which can be used via `F6 / Shift + F6` or ` Ctrl + Alt(Option) + Down /  Ctrl + Alt(Option) + Up`.
+ * This component provides a build in fast navigation group which can be used via [F6] / [Shift] + [F6] / [Ctrl] + [Alt/Option] / [Down] or [Ctrl] + [Alt/Option] + [Up].
  * In order to use this functionality, you need to import the following module:
  * `import "@ui5/webcomponents-base/dist/features/F6Navigation.js"`
  *
@@ -131,16 +133,6 @@ import calendarCSS from "./generated/themes/Calendar.css.js";
  * @since 1.0.0-rc.11
  */
 let Calendar = class Calendar extends CalendarPart {
-    /**
-     * @private
-     */
-    get _selectedDatesTimestamps() {
-        return this.dates.map(date => {
-            const value = date.value;
-            const validValue = value && !!this.getFormat().parse(value);
-            return validValue ? this._getTimeStampFromString(value) / 1000 : undefined;
-        }).filter((date) => !!date);
-    }
     constructor() {
         super();
         this._valueIsProcessed = false;
@@ -148,19 +140,79 @@ let Calendar = class Calendar extends CalendarPart {
     /**
      * @private
      */
+    get _selectedDatesTimestamps() {
+        let selectedDates = [];
+        if (this.selectionMode === CalendarSelectionMode.Range) {
+            const range = this.dates.find(date => date.hasAttribute("ui5-date-range"));
+            const startDate = range && range.startValue && this.getFormat().parse(range.startValue, true);
+            const endDate = range && range.endValue && this.getFormat().parse(range.endValue, true);
+            if (startDate) {
+                selectedDates.push(startDate.getTime() / 1000);
+            }
+            if (endDate) {
+                selectedDates.push(endDate.getTime() / 1000);
+            }
+        }
+        else {
+            selectedDates = this.dates
+                .filter(dateElement => {
+                return dateElement.hasAttribute("ui5-date")
+                    && dateElement.value
+                    && this._isValidCalendarDate(dateElement.value)
+                    && this._getTimeStampFromString(dateElement.value);
+            })
+                .map(dateElement => Number(this._getTimeStampFromString(dateElement.value)) / 1000);
+        }
+        return selectedDates;
+    }
+    /**
+     * @private
+     */
     _setSelectedDates(selectedDates) {
-        const selectedValues = selectedDates.map(timestamp => this.getFormat().format(new Date(timestamp * 1000), true)); // Format as UTC
-        const valuesInDOM = [...this.dates].map(dateElement => dateElement.value);
-        // Remove all elements for dates that are no longer selected
-        this.dates.filter(dateElement => !selectedValues.includes(dateElement.value)).forEach(dateElement => {
-            this.removeChild(dateElement);
-        });
-        // Create tags for the selected dates that don't already exist in DOM
-        selectedValues.filter(value => !valuesInDOM.includes(value)).forEach(value => {
-            const dateElement = document.createElement(CalendarDate.getMetadata().getTag());
-            dateElement.value = value;
-            this.appendChild(dateElement);
-        });
+        const selectedUTCDates = selectedDates.map(timestamp => this.getFormat().format(UI5Date.getInstance(timestamp * 1000), true));
+        if (this.selectionMode === CalendarSelectionMode.Range) {
+            // Create tags for the selected dates that don't already exist in DOM
+            if (selectedUTCDates.length) {
+                let dateRange = this.dates.find(dateElement => dateElement.hasAttribute("ui5-date-range") && dateElement.startValue === selectedUTCDates[0]);
+                if (!dateRange) {
+                    dateRange = document.createElement(CalendarDateRange.getMetadata().getTag());
+                    dateRange.startValue = selectedUTCDates[0];
+                    this.appendChild(dateRange);
+                }
+                else {
+                    dateRange.endValue = selectedUTCDates[1];
+                }
+                // Remove all elements for dates that are no longer selected
+                this.dates
+                    .filter(dateElement => {
+                    return dateElement.hasAttribute("ui5-date")
+                        || (dateRange && dateElement.startValue !== dateRange.startValue);
+                })
+                    .forEach(dateElement => {
+                    this.removeChild(dateElement);
+                });
+            }
+        }
+        else {
+            const valuesInDOM = this._selectedDatesTimestamps.map(timestamp => this.getFormat().format(UI5Date.getInstance(timestamp * 1000)));
+            // Remove all elements for dates that are no longer selected
+            this.dates
+                .filter(dateElement => {
+                return dateElement.hasAttribute("ui5-date-range")
+                    || (dateElement.hasAttribute("ui5-date") && !selectedUTCDates.includes(dateElement.value));
+            })
+                .forEach(dateElement => {
+                this.removeChild(dateElement);
+            });
+            // Create tags for the selected dates that don't already exist in DOM
+            selectedUTCDates
+                .filter(value => !valuesInDOM.includes(value))
+                .forEach(value => {
+                const dateElement = document.createElement(CalendarDate.getMetadata().getTag());
+                dateElement.value = value;
+                this.appendChild(dateElement);
+            });
+        }
     }
     _isValidCalendarDate(dateString) {
         const date = this.getFormat().parse(dateString);
@@ -179,7 +231,7 @@ let Calendar = class Calendar extends CalendarPart {
         const uniqueDates = new Set();
         const uniqueSpecialDates = [];
         validSpecialDates.forEach(date => {
-            const dateFromValue = new Date(date.value);
+            const dateFromValue = UI5Date.getInstance(date.value);
             const timestamp = dateFromValue.getTime();
             if (!uniqueDates.has(timestamp)) {
                 uniqueDates.add(timestamp);
@@ -244,7 +296,7 @@ let Calendar = class Calendar extends CalendarPart {
     onHeaderShowMonthPress(e) {
         this._currentPickerDOM._autoFocus = false;
         this._currentPicker = "month";
-        this.fireEvent("show-month-press", e);
+        this.fireEvent("show-month-view", e);
     }
     /**
      * The user clicked the "year" button in the header
@@ -252,7 +304,7 @@ let Calendar = class Calendar extends CalendarPart {
     onHeaderShowYearPress(e) {
         this._currentPickerDOM._autoFocus = false;
         this._currentPicker = "year";
-        this.fireEvent("show-year-press", e);
+        this.fireEvent("show-year-view", e);
     }
     get _currentPickerDOM() {
         // Calendar's shadowRoot and all the pickers are always present - the "!" is safe to be used.
@@ -297,7 +349,7 @@ let Calendar = class Calendar extends CalendarPart {
         if (!this.hasSecondaryCalendarType) {
             return;
         }
-        const localDate = new Date(this._timestamp * 1000);
+        const localDate = UI5Date.getInstance(this._timestamp * 1000);
         const secondYearFormat = DateFormat.getDateInstance({ format: "y", calendarType: this._secondaryCalendarType });
         const dateInSecType = transformDateToSecondaryType(this._primaryCalendarType, this._secondaryCalendarType, this._timestamp);
         const secondMonthInfo = convertMonthNumbersToMonthNames(dateInSecType.firstDate.getMonth(), dateInSecType.lastDate.getMonth(), this._secondaryCalendarType);
@@ -329,7 +381,7 @@ let Calendar = class Calendar extends CalendarPart {
             const calendarDate = CalendarDateComponent.fromTimestamp(timestamp * 1000, this._primaryCalendarType);
             return this.getFormat().format(calendarDate.toUTCJSDate(), true);
         });
-        const defaultPrevented = !this.fireEvent("selected-dates-change", { timestamp: this.timestamp, dates: [...selectedDates], values: datesValues }, true);
+        const defaultPrevented = !this.fireEvent("selection-change", { timestamp: this.timestamp, selectedDates: [...selectedDates], selectedValues: datesValues }, true);
         if (!defaultPrevented) {
             this._setSelectedDates(selectedDates);
         }
@@ -367,9 +419,11 @@ let Calendar = class Calendar extends CalendarPart {
     _onkeydown(e) {
         if (isF4(e) && this._currentPicker !== "month") {
             this._currentPicker = "month";
+            this.fireEvent("show-month-view", e);
         }
         if (isF4Shift(e) && this._currentPicker !== "year") {
             this._currentPicker = "year";
+            this.fireEvent("show-year-view", e);
         }
     }
     _onLegendFocusOut() {
@@ -387,7 +441,7 @@ let Calendar = class Calendar extends CalendarPart {
         return this._selectedDatesTimestamps;
     }
     /**
-     * Creates instances of `ui5-date` inside this `ui5-calendar` with values, equal to the provided UTC timestamps
+     * Creates instances of `ui5-date` or `ui5-date-range` inside this `ui5-calendar` with values, equal to the provided UTC timestamps
      * @protected
      * @deprecated
      * @param selectedDates Array of UTC timestamps
@@ -445,7 +499,9 @@ Calendar = __decorate([
         template: CalendarTemplate,
         styles: calendarCSS,
         dependencies: [
+            SpecialCalendarDate,
             CalendarDate,
+            CalendarDateRange,
             CalendarHeader,
             DayPicker,
             MonthPicker,
@@ -459,26 +515,26 @@ Calendar = __decorate([
      * **Note:** If you call `preventDefault()` for this event, the component will not
      * create instances of `ui5-date` for the newly selected dates. In that case you should do this manually.
      * @allowPreventDefault
-     * @param {Array<string>} values The selected dates
-     * @param {Array<number>} dates The selected dates as UTC timestamps
+     * @param {Array<string>} selectedValues The selected dates
+     * @param {Array<number>} selectedDates The selected dates as UTC timestamps
      * @public
      */
     ,
-    event("selected-dates-change", {
+    event("selection-change", {
         detail: {
             /**
              * @public
              */
-            dates: { type: Array },
+            selectedDates: { type: Array },
             /**
              * @public
              */
-            values: { type: Array },
+            selectedValues: { type: Array },
             timestamp: { type: Number },
         },
     }),
-    event("show-month-press"),
-    event("show-year-press")
+    event("show-month-view"),
+    event("show-year-view")
 ], Calendar);
 Calendar.define();
 export default Calendar;

@@ -1,6 +1,7 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import type { ResizeObserverCallback } from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
+import type Toolbar from "@ui5/webcomponents/dist/Toolbar.js";
 import type { ToolbarMinWidthChangeEventDetail } from "@ui5/webcomponents/dist/Toolbar.js";
 /**
  * @class
@@ -32,7 +33,7 @@ import type { ToolbarMinWidthChangeEventDetail } from "@ui5/webcomponents/dist/T
  * @constructor
  * @extends UI5Element
  * @public
- * @since 1.23.0
+ * @since 2.0.0
  */
 declare class DynamicPageTitle extends UI5Element {
     /**
@@ -54,6 +55,16 @@ declare class DynamicPageTitle extends UI5Element {
      */
     focused: boolean;
     /**
+     * Defines the minimum width of the content area.
+     * @private
+     */
+    minContentWidth?: number;
+    /**
+     * Defines the minimum width of the actions area.
+     * @private
+     */
+    minActionsWidth?: number;
+    /**
      * Defines the content of the Heading of the Dynamic Page.
      *
      * @public
@@ -66,23 +77,17 @@ declare class DynamicPageTitle extends UI5Element {
      */
     snappedHeading: HTMLElement[];
     /**
-     * Defines the heading that is shown only when the header is expanded.
+     * Defines the bar with actions in the Dynamic page title.
      *
      * @public
      */
-    expandedHeading: HTMLElement[];
+    actionsBar: HTMLElement[];
     /**
-     * Defines the actions in the Dynamic page title.
+     * Defines the bar with navigation actions in the Dynamic page title.
      *
      * @public
      */
-    actions: HTMLElement[];
-    /**
-     * Defines the navigation actions in the Dynamic page title.
-     *
-     * @public
-     */
-    navigationActions: HTMLElement[];
+    navigationBar: Array<Toolbar>;
     /**
      * Defines the content of the Dynamic page title.
      *
@@ -90,27 +95,29 @@ declare class DynamicPageTitle extends UI5Element {
      */
     content: HTMLElement[];
     /**
+     * Defines the content of the title that is shown only when the header is not snapped.
+     *
+     * @public
+     */
+    subheading: HTMLElement[];
+    /**
      * Defines the content of the title that is shown only when the header is snapped.
      *
      * @public
      */
-    snappedContent: HTMLElement[];
-    /**
-     * Defines the content of the title that is shown only when the header is expanded.
-     *
-     * @public
-     */
-    expandedContent: HTMLElement[];
+    snappedSubheading: HTMLElement[];
     /**
      * Defines the content of the breadcrumbs inside Dynamic Page Title.
      *
      * @public
      */
     breadcrumbs: HTMLElement[];
+    /**
+     * @private
+     */
+    interactive: boolean;
     static i18nBundle: I18nBundle;
     _handleResize: ResizeObserverCallback;
-    minContentWidth?: number;
-    minActionsWidth?: number;
     constructor();
     static onDefine(): Promise<void>;
     onEnterDOM(): void;
@@ -118,16 +125,16 @@ declare class DynamicPageTitle extends UI5Element {
     onBeforeRendering(): void;
     get styles(): {
         content: {
-            "min-width": string;
+            "min-width": string | undefined;
         };
         actions: {
-            "min-width": string;
+            "min-width": string | undefined;
         };
     };
     get hasContent(): boolean;
-    get hasHeading(): boolean;
-    get headingSlotName(): "heading" | "expandedHeading" | "snappedHeading";
-    get contentSlotName(): "expandedContent" | "snappedContent";
+    get headingSlotName(): "heading" | "snappedHeading";
+    get subheadingSlotName(): "subheading" | "snappedSubheading";
+    get _tabIndex(): "0" | undefined;
     get _headerExpanded(): boolean;
     get _ariaDescribedbyText(): string;
     get _ariaLabelledBy(): string | undefined;
@@ -135,8 +142,6 @@ declare class DynamicPageTitle extends UI5Element {
     handleResize(): void;
     onMinContentWidthChange(e: CustomEvent<ToolbarMinWidthChangeEventDetail>): void;
     onTitleClick(): void;
-    _onfocusout(): void;
-    _onfocusin(): void;
     _onkeydown(e: KeyboardEvent): void;
 }
 export default DynamicPageTitle;

@@ -1,7 +1,8 @@
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import DatePicker from "./DatePicker.js";
 import CalendarPickersMode from "./types/CalendarPickersMode.js";
 import type { DatePickerChangeEventDetail as DateRangePickerChangeEventDetail, DatePickerInputEventDetail as DateRangePickerInputEventDetail } from "./DatePicker.js";
-import type { CalendarSelectedDatesChangeEventDetail } from "./Calendar.js";
+import type { CalendarSelectionChangeEventDetail } from "./Calendar.js";
 /**
  * @class
  *
@@ -23,18 +24,18 @@ import type { CalendarSelectedDatesChangeEventDetail } from "./Calendar.js";
  * increment or decrement respectively the range start or end date, depending on where the cursor is.
  * The following shortcuts are available:
  *
- * - [PAGEDOWN] - Decrements the corresponding day of the month by one
- * - [SHIFT] + [PAGEDOWN] - Decrements the corresponding month by one
- * - [SHIFT] + [CTRL] + [PAGEDOWN] - Decrements the corresponding year by one
- * - [PAGEUP] - Increments the corresponding day of the month by one
- * - [SHIFT] + [PAGEUP] - Increments the corresponding month by one
- * - [SHIFT] + [CTRL] + [PAGEUP] - Increments the corresponding year by one
+ * - [Page Down] - Decrements the corresponding day of the month by one
+ * - [Shift] + [Page Down] - Decrements the corresponding month by one
+ * - [Shift] + [Ctrl] + [Page Down] - Decrements the corresponding year by one
+ * - [Page Up] - Increments the corresponding day of the month by one
+ * - [Shift] + [Page Up] - Increments the corresponding month by one
+ * - [Shift] + [Ctrl] + [Page Up] - Increments the corresponding year by one
  * @constructor
  * @extends DatePicker
  * @since 1.0.0-rc.8
  * @public
  */
-declare class DateRangePicker extends DatePicker {
+declare class DateRangePicker extends DatePicker implements IFormInputElement {
     /**
     * Determines the symbol which separates the dates.
     * If not supplied, the default time interval delimiter for the current locale will be used.
@@ -48,6 +49,7 @@ declare class DateRangePicker extends DatePicker {
     */
     _tempValue: string;
     private _prevDelimiter;
+    get formFormattedValue(): string | FormData;
     constructor();
     /**
      * **Note:** The getter method is inherited and not supported. If called it will return an empty value.
@@ -91,6 +93,8 @@ declare class DateRangePicker extends DatePicker {
      * @default null
      */
     get endDateValue(): Date | null;
+    get startValue(): string;
+    get endValue(): string;
     /**
      * @override
      */
@@ -120,7 +124,7 @@ declare class DateRangePicker extends DatePicker {
     /**
      * @override
      */
-    onSelectedDatesChange(event: CustomEvent<CalendarSelectedDatesChangeEventDetail>): void;
+    onSelectedDatesChange(event: CustomEvent<CalendarSelectionChangeEventDetail>): void;
     /**
      * @override
      */

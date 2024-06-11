@@ -2,13 +2,13 @@ import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 import type { ResizeObserverCallback } from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import Popover from "./Popover.js";
+import type PopoverHorizontalAlign from "./types/PopoverHorizontalAlign.js";
 import "@ui5/webcomponents-icons/dist/error.js";
 import "@ui5/webcomponents-icons/dist/alert.js";
 import "@ui5/webcomponents-icons/dist/sys-enter-2.js";
 import "@ui5/webcomponents-icons/dist/information.js";
-import type FormSupportT from "./features/InputElementsFormSupport.js";
-import type { IFormElement } from "./features/InputElementsFormSupport.js";
 type TokenizedText = Array<string>;
 type IndexedTokenizedText = Array<{
     text: string;
@@ -24,7 +24,7 @@ type ExceededText = {
  *
  * ### Overview
  *
- * The `ui5-textarea` component is used to enter multiple lines of text.
+ * The `ui5-textarea` component is used to enter multiple rows of text.
  *
  * When empty, it can hold a placeholder similar to a `ui5-input`.
  * You can define the rows of the `ui5-textarea` and also determine specific behavior when handling long texts.
@@ -37,7 +37,7 @@ type ExceededText = {
  * @public
  * @csspart textarea - Used to style the native textarea
  */
-declare class TextArea extends UI5Element implements IFormElement {
+declare class TextArea extends UI5Element implements IFormInputElement {
     /**
      * Defines the value of the component.
      * @formEvents change input
@@ -88,7 +88,7 @@ declare class TextArea extends UI5Element implements IFormElement {
      */
     valueState: `${ValueState}`;
     /**
-     * Defines the number of visible text lines for the component.
+     * Defines the number of visible text rows for the component.
      *
      * **Notes:**
      *
@@ -124,20 +124,15 @@ declare class TextArea extends UI5Element implements IFormElement {
      */
     growing: boolean;
     /**
-     * Defines the maximum number of lines that the component can grow.
+     * Defines the maximum number of rows that the component can grow.
      * @default 0
      * @public
      */
-    growingMaxLines: number;
+    growingMaxRows: number;
     /**
-     * Determines the name with which the component will be submitted in an HTML form.
+     * Determines the name by which the component will be identified upon submission in an HTML form.
      *
-     * **Important:** For the `name` property to have effect, you must add the following import to your project:
-     * `import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`
-     *
-     * **Note:** When set, a native `input` HTML element
-     * will be created inside the component so that it can be submitted as
-     * part of an HTML form. Do not use this property unless you need to submit a form.
+     * **Note:** This property is only applicable within the context of an HTML Form element.
      * @default ""
      * @public
      */
@@ -178,6 +173,7 @@ declare class TextArea extends UI5Element implements IFormElement {
     _width?: number;
     /**
      * Defines the value state message that will be displayed as pop up under the component.
+     * The value state message slot should contain only one root element.
      *
      * **Note:** If not specified, a default text (in the respective language) will be displayed.
      *
@@ -187,21 +183,18 @@ declare class TextArea extends UI5Element implements IFormElement {
      * @public
      */
     valueStateMessage: Array<HTMLElement>;
-    /**
-     * The slot is used to render native `input` HTML element within Light DOM to enable form submit,
-     * when `name` property is set.
-     * @private
-     */
-    formSupport: Array<HTMLElement>;
     _fnOnResize: ResizeObserverCallback;
     _firstRendering: boolean;
     _openValueStateMsgPopover: boolean;
     _exceededTextProps: ExceededText;
     _keyDown?: boolean;
-    FormSupport?: typeof FormSupportT;
     previousValue: string;
     valueStatePopover?: Popover;
     static i18nBundle: I18nBundle;
+    get formValidityMessage(): string;
+    get formValidity(): ValidityStateFlags;
+    formElementAnchor(): Promise<HTMLElement | undefined>;
+    get formFormattedValue(): FormData | string | null;
     static onDefine(): Promise<void>;
     constructor();
     onEnterDOM(): void;
@@ -220,9 +213,9 @@ declare class TextArea extends UI5Element implements IFormElement {
     _onResize(): void;
     _setCSSParams(): void;
     toggleValueStateMessage(toggle: boolean): void;
-    openPopover(): Promise<void>;
-    closePopover(): Promise<void>;
-    _getPopover(): Promise<Popover>;
+    openPopover(): void;
+    closePopover(): void;
+    _getPopover(): Popover;
     _tokenizeText(value: string): {
         text: string;
         last: boolean;
@@ -264,22 +257,22 @@ declare class TextArea extends UI5Element implements IFormElement {
     get hasCustomValueState(): boolean;
     get hasValueState(): boolean;
     get valueStateMessageText(): Node[];
-    get _valueStatePopoverHorizontalAlign(): "Left" | "Right";
+    get _valueStatePopoverHorizontalAlign(): `${PopoverHorizontalAlign}`;
     /**
      * This method is relevant for sap_horizon theme only
      */
     get _valueStateMessageIcon(): string;
     get valueStateTextMappings(): {
-        Success: string;
+        Positive: string;
         Information: string;
-        Error: string;
-        Warning: string;
+        Negative: string;
+        Critical: string;
     };
     get valueStateTypeMappings(): {
-        Success: string;
+        Positive: string;
         Information: string;
-        Error: string;
-        Warning: string;
+        Negative: string;
+        Critical: string;
     };
 }
 export default TextArea;

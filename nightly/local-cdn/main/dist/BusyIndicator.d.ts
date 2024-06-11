@@ -51,7 +51,7 @@ declare class BusyIndicator extends UI5Element {
     text: string;
     /**
      * Defines the size of the component.
-     * @default "Medium"
+     * @default "M"
      * @public
      */
     size: `${BusyIndicatorSize}`;
@@ -93,10 +93,6 @@ declare class BusyIndicator extends UI5Element {
     get classes(): {
         root: {
             "ui5-busy-indicator-root": boolean;
-        };
-        textPosition: {
-            "ui5-busy-indicator-text-placement-top ": boolean;
-            "ui5-busy-indicator-text-placement-bottom ": boolean;
         };
     };
     get textPosition(): {

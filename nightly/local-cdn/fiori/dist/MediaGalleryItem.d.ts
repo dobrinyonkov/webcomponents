@@ -15,7 +15,7 @@ import type { IMediaGalleryItem } from "./MediaGallery.js";
  * When focused, the user can use the following keyboard
  * shortcuts in order to perform a navigation:
  *
- * - [SPACE/ENTER/RETURN] - Trigger `ui5-click` event
+ * - [Space] / [Enter] or [Return] - Trigger `ui5-click` event
  *
  * ### ES6 Module Import
  * `import "@ui5/webcomponents-fiori/dist/MediaGalleryItem.js";` (comes with `ui5-media-gallery`)
@@ -67,10 +67,6 @@ declare class MediaGalleryItem extends UI5Element implements IMediaGalleryItem {
     /**
      * @private
      */
-    focused: boolean;
-    /**
-     * @private
-     */
     forcedTabIndex: string;
     /**
      * @private
@@ -111,8 +107,6 @@ declare class MediaGalleryItem extends UI5Element implements IMediaGalleryItem {
     _updateThumbnailLoaded(image: HTMLImageElement): void;
     _onkeydown(e: KeyboardEvent): void;
     _onkeyup(e: KeyboardEvent): void;
-    _onfocusout(): void;
-    _onfocusin(): void;
     _fireItemClick(): void;
 }
 export default MediaGalleryItem;

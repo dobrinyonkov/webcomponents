@@ -12,10 +12,12 @@ import CalendarDate from "@ui5/webcomponents-localization/dist/dates/CalendarDat
 import modifyDateBy from "@ui5/webcomponents-localization/dist/dates/modifyDateBy.js";
 import getTodayUTCTimestamp from "@ui5/webcomponents-localization/dist/dates/getTodayUTCTimestamp.js";
 import { DATERANGE_DESCRIPTION } from "./generated/i18n/i18n-defaults.js";
+import DateRangePickerTemplate from "./generated/templates/DateRangePickerTemplate.lit.js";
 // Styles
 import DateRangePickerCss from "./generated/themes/DateRangePicker.css.js";
 import DatePicker from "./DatePicker.js";
 import CalendarPickersMode from "./types/CalendarPickersMode.js";
+import CalendarDateRange from "./CalendarDateRange.js";
 /**
  * @class
  *
@@ -37,18 +39,29 @@ import CalendarPickersMode from "./types/CalendarPickersMode.js";
  * increment or decrement respectively the range start or end date, depending on where the cursor is.
  * The following shortcuts are available:
  *
- * - [PAGEDOWN] - Decrements the corresponding day of the month by one
- * - [SHIFT] + [PAGEDOWN] - Decrements the corresponding month by one
- * - [SHIFT] + [CTRL] + [PAGEDOWN] - Decrements the corresponding year by one
- * - [PAGEUP] - Increments the corresponding day of the month by one
- * - [SHIFT] + [PAGEUP] - Increments the corresponding month by one
- * - [SHIFT] + [CTRL] + [PAGEUP] - Increments the corresponding year by one
+ * - [Page Down] - Decrements the corresponding day of the month by one
+ * - [Shift] + [Page Down] - Decrements the corresponding month by one
+ * - [Shift] + [Ctrl] + [Page Down] - Decrements the corresponding year by one
+ * - [Page Up] - Increments the corresponding day of the month by one
+ * - [Shift] + [Page Up] - Increments the corresponding month by one
+ * - [Shift] + [Ctrl] + [Page Up] - Increments the corresponding year by one
  * @constructor
  * @extends DatePicker
  * @since 1.0.0-rc.8
  * @public
  */
 let DateRangePicker = DateRangePicker_1 = class DateRangePicker extends DatePicker {
+    get formFormattedValue() {
+        const values = this._splitValueByDelimiter(this.value || "").filter(Boolean);
+        if (values.length) {
+            const formData = new FormData();
+            for (let i = 0; i < values.length; i++) {
+                formData.append(this.name, values[i]);
+            }
+            return formData;
+        }
+        return this.value;
+    }
     constructor() {
         super();
         this._prevDelimiter = null;
@@ -121,6 +134,12 @@ let DateRangePicker = DateRangePicker_1 = class DateRangePicker extends DatePick
     get endDateValue() {
         return CalendarDate.fromTimestamp(this._endDateTimestamp * 1000).toLocalJSDate();
     }
+    get startValue() {
+        return this._calendarSelectedDates[0] || "";
+    }
+    get endValue() {
+        return this._calendarSelectedDates[1] || "";
+    }
     /**
      * @override
      */
@@ -176,7 +195,7 @@ let DateRangePicker = DateRangePicker_1 = class DateRangePicker extends DatePick
      */
     onSelectedDatesChange(event) {
         event.preventDefault(); // never let the calendar update its own dates, the parent component controls them
-        const values = event.detail.values;
+        const values = event.detail.selectedValues;
         if (values.length === 0) {
             return;
         }
@@ -184,9 +203,9 @@ let DateRangePicker = DateRangePicker_1 = class DateRangePicker extends DatePick
             this._tempValue = values[0];
             return;
         }
-        const newValue = this._buildValue(event.detail.dates[0], event.detail.dates[1]); // the value will be normalized so we don't need to order them here
+        const newValue = this._buildValue(event.detail.selectedDates[0], event.detail.selectedDates[1]); // the value will be normalized so we don't need to order them here
         this._updateValueAndFireEvents(newValue, true, ["change", "value-changed"]);
-        this.closePicker();
+        this._togglePicker();
     }
     /**
      * @override
@@ -296,6 +315,8 @@ DateRangePicker = DateRangePicker_1 = __decorate([
     customElement({
         tag: "ui5-daterange-picker",
         styles: [DatePicker.styles, DateRangePickerCss],
+        template: DateRangePickerTemplate,
+        dependencies: [...DatePicker.dependencies, CalendarDateRange],
     })
 ], DateRangePicker);
 DateRangePicker.define();

@@ -1,5 +1,6 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import type { ColorRGB } from "@ui5/webcomponents-base/dist/util/ColorConversion.js";
 type ColorCoordinates = {
     x: number;
@@ -30,7 +31,7 @@ type ColorCoordinates = {
  * @extends UI5Element
  * @public
  */
-declare class ColorPicker extends UI5Element {
+declare class ColorPicker extends UI5Element implements IFormInputElement {
     /**
      * Defines the currently selected color of the component.
      *
@@ -38,7 +39,16 @@ declare class ColorPicker extends UI5Element {
      * @default "rgba(255, 255, 255, 1)"
      * @public
      */
-    color: string;
+    value: string;
+    /**
+     * Determines the name by which the component will be identified upon submission in an HTML form.
+     *
+     * **Note:** This property is only applicable within the context of an HTML Form element.
+     * @default ""
+     * @public
+     * @since 2.0.0
+     */
+    name: string;
     /**
      * Defines the HEX code of the currently selected color
      *
@@ -50,12 +60,12 @@ declare class ColorPicker extends UI5Element {
      * Defines the current main color which is selected via the hue slider and is shown in the main color square.
      * @private
      */
-    _mainColor: ColorRGB;
+    _mainValue: ColorRGB;
     /**
      * Defines the currenty selected color from the main color section.
      * @private
      */
-    _color: ColorRGB;
+    _value: ColorRGB;
     /**
      * @private
      */
@@ -84,6 +94,8 @@ declare class ColorPicker extends UI5Element {
     mouseDown: boolean;
     mouseIn: boolean;
     static i18nBundle: I18nBundle;
+    formElementAnchor(): Promise<HTMLElement | undefined>;
+    get formFormattedValue(): string;
     static onDefine(): Promise<void>;
     constructor();
     onBeforeRendering(): void;

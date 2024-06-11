@@ -1,6 +1,6 @@
 import Popup from "./Popup.js";
 import type { PopupBeforeCloseEventDetail as PopoverBeforeCloseEventDetail } from "./Popup.js";
-import PopoverPlacementType from "./types/PopoverPlacementType.js";
+import PopoverPlacement from "./types/PopoverPlacement.js";
 import PopoverVerticalAlign from "./types/PopoverVerticalAlign.js";
 import PopoverHorizontalAlign from "./types/PopoverHorizontalAlign.js";
 type PopoverSize = {
@@ -15,7 +15,7 @@ type CalculatedPlacement = {
     arrow: ArrowPosition;
     top: number;
     left: number;
-    placementType: `${PopoverPlacementType}`;
+    placement: `${PopoverPlacement}`;
 };
 /**
  * @class
@@ -69,10 +69,10 @@ declare class Popover extends Popup {
     headerText: string;
     /**
      * Determines on which side the component is placed at.
-     * @default "Right"
+     * @default "End"
      * @public
      */
-    placementType: `${PopoverPlacementType}`;
+    placement: `${PopoverPlacement}`;
     /**
      * Determines the horizontal alignment of the component.
      * @default "Center"
@@ -94,13 +94,6 @@ declare class Popover extends Popup {
      */
     modal: boolean;
     /**
-     * Defines whether the block layer will be shown if modal property is set to true.
-     * @default false
-     * @public
-     * @since 1.0.0-rc.10
-     */
-    hideBackdrop: boolean;
-    /**
      * Determines whether the component arrow is hidden.
      * @default false
      * @public
@@ -114,13 +107,6 @@ declare class Popover extends Popup {
      * @public
      */
     allowTargetOverlap: boolean;
-    /**
-     * Defines the ID or DOM Reference of the element that the popover is shown at
-     * @public
-     * @default undefined
-     * @since 1.2.0
-     */
-    opener?: HTMLElement | string;
     /**
      * Defines whether the content is scrollable.
      * @default false
@@ -141,7 +127,7 @@ declare class Popover extends Popup {
      * Returns the calculated placement depending on the free space
      * @private
      */
-    actualPlacementType: `${PopoverPlacementType}`;
+    actualPlacement: `${PopoverPlacement}`;
     _maxHeight?: number;
     _maxWidth?: number;
     /**
@@ -154,7 +140,7 @@ declare class Popover extends Popup {
      * @public
      */
     footer: Array<HTMLElement>;
-    _opener?: HTMLElement;
+    _opener?: HTMLElement | string;
     _openerRect?: DOMRect;
     _preventRepositionAndClose?: boolean;
     _top?: number;
@@ -163,16 +149,18 @@ declare class Popover extends Popup {
     _width?: string;
     static get VIEWPORT_MARGIN(): number;
     constructor();
-    onAfterRendering(): void;
-    isOpenerClicked(e: MouseEvent): boolean;
     /**
-     * Shows the popover.
-     * @param opener the element that the popover is shown at
-     * @param [preventInitialFocus=false] prevents applying the focus inside the popover
+     * Defines the ID or DOM Reference of the element at which the popover is shown.
+     * When using this attribute in a declarative way, you must only use the `id` (as a string) of the element at which you want to show the popover.
+     * You can only set the `opener` attribute to a DOM Reference when using JavaScript.
      * @public
-     * @returns Resolved when the popover is open
+     * @default undefined
+     * @since 1.2.0
      */
-    showAt(opener: HTMLElement, preventInitialFocus?: boolean): Promise<void>;
+    set opener(value: HTMLElement | string);
+    get opener(): HTMLElement | string | undefined;
+    openPopup(): Promise<void>;
+    isOpenerClicked(e: MouseEvent): boolean;
     /**
      * Override for the _addOpenedPopup hook, which would otherwise just call addOpenedPopup(this)
      * @private
@@ -183,7 +171,8 @@ declare class Popover extends Popup {
      * @private
      */
     _removeOpenedPopup(): void;
-    shouldCloseDueToOverflow(placement: `${PopoverPlacementType}`, openerRect: DOMRect): boolean;
+    getOpenerHTMLElement(opener: HTMLElement | string | undefined): HTMLElement | null | undefined;
+    shouldCloseDueToOverflow(placement: `${PopoverPlacement}`, openerRect: DOMRect): boolean;
     shouldCloseDueToNoOpener(openerRect: DOMRect): boolean;
     isOpenerOutsideViewport(openerRect: DOMRect): boolean;
     /**
@@ -191,7 +180,7 @@ declare class Popover extends Popup {
      */
     _resize(): void;
     reposition(): void;
-    _show(): void;
+    _show(): Promise<void>;
     /**
      * Adjust the desired top position to compensate for shift of the screen
      * caused by opened keyboard on iOS which affects all elements with position:fixed.
@@ -227,12 +216,11 @@ declare class Popover extends Popup {
      * Fallbacks to new placement, prioritizing `Left` and `Right` placements.
      * @private
      */
-    fallbackPlacement(clientWidth: number, clientHeight: number, targetRect: DOMRect, popoverSize: PopoverSize): PopoverPlacementType | undefined;
-    getActualPlacementType(targetRect: DOMRect, popoverSize: PopoverSize): `${PopoverPlacementType}`;
+    fallbackPlacement(clientWidth: number, clientHeight: number, targetRect: DOMRect, popoverSize: PopoverSize): PopoverPlacement | undefined;
+    getActualPlacement(targetRect: DOMRect, popoverSize: PopoverSize): `${PopoverPlacement}`;
     getVerticalLeft(targetRect: DOMRect, popoverSize: PopoverSize): number;
     getHorizontalTop(targetRect: DOMRect, popoverSize: PopoverSize): number;
     get isModal(): boolean;
-    get shouldHideBackdrop(): boolean;
     get _ariaLabelledBy(): "ui5-popup-header" | undefined;
     get styles(): {
         root: {
@@ -243,9 +231,6 @@ declare class Popover extends Popup {
             transform: string;
         };
         content: {};
-        blockLayer: {
-            zIndex: string | number;
-        };
     };
     get classes(): import("@ui5/webcomponents-base/dist/types.js").ClassMap;
     /**
@@ -256,7 +241,7 @@ declare class Popover extends Popup {
      * Hook for descendants to hide footer.
      */
     get _displayFooter(): boolean;
-    get _actualHorizontalAlign(): "Left" | "Right" | "Center" | "Stretch" | PopoverHorizontalAlign.Left | PopoverHorizontalAlign.Right;
+    get _actualHorizontalAlign(): "Start" | "End" | "Center" | "Stretch" | PopoverHorizontalAlign.Start | PopoverHorizontalAlign.End;
 }
 declare const instanceOfPopover: (object: any) => object is Popover;
 export default Popover;

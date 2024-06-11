@@ -59,17 +59,13 @@ import DynamicPageHeaderActions from "./DynamicPageHeaderActions.js";
  *
  * @constructor
  * @extends UI5Element
- * @since 1.23.0
+ * @since 2.0.0
  * @public
+ * @csspart content - Used to style the content of the component
+ * @csspart fit-content - Used to style the fit content container of the component.
+ * @csspart footer - Used to style the footer of the component
  */
 declare class DynamicPage extends UI5Element {
-    /**
-     * Defines if the header is snapped.
-     *
-     * @default false
-     * @public
-     */
-    headerSnapped: boolean;
     /**
      * Defines if the pin button is hidden.
      *
@@ -124,6 +120,7 @@ declare class DynamicPage extends UI5Element {
     static i18nBundle: I18nBundle;
     skipSnapOnScroll: boolean;
     showHeaderInStickArea: boolean;
+    _headerSnapped: boolean;
     _updateMediaRange: ResizeObserverCallback;
     constructor();
     static onDefine(): Promise<void>;
@@ -142,12 +139,25 @@ declare class DynamicPage extends UI5Element {
     get _accAttributesForHeaderActions(): {
         controls: string;
     };
+    get headerTabIndex(): -1 | 0;
+    get headerAriaHidden(): boolean;
+    get hasHeading(): boolean;
+    get headerSnapped(): boolean;
+    /**
+     * Defines if the header is snapped.
+     *
+     * @default false
+     * @public
+     */
+    set headerSnapped(snapped: boolean);
     snapOnScroll(): void;
     snapTitleByScroll(): void;
     onExpandClick(): Promise<void>;
     onPinClick(): Promise<void>;
     onToggleTitle(): Promise<void>;
-    _toggleHeader(): void;
+    _toggleHeader(): Promise<void>;
+    onExpandHoverIn(): Promise<void>;
+    onExpandHoverOut(): Promise<void>;
     updateMediaRange(): void;
 }
 export default DynamicPage;

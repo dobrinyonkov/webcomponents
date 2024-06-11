@@ -14,7 +14,6 @@ import "@ui5/webcomponents-localization/dist/features/calendar/Japanese.js";
 import "@ui5/webcomponents-localization/dist/features/calendar/Persian.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import * as defaultTexts from "./generated/i18n/i18n-defaults.js";
-import "./features/InputElementsFormSupport.js";
 import "./features/ColorPaletteMoreColors.js";
 import "./features/InputSuggestions.js";
 declare const testAssets: {
@@ -47,6 +46,7 @@ declare const testAssets: {
     detachThemeLoaded: (listener: (theme: string) => void) => void;
     getIconNames: () => Promise<string[]>;
     getIconAccessibleName: (name: string) => Promise<string | undefined>;
+    getAcceptIconPathData: () => Promise<string>;
     renderFinished: () => Promise<void>;
     defaultTexts: typeof defaultTexts;
     getExportedIconsValues: () => ("accept" | "SAP-icons-v4/accept" | "SAP-icons-v5/accept" | "tnt/actor" | "tnt-v2/actor" | "tnt-v3/actor" | "business-suite/3d" | "business-suite-v1/3d" | "business-suite-v2/3d")[];

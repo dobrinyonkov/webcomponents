@@ -1,7 +1,9 @@
+/// <reference types="openui5" />
 import type { ResizeObserverCallback } from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import "@ui5/webcomponents-icons/dist/date-time.js";
 import type ResponsivePopover from "./ResponsivePopover.js";
-import type { CalendarSelectedDatesChangeEventDetail } from "./Calendar.js";
+import type { CalendarSelectionChangeEventDetail } from "./Calendar.js";
 import DatePicker from "./DatePicker.js";
 import type { DatePickerChangeEventDetail as DateTimePickerChangeEventDetail, DatePickerInputEventDetail as DateTimePickerInputEventDetail } from "./DatePicker.js";
 import type { TimeSelectionChangeEventDetail } from "./TimePickerInternals.js";
@@ -73,7 +75,7 @@ type PreviewValues = {
  * @since 1.0.0-rc.7
  * @public
  */
-declare class DateTimePicker extends DatePicker {
+declare class DateTimePicker extends DatePicker implements IFormInputElement {
     /**
      * Defines the visibility of the time view in `phoneMode`.
      * For more information, see the `phoneMode` property.
@@ -109,13 +111,10 @@ declare class DateTimePicker extends DatePicker {
     onEnterDOM(): void;
     onExitDOM(): void;
     /**
-     * PUBLIC METHODS
+     * @override
+     * @private
      */
-    /**
-     * Opens the picker.
-     * @public
-     */
-    openPicker(): Promise<void>;
+    _togglePicker(): void;
     /**
      * Read-only getters
      */
@@ -156,7 +155,7 @@ declare class DateTimePicker extends DatePicker {
     /**
      * @override
      */
-    onSelectedDatesChange(e: CustomEvent<CalendarSelectedDatesChangeEventDetail>): void;
+    onSelectedDatesChange(e: CustomEvent<CalendarSelectionChangeEventDetail>): void;
     onTimeSelectionChange(e: CustomEvent<TimeSelectionChangeEventDetail>): void;
     /**
      * Handles document resize to switch between `phoneMode` and normal appearance.
@@ -182,8 +181,9 @@ declare class DateTimePicker extends DatePicker {
      * @override
      */
     _modifyDateValue(amount: number, unit: string, preserveDate: boolean): void;
-    getPicker(): Promise<ResponsivePopover>;
+    getPicker(): ResponsivePopover;
     getSelectedDateTime(): Date;
+    getFormat(): import("sap/ui/core/format/DateFormat").default;
     /**
      * @override
      */

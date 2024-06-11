@@ -1,6 +1,7 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import ResponsivePopover from "./ResponsivePopover.js";
+import ColorPalette from "./ColorPalette.js";
 import type { ColorPaletteItemClickEventDetail, IColorPaletteItem } from "./ColorPalette.js";
 import type ColorPaletteItem from "./ColorPaletteItem.js";
 type ColorPalettePopoverItemClickEventDetail = ColorPaletteItemClickEventDetail;
@@ -67,6 +68,8 @@ declare class ColorPalettePopover extends UI5Element {
     open: boolean;
     /**
      * Defines the ID or DOM Reference of the element that the popover is shown at.
+     * When using this attribute in a declarative way, you must only use the `id` (as a string) of the element at which you want to show the popover.
+     * You can only set the `opener` attribute to a DOM Reference when using JavaScript.
      * @public
      * @default undefined
      * @since 1.21.0
@@ -82,25 +85,11 @@ declare class ColorPalettePopover extends UI5Element {
     constructor();
     get responsivePopover(): ResponsivePopover;
     get respPopover(): ResponsivePopover;
-    /**
-     * Shows the ColorPalettePopover.
-     * @param opener the element that the popover is shown at
-     * @public
-     * @deprecated The method is deprecated in favour of `open` and `opener` properties.
-     * @since 1.1.1
-     */
-    showAt(opener: HTMLElement): void;
-    /**
-     * Shows the ColorPalettePopover.
-     * @param opener the element that the popover is shown at
-     * @public
-     * @since 1.0.0-rc.16
-     * @deprecated The method is deprecated in favour of `open` and `opener` properties.
-     */
-    openPopover(opener: HTMLElement): void;
     closePopover(): void;
     onAfterClose(): void;
+    onAfterOpen(): void;
     onSelectedColor(e: CustomEvent<ColorPaletteItemClickEventDetail>): void;
+    get _colorPalette(): ColorPalette;
     /**
      * Returns if the component is opened.
      * @protected

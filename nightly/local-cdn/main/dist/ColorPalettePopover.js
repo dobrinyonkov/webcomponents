@@ -61,29 +61,6 @@ let ColorPalettePopover = ColorPalettePopover_1 = class ColorPalettePopover exte
     get respPopover() {
         return this.shadowRoot.querySelector("[ui5-responsive-popover]");
     }
-    /**
-     * Shows the ColorPalettePopover.
-     * @param opener the element that the popover is shown at
-     * @public
-     * @deprecated The method is deprecated in favour of `open` and `opener` properties.
-     * @since 1.1.1
-     */
-    showAt(opener) {
-        console.warn("The method 'showAt' is deprecated and will be removed in future, use 'open' and 'opener' props instead."); // eslint-disable-line
-        this.open = true;
-        this.opener = opener;
-    }
-    /**
-     * Shows the ColorPalettePopover.
-     * @param opener the element that the popover is shown at
-     * @public
-     * @since 1.0.0-rc.16
-     * @deprecated The method is deprecated in favour of `open` and `opener` properties.
-     */
-    openPopover(opener) {
-        console.warn("The method 'openPopover' is deprecated and will be removed in future, use 'open' and 'opener' props instead."); // eslint-disable-line
-        this.showAt(opener);
-    }
     closePopover() {
         this.open = false;
     }
@@ -91,9 +68,24 @@ let ColorPalettePopover = ColorPalettePopover_1 = class ColorPalettePopover exte
         this.closePopover();
         this.fireEvent("close");
     }
+    onAfterOpen() {
+        const colorPalette = this._colorPalette;
+        if (colorPalette.showDefaultColor && !colorPalette._currentlySelected) {
+            colorPalette.colorPaletteNavigationElements[0].focus();
+        }
+        else if (colorPalette._shouldFocusRecentColors && colorPalette.showRecentColors) {
+            colorPalette.recentColorsElements[0].focus();
+        }
+        else {
+            colorPalette._currentlySelected?.focus();
+        }
+    }
     onSelectedColor(e) {
         this.closePopover();
         this.fireEvent("item-click", e.detail);
+    }
+    get _colorPalette() {
+        return this.responsivePopover.content[0].querySelector("[ui5-color-palette]");
     }
     /**
      * Returns if the component is opened.

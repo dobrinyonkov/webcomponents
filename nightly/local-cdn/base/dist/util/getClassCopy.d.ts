@@ -13,17 +13,17 @@ declare const getClassCopy: (klass: typeof UI5Element, constructorCallback: () =
         _childChangeListeners: Map<string, (param: import("../UI5Element.js").ChangeInfo & {
             target: UI5Element;
         }) => void>;
+        _slotsAssignedNodes: WeakMap<HTMLSlotElement, Node[]>;
         _slotChangeListeners: Map<string, (this: HTMLSlotElement, ev: Event) => void>;
         _domRefReadyPromise: Promise<void> & {
             _deferredResolve?: import("../types.js").PromiseResolve | undefined;
         };
         _doNotSyncAttributes: Set<string>;
         _state: import("../UI5ElementMetadata.js").State;
+        _internals?: ElementInternals | undefined;
         _getRealDomRef?: (() => HTMLElement) | undefined;
-        staticAreaItem?: import("../StaticAreaItem.js").default | undefined;
         readonly _id: string;
         render(): object;
-        renderStatic(): object;
         connectedCallback(): Promise<void>;
         disconnectedCallback(): void;
         onBeforeRendering(): void;
@@ -43,6 +43,7 @@ declare const getClassCopy: (klass: typeof UI5Element, constructorCallback: () =
         }) => void): void;
         _onChildChange(slotName: string, childChangeInfo: import("../UI5Element.js").ChangeInfo): void;
         attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
+        formAssociatedCallback(): void;
         _updateAttribute(name: string, newValue: import("../UI5ElementMetadata.js").PropertyValue): void;
         _upgradeProperty(this: Record<string, any>, propertyName: string): void;
         _upgradeAllProperties(): void;
@@ -50,7 +51,7 @@ declare const getClassCopy: (klass: typeof UI5Element, constructorCallback: () =
             target: UI5Element;
         }) => void;
         _getSlotChangeListener(slotName: string): (this: HTMLSlotElement, ev: Event) => void;
-        _attachSlotChange(child: HTMLSlotElement, slotName: string): void;
+        _attachSlotChange(slot: HTMLSlotElement, slotName: string, invalidateOnChildChange: boolean): void;
         _detachSlotChange(child: HTMLSlotElement, slotName: string): void;
         _onSlotChange(slotName: string): void;
         onInvalidation(changeInfo: import("../UI5Element.js").ChangeInfo): void;
@@ -71,7 +72,11 @@ declare const getClassCopy: (klass: typeof UI5Element, constructorCallback: () =
         readonly effectiveDir: string | undefined;
         readonly isUI5Element: boolean;
         readonly classes: import("../types.js").ClassMap;
-        getStaticAreaItemDomRef(): Promise<ShadowRoot | null>;
+        readonly accessibilityInfo: import("../types.js").AccessibilityInfo;
+        readonly validity: ValidityState | undefined;
+        readonly validationMessage: string | undefined;
+        checkValidity(): boolean | undefined;
+        reportValidity(): boolean | undefined;
         accessKey: string;
         readonly accessKeyLabel: string;
         autocapitalize: string;
@@ -398,17 +403,14 @@ declare const getClassCopy: (klass: typeof UI5Element, constructorCallback: () =
         blur(): void;
     };
     template?: import("../renderer/executeTemplate.js").TemplateFunction | undefined;
-    staticAreaTemplate?: import("../renderer/executeTemplate.js").TemplateFunction | undefined;
     _metadata: import("../UI5ElementMetadata.js").default;
-    render: import("../UI5Element.js").Renderer;
-    renderer?: import("../UI5Element.js").Renderer | undefined;
+    renderer: import("../UI5Element.js").Renderer;
+    readonly formAssociated: boolean;
     readonly observedAttributes: string[];
     _needsShadowDOM(): boolean;
-    _needsStaticArea(): boolean;
     _generateAccessors(): void;
     metadata: import("../UI5ElementMetadata.js").Metadata;
     styles: import("../types.js").ComponentStylesData;
-    readonly staticAreaStyles: import("../types.js").ComponentStylesData;
     readonly dependencies: (typeof UI5Element)[];
     getUniqueDependencies(this: typeof UI5Element): (typeof UI5Element)[];
     whenDependenciesDefined(): Promise<(typeof UI5Element)[]>;

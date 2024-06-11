@@ -11,6 +11,7 @@ import "@ui5/webcomponents-icons/dist/error.js";
 import "@ui5/webcomponents-icons/dist/alert.js";
 import "@ui5/webcomponents-icons/dist/sys-enter-2.js";
 import "@ui5/webcomponents-icons/dist/information.js";
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import MultiComboBoxItem from "./MultiComboBoxItem.js";
 import Tokenizer from "./Tokenizer.js";
 import type { TokenizerTokenDeleteEventDetail } from "./Tokenizer.js";
@@ -20,9 +21,9 @@ import ResponsivePopover from "./ResponsivePopover.js";
 import List from "./List.js";
 import type { ListSelectionChangeEventDetail } from "./List.js";
 import ComboBoxFilter from "./types/ComboBoxFilter.js";
-import type FormSupportT from "./features/InputElementsFormSupport.js";
 import type ListItemBase from "./ListItemBase.js";
-import { InputEventDetail } from "./Input.js";
+import type { InputEventDetail } from "./Input.js";
+import type PopoverHorizontalAlign from "./types/PopoverHorizontalAlign.js";
 /**
  * Interface for components that may be slotted inside a `ui5-multi-combobox` as items
  * @public
@@ -32,6 +33,8 @@ interface IMultiComboBoxItem extends UI5Element {
     selected: boolean;
     isGroupItem?: boolean;
     stableDomRef: string;
+    _isVisible?: boolean;
+    items?: Array<IMultiComboBoxItem>;
 }
 type ValueStateAnnouncement = Record<Exclude<ValueState, ValueState.None>, string>;
 type ValueStateTypeAnnouncement = Record<Exclude<ValueState, ValueState.None>, string>;
@@ -65,7 +68,7 @@ type MultiComboboxItemWithSelection = {
  *
  * #### Picker
  * If the `ui5-multi-combobox` is focused,
- * you can open or close the drop-down by pressing `F4`, `ALT+UP` or `ALT+DOWN` keys.
+ * you can open or close the drop-down by pressing [F4], [Alt] + [Up] or [Alt] + [Down] keys.
  * Once the drop-down is opened, you can use the `UP` and `DOWN` arrow keys
  * to navigate through the available options and select one by pressing the `Space` or `Enter` keys.
  *
@@ -84,7 +87,7 @@ type MultiComboboxItemWithSelection = {
  * @since 0.11.0
  * @csspart token-\{index\} - Used to style each token(where `token-0` corresponds to the first item)
  */
-declare class MultiComboBox extends UI5Element {
+declare class MultiComboBox extends UI5Element implements IFormInputElement {
     /**
      * Defines the value of the component.
      *
@@ -95,6 +98,17 @@ declare class MultiComboBox extends UI5Element {
      * @public
      */
     value: string;
+    /**
+     * Determines the name by which the component will be identified upon submission in an HTML form.
+     *
+     * **Note:** This property is only applicable within the context of an HTML Form element.
+     * **Note:** When the component is used inside a form element,
+     * the value is sent as the first element in the form data, even if it's empty.
+     * @default ""
+     * @public
+     * @since 2.0.0
+     */
+    name: string;
     /**
      * Defines whether the value will be autcompleted to match an item
      * @default false
@@ -114,7 +128,7 @@ declare class MultiComboBox extends UI5Element {
      * @default false
      * @public
      */
-    allowCustomValues: boolean;
+    noValidation: boolean;
     /**
      * Defines whether the component is in disabled state.
      *
@@ -216,6 +230,7 @@ declare class MultiComboBox extends UI5Element {
     icon: Array<IIcon>;
     /**
      * Defines the value state message that will be displayed as pop up under the component.
+     * The value state message slot should contain only one root element.
      *
      * **Note:** If not specified, a default text (in the respective language) will be displayed.
      *
@@ -236,7 +251,6 @@ declare class MultiComboBox extends UI5Element {
     _shouldFilterItems?: boolean;
     _showMorePressed?: boolean;
     _clearingValue?: boolean;
-    allItemsPopover?: ResponsivePopover;
     valueStateHeader?: HTMLElement;
     list?: List;
     _shouldAutocomplete?: boolean;
@@ -244,16 +258,19 @@ declare class MultiComboBox extends UI5Element {
     _isOpenedByKeyboard?: boolean;
     _itemToFocus?: IMultiComboBoxItem;
     _itemsBeforeOpen: Array<MultiComboboxItemWithSelection>;
-    selectedItems?: Array<IMultiComboBoxItem>;
-    FormSupport?: typeof FormSupportT;
+    selectedItems: Array<IMultiComboBoxItem>;
     static i18nBundle: I18nBundle;
+    get formValidityMessage(): string;
+    get formValidity(): ValidityStateFlags;
+    formElementAnchor(): Promise<HTMLElement | undefined>;
+    get formFormattedValue(): FormData | string | null;
     constructor();
     onEnterDOM(): void;
     onExitDOM(): void;
     _handleResize(): void;
     _handleMobileInput(e: CustomEvent<InputEventDetail>): void;
     _inputChange(): void;
-    _mobileInputChange(e: CustomEvent): Promise<void>;
+    _mobileInputChange(e: CustomEvent): void;
     _togglePopover(): void;
     togglePopoverByDropdownIcon(): void;
     _showFilteredItems(): void;
@@ -288,10 +305,10 @@ declare class MultiComboBox extends UI5Element {
     _handleSelectAll(): void;
     _onListHeaderKeydown(e: KeyboardEvent): Promise<void>;
     _handleSelectAllCheckboxClick(e: CustomEvent): void;
-    _onItemKeydown(e: KeyboardEvent): Promise<void>;
+    _onItemKeydown(e: KeyboardEvent): void;
     _handleArrowCtrl(e: KeyboardEvent): void;
     _onItemTab(): void;
-    _handleArrowNavigation(e: KeyboardEvent, isDownControl: boolean): Promise<void>;
+    _handleArrowNavigation(e: KeyboardEvent, isDownControl: boolean): void;
     _handleArrowDown(): Promise<void>;
     _handleItemRangeSelection(e: KeyboardEvent): void;
     _navigateToNextItem(): void;
@@ -307,14 +324,20 @@ declare class MultiComboBox extends UI5Element {
     static _groupItemFilter(item: IMultiComboBoxItem, idx: number, allItems: Array<IMultiComboBoxItem>, filteredItems: Array<IMultiComboBoxItem>): boolean | undefined;
     _afterOpenPicker(): void;
     _toggle(): void;
+    /**
+     * Retrieves a flat structure of all MultiComboBox items from the slotted nodes.
+     *
+     * @private
+     */
+    _getItems(): Array<IMultiComboBoxItem>;
     _getSelectedItems(): Array<MultiComboBoxItem>;
     _listSelectionChange(e: CustomEvent<ListSelectionChangeEventDetail>): void;
     syncItems(listItems: Array<ListItemBase>): void;
     fireSelectionChange(): boolean;
-    _getRespPopover(): Promise<void>;
+    _getRespPopover(): ResponsivePopover;
     _getList(): Promise<List>;
     _click(): void;
-    handleBeforeTokenizerPopoverOpen(): Promise<void>;
+    handleBeforeTokenizerPopoverOpen(): void;
     _afterClosePicker(): void;
     _beforeOpen(): void;
     _handleTypeAhead(item: IMultiComboBoxItem, filterValue: string): void;
@@ -331,19 +354,19 @@ declare class MultiComboBox extends UI5Element {
     toggle(isToggled: boolean): void;
     handleCancel(): void;
     handleOK(): void;
-    openPopover(): Promise<void>;
+    openPopover(): void;
     _forwardFocusToInner(): void;
     get morePopoverOpener(): HTMLElement;
-    closePopover(): Promise<void>;
-    _getPopover(): Promise<Popover>;
-    _getResponsivePopover(): Promise<ResponsivePopover>;
-    _setValueStateHeader(): Promise<void>;
+    closePopover(): void;
+    _getPopover(): Popover;
+    _getResponsivePopover(): ResponsivePopover;
+    _setValueStateHeader(): void;
     get _tokenizer(): Tokenizer;
     inputFocusIn(e: FocusEvent): void;
     inputFocusOut(e: FocusEvent): void;
     get editable(): boolean;
     get _isFocusInside(): boolean;
-    get selectedItemsListMode(): "None" | "MultiSelect";
+    get selectedItemsListMode(): "None" | "Multiple";
     get _listItemsType(): "Inactive" | "Active";
     get hasValueState(): boolean;
     get hasValueStateMessage(): boolean;
@@ -370,7 +393,7 @@ declare class MultiComboBox extends UI5Element {
     get _showSelectedButtonAccessibleNameText(): string;
     get _dialogOkButton(): string;
     get _tokenizerExpanded(): boolean;
-    get _valueStatePopoverHorizontalAlign(): "Left" | "Right";
+    get _valueStatePopoverHorizontalAlign(): `${PopoverHorizontalAlign}`;
     get iconsCount(): number;
     get clearIconAccessibleName(): string;
     get selectAllCheckboxLabel(): string;

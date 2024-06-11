@@ -11,27 +11,31 @@ import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
+import DOMReference from "@ui5/webcomponents-base/dist/types/DOMReference.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
+import { renderFinished } from "@ui5/webcomponents-base/dist/Render.js";
 import ItemNavigation from "@ui5/webcomponents-base/dist/delegate/ItemNavigation.js";
+import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
+import getActiveElement from "@ui5/webcomponents-base/dist/util/getActiveElement.js";
+import { getFocusedElement } from "@ui5/webcomponents-base/dist/util/PopupUtils.js";
 import ScrollEnablement from "@ui5/webcomponents-base/dist/delegate/ScrollEnablement.js";
 import Integer from "@ui5/webcomponents-base/dist/types/Integer.js";
 import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
-import { isSpace, isSpaceCtrl, isSpaceShift, isLeftCtrl, isRightCtrl, isUpCtrl, isDownCtrl, isUpShift, isDownShift, isLeftShift, isRightShift, isLeftShiftCtrl, isRightShiftCtrl, isEnd, isHome, isHomeShift, isEndShift, isHomeCtrl, isEndCtrl, isRight, isLeft, isUp, isDown, } from "@ui5/webcomponents-base/dist/Keys.js";
+import { isSpace, isSpaceCtrl, isSpaceShift, isLeftCtrl, isRightCtrl, isUpCtrl, isDownCtrl, isUpShift, isDownShift, isLeftShift, isRightShift, isLeftShiftCtrl, isRightShiftCtrl, isDeleteShift, isInsertCtrl, isEnd, isHome, isHomeShift, isEndShift, isPageUpShift, isPageDownShift, isHomeCtrl, isEndCtrl, isRight, isLeft, isUp, isDown, isEscape, } from "@ui5/webcomponents-base/dist/Keys.js";
 import { isPhone } from "@ui5/webcomponents-base/dist/Device.js";
-import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 import ResponsivePopover from "./ResponsivePopover.js";
 import List from "./List.js";
+import ListSelectionMode from "./types/ListSelectionMode.js";
 import Title from "./Title.js";
 import Button from "./Button.js";
-import StandardListItem from "./StandardListItem.js";
+import Icon from "./Icon.js";
+import ListItemStandard from "./ListItemStandard.js";
 import TokenizerTemplate from "./generated/templates/TokenizerTemplate.lit.js";
-import TokenizerPopoverTemplate from "./generated/templates/TokenizerPopoverTemplate.lit.js";
 import { MULTIINPUT_SHOW_MORE_TOKENS, TOKENIZER_ARIA_LABEL, TOKENIZER_POPOVER_REMOVE, TOKENIZER_ARIA_CONTAIN_TOKEN, TOKENIZER_ARIA_CONTAIN_ONE_TOKEN, TOKENIZER_ARIA_CONTAIN_SEVERAL_TOKENS, TOKENIZER_SHOW_ALL_ITEMS, } from "./generated/i18n/i18n-defaults.js";
 // Styles
 import TokenizerCss from "./generated/themes/Tokenizer.css.js";
 import TokenizerPopoverCss from "./generated/themes/TokenizerPopover.css.js";
 import ResponsivePopoverCommonCss from "./generated/themes/ResponsivePopoverCommon.css.js";
-import ValueStateMessageCss from "./generated/themes/ValueStateMessage.css.js";
 // reuse suggestions focus styling for NMore popup
 import SuggestionsCss from "./generated/themes/Suggestions.css.js";
 var ClipboardDataOperation;
@@ -44,10 +48,37 @@ var ClipboardDataOperation;
  *
  * ### Overview
  *
- * A container for tokens.
+ * A `ui5-tokenizer` is an invisible container for `ui5-token`s that supports keyboard navigation and token selection.
+ *
+ * The `ui5-tokenizer` consists of two parts:
+ * - Tokens - displays the available tokens.
+ * - N-more indicator - contains the number of the remaining tokens that cannot be displayed due to the limited space.
+ *
+ * ### Keyboard Handling
+ *
+ * #### Basic Navigation
+ * The `ui5-tokenizer` provides advanced keyboard handling.
+ * When a token is focused the user can use the following keyboard
+ * shortcuts in order to perform a navigation:
+ *
+ * - [Left] or [Right] / [Up] or [Down] - Navigates left and right through the tokens.
+ * - [Home] - Navigates to the first token.
+ * - [End] - Navigates to the last token.
+ *
+ * The user can use the following keyboard shortcuts to perform actions (such as select, delete):
+ *
+ * - [Space] - Selects a token.
+ * - [Backspace] / [Delete] - Deletes a token.
+ * **Note:** The deletion of a token is handled by the application with the use of the `token-delete` event.
+ *
+ * ### ES6 Module Import
+ *
+ * `import "@ui5/webcomponents/dist/Tokenizer.js";`
+ *
  * @constructor
  * @extends UI5Element
- * @private
+ * @public
+ * @since 2.0.0
  */
 let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
     _handleResize() {
@@ -61,15 +92,16 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
             getItemsCallback: this._getVisibleTokens.bind(this),
         });
         this._scrollEnablement = new ScrollEnablement(this);
+        this._tokenDeleting = false;
+        this._deletedDialogItems = [];
     }
     onBeforeRendering() {
-        this._tokensCount = this._getTokens().length;
+        const tokensLength = this._tokens.length;
+        this._tokensCount = tokensLength;
         this._tokens.forEach(token => {
-            token.singleToken = this._tokens.length === 1;
+            token.singleToken = tokensLength === 1;
+            token.readonly = this.readonly;
         });
-        if (!this._tokens.length) {
-            this.closeMorePopover();
-        }
     }
     onEnterDOM() {
         ResizeHandler.register(this.contentDom, this._resizeHandler);
@@ -77,38 +109,39 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
     onExitDOM() {
         ResizeHandler.deregister(this.contentDom, this._resizeHandler);
     }
-    async _openMorePopoverAndFireEvent() {
-        if (!this.preventPopoverOpen) {
-            await this.openMorePopover();
+    _handleNMoreClick() {
+        if (this.disabled) {
+            return;
         }
+        this.expanded = true;
+        if (!this.preventPopoverOpen) {
+            this.open = true;
+            this.scrollToEnd();
+        }
+        this._tokens.forEach(token => {
+            token.forcedTabIndex = "-1";
+        });
+        this._skipTabIndex = true;
         this.fireEvent("show-more-items-press");
-    }
-    async openMorePopover() {
-        (await this.getPopover()).showAt(this.morePopoverOpener || this);
-    }
-    _getTokens() {
-        return this.getSlottedNodes("tokens");
-    }
-    get _tokens() {
-        return this.getSlottedNodes("tokens");
     }
     _onmousedown(e) {
         if (e.target.hasAttribute("ui5-token")) {
             const target = e.target;
+            this.expanded = true;
+            if (this.open) {
+                this._preventCollapse = true;
+            }
             if (!target.toBeDeleted) {
                 this._itemNav.setCurrentItem(target);
+                this._scrollToToken(target);
             }
         }
     }
     onTokenSelect() {
-        const tokens = this._getTokens();
-        if (tokens.length === 1 && tokens[0].isTruncatable) {
-            if (tokens[0].selected) {
-                this.openMorePopover();
-            }
-            else {
-                this.closeMorePopover();
-            }
+        const tokens = this._tokens;
+        const firstToken = tokens[0];
+        if (tokens.length === 1 && firstToken.isTruncatable) {
+            this.open = firstToken.selected;
         }
     }
     _getVisibleTokens() {
@@ -119,36 +152,27 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
             return index < (this._tokens.length - this._nMoreCount);
         });
     }
-    async onAfterRendering() {
+    onAfterRendering() {
+        const tokensArray = this._tokens;
+        const firstToken = tokensArray[0];
         this._nMoreCount = this.overflownTokens.length;
-        if (!this._getTokens().length) {
-            const popover = await this.getPopover();
-            popover.close();
+        if (firstToken && !this.disabled && !this.preventInitialFocus && !this._skipTabIndex) {
+            firstToken.forcedTabIndex = "0";
         }
-        this._scrollEnablement.scrollContainer = (this.expanded || !this.narrowContentDom) ? this.expandedContentDom : this.narrowContentDom;
+        this._scrollEnablement.scrollContainer = this.contentDom;
         if (this.expanded) {
-            this._expandedScrollWidth = this.expandedContentDom.scrollWidth;
-            this.scrollToEnd();
+            this._expandedScrollWidth = this.contentDom.scrollWidth;
         }
-        if (!this.expanded) {
-            this.scrollToStart();
-        }
+        this._tokenDeleting = false;
     }
     _delete(e) {
         const target = e.target;
         if (!e.detail) { // if there are no details, the event is triggered by a click
             this._tokenClickDelete(e, target);
-            if (this._getTokens().length) {
-                this.closeMorePopover();
-            }
+            this.open = false;
             return;
         }
-        if (this._selectedTokens.length) {
-            this._selectedTokens.forEach(token => this.deleteToken(token, e.detail.backSpace));
-        }
-        else {
-            this.deleteToken(target, e.detail.backSpace);
-        }
+        this.deleteToken(target, e.detail.backSpace);
     }
     _tokenClickDelete(e, token) {
         const tokens = this._getVisibleTokens();
@@ -157,11 +181,11 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
         const nextTokenIndex = deletedTokenIndex === tokens.length - 1 ? deletedTokenIndex - 1 : deletedTokenIndex + 1; // The index of the next token that needs to be focused next due to the deletion
         const nextToken = tokens[nextTokenIndex]; // if the last item was deleted this will be undefined
         this._handleCurrentItemAfterDeletion(nextToken);
-        this.fireEvent("token-delete", { ref: token || target });
+        this._tokenDeleting = true;
+        this.fireEvent("token-delete", { tokens: [token] || [target] });
     }
     _handleCurrentItemAfterDeletion(nextToken) {
         if (nextToken && !isPhone()) {
-            this._itemNav.setCurrentItem(nextToken); // update the item navigation with the new token or undefined, if the last was deleted
             setTimeout(() => {
                 nextToken.focus();
             }, 0);
@@ -188,42 +212,115 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
         let nextToken = tokens[nextTokenIndex];
         if (notSelectedTokens.length > 1) {
             while (nextToken && nextToken.selected) {
-                nextToken = forwardFocusToPrevious ? tokens[--nextTokenIndex] : tokens[++nextTokenIndex];
+                nextTokenIndex = forwardFocusToPrevious ? --nextTokenIndex : ++nextTokenIndex;
+                if (nextTokenIndex < 0) {
+                    nextToken = notSelectedTokens[0];
+                }
+                if (nextTokenIndex > notSelectedTokens.length) {
+                    nextToken = notSelectedTokens[notSelectedTokens.length - 1];
+                }
             }
         }
         else {
             nextToken = notSelectedTokens[0];
         }
         this._handleCurrentItemAfterDeletion(nextToken);
-        this.fireEvent("token-delete", { ref: token });
+        this._tokenDeleting = true;
+        if (this._selectedTokens.length) {
+            this.fireEvent("token-delete", { tokens: this._selectedTokens });
+        }
+        else {
+            this.fireEvent("token-delete", { tokens: [token] });
+        }
     }
     async itemDelete(e) {
         const token = e.detail.item.tokenRef;
+        const tokensArray = this._tokens;
         // delay the token deletion in order to close the popover before removing token of the DOM
-        if (this._getTokens().length === 1 && this._getTokens()[0].isTruncatable) {
-            const morePopover = await this.getPopover();
-            morePopover.addEventListener("ui5-after-close", () => {
-                this.fireEvent("token-delete", { ref: token });
+        if (tokensArray.length === 1) {
+            const morePopover = this.getPopover();
+            morePopover.addEventListener("ui5-close", () => {
+                this.fireEvent("token-delete", { tokens: [token] });
             }, {
                 once: true,
             });
-            morePopover.close();
+            this.open = false;
         }
         else {
-            this.fireEvent("token-delete", { ref: token });
+            if (isPhone()) {
+                token._isVisible = false;
+                this._deletedDialogItems.push(token);
+            }
+            else {
+                this.fireEvent("token-delete", { tokens: [token] });
+            }
+            const currentListItem = e.detail.item;
+            const nextListItem = currentListItem.nextElementSibling;
+            const previousListItem = currentListItem.previousElementSibling;
+            const focusItem = nextListItem || previousListItem;
+            if (focusItem) {
+                await renderFinished();
+                focusItem.focus();
+            }
         }
     }
     handleBeforeClose() {
+        const tokensArray = this._tokens;
         if (isPhone()) {
-            this._getTokens().forEach(token => {
+            tokensArray.forEach(token => {
                 token.selected = false;
             });
         }
+        if (!this._tokenDeleting && !this._preventCollapse) {
+            this._preventCollapse = false;
+            this.expanded = false;
+        }
     }
     handleBeforeOpen() {
+        this._tokens.forEach(token => {
+            token._isVisible = true;
+        });
+        const list = this._getList();
+        const firstListItem = list.querySelectorAll("[ui5-li]")[0];
+        list._itemNavigation.setCurrentItem(firstListItem);
         this.fireEvent("before-more-popover-open");
     }
+    handleAfterClose() {
+        this.open = false;
+        this._preventCollapse = false;
+        this._focusedElementBeforeOpen = null;
+        this._tokens.forEach(token => {
+            token._isVisible = true;
+        });
+    }
+    handleDialogButtonPress(e) {
+        const isOkButton = e.target.hasAttribute("data-ui5-tokenizer-dialog-ok-button");
+        const confirm = !!isOkButton;
+        if (confirm && this._deletedDialogItems.length) {
+            this.fireEvent("token-delete", { tokens: this._deletedDialogItems });
+        }
+        this.open = false;
+    }
     _onkeydown(e) {
+        const isCtrl = !!(e.metaKey || e.ctrlKey);
+        if ((isCtrl && ["c", "x"].includes(e.key.toLowerCase())) || isDeleteShift(e) || isInsertCtrl(e)) {
+            e.preventDefault();
+            const isCut = e.key.toLowerCase() === "x" || isDeleteShift(e);
+            const selectedTokens = this._tokens.filter(token => token.selected);
+            const focusedToken = selectedTokens.find(token => token.focused);
+            if (isCut) {
+                const cutResult = this._fillClipboard(ClipboardDataOperation.cut, selectedTokens);
+                focusedToken && this.deleteToken(focusedToken);
+                return cutResult;
+            }
+            return this._fillClipboard(ClipboardDataOperation.copy, selectedTokens);
+        }
+        if (isCtrl && e.key.toLowerCase() === "i" && this._tokens.length > 0) {
+            e.preventDefault();
+            this._preventCollapse = true;
+            this._focusedElementBeforeOpen = getFocusedElement();
+            this.open = true;
+        }
         if (isSpaceShift(e)) {
             e.preventDefault();
         }
@@ -231,13 +328,36 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
             e.preventDefault();
             return this._handleTokenSelection(e, false);
         }
-        if (isHomeShift(e)) {
+        if (isHomeShift(e) || isPageUpShift(e)) {
             this._handleHomeShift(e);
         }
-        if (isEndShift(e)) {
+        if (isEndShift(e) || isPageDownShift(e)) {
             this._handleEndShift(e);
         }
         this._handleItemNavigation(e, this._tokens);
+    }
+    _onPopoverListKeydown(e) {
+        const isCtrl = !!(e.metaKey || e.ctrlKey);
+        if ((isCtrl && e.key.toLowerCase() === "i") || isEscape(e)) {
+            e.preventDefault();
+            this.open = false;
+            this._preventCollapse = true;
+            this._focusedElementBeforeOpen && this._focusedElementBeforeOpen.focus();
+            if (!this._focusedElementBeforeOpen) {
+                this._focusLastToken();
+            }
+        }
+        if (e.key.toLowerCase() === "f7") {
+            e.preventDefault();
+            const eventTarget = e.target;
+            const activeElement = getActiveElement();
+            if (activeElement?.part.value === "native-li") {
+                eventTarget.shadowRoot.querySelector("[part=delete-button]").focus();
+            }
+            else {
+                eventTarget.focus();
+            }
+        }
     }
     _handleItemNavigation(e, tokens) {
         const isCtrl = !!(e.metaKey || e.ctrlKey);
@@ -258,6 +378,7 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
             return this._toggleTokenSelection(tokens);
         }
         if (isLeft(e) || isRight(e) || isUp(e) || isDown(e)) {
+            e.preventDefault();
             const nextTokenIdx = this._calcNextTokenIndex(this._tokens.find(token => token.focused), tokens, (isRight(e) || isDown(e)));
             this._scrollToToken(tokens[nextTokenIdx]);
         }
@@ -268,27 +389,38 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
         }
         const index = endKeyPressed ? tokens.length - 1 : 0;
         tokens[index].focus();
-        this._itemNav.setCurrentItem(tokens[index]);
     }
     _handleHomeShift(e) {
-        const tokens = this.tokens;
+        const tokens = this._tokens;
         const target = e.target;
         const currentTokenIdx = tokens.indexOf(target);
+        const previousSelectedTokens = [...this._selectedTokens];
         tokens.filter((token, index) => index <= currentTokenIdx).forEach(token => {
             token.selected = true;
         });
+        const selectedTokensChanged = JSON.stringify(previousSelectedTokens) !== JSON.stringify(this._selectedTokens);
+        if (selectedTokensChanged) {
+            this.fireEvent("selection-change", {
+                tokens: this._selectedTokens,
+            });
+        }
         tokens[0].focus();
-        this._itemNav.setCurrentItem(tokens[0]);
     }
     _handleEndShift(e) {
-        const tokens = this.tokens;
+        const tokens = this._tokens;
         const target = e.target;
         const currentTokenIdx = tokens.indexOf(target);
+        const previousSelectedTokens = [...this._selectedTokens];
         tokens.filter((token, index) => index >= currentTokenIdx).forEach(token => {
             token.selected = true;
         });
+        const selectedTokensChanged = JSON.stringify(previousSelectedTokens) !== JSON.stringify(this._selectedTokens);
+        if (selectedTokensChanged) {
+            this.fireEvent("selection-change", {
+                tokens: this._selectedTokens,
+            });
+        }
         tokens[tokens.length - 1].focus();
-        this._itemNav.setCurrentItem(tokens[tokens.length - 1]);
     }
     _calcNextTokenIndex(focusedToken, tokens, backwards) {
         if (!tokens.length) {
@@ -314,24 +446,84 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
             tokens[nextIndex].focus();
         }, 0);
         this._scrollToToken(tokens[nextIndex]);
-        this._itemNav.setCurrentItem(tokens[nextIndex]);
     }
     _handleArrowShift(focusedToken, tokens, backwards) {
         const focusedTokenIndex = tokens.indexOf(focusedToken);
         const nextIndex = backwards ? (focusedTokenIndex + 1) : (focusedTokenIndex - 1);
+        const previousSelectedTokens = [...this._selectedTokens];
         if (nextIndex === -1 || nextIndex === tokens.length) {
             return;
         }
         focusedToken.selected = true;
         tokens[nextIndex].selected = true;
-        setTimeout(() => {
-            tokens[nextIndex].focus();
-        }, 0);
+        const selectedTokensChanged = JSON.stringify(previousSelectedTokens) !== JSON.stringify(this._selectedTokens);
+        if (selectedTokensChanged) {
+            this.fireEvent("selection-change", {
+                tokens: this._selectedTokens,
+            });
+        }
+        tokens[nextIndex].focus();
         this._scrollToToken(tokens[nextIndex]);
-        this._itemNav.setCurrentItem(tokens[nextIndex]);
     }
     _click(e) {
+        if (e.metaKey || e.ctrlKey) {
+            this.fireEvent("selection-change", {
+                tokens: this._selectedTokens,
+            });
+            return;
+        }
+        const targetToken = e.target;
+        if (!e.shiftKey) {
+            this._previousToken = targetToken;
+        }
+        let focusedToken = targetToken;
+        if (this._previousToken) {
+            focusedToken = this._previousToken;
+        }
+        else {
+            this._previousToken = focusedToken;
+        }
+        if (e.shiftKey) {
+            const tokensArray = this._tokens;
+            const lastClickedIndex = tokensArray.indexOf(targetToken);
+            const firstSelectedTokenIndex = tokensArray.indexOf(focusedToken);
+            const start = Math.min(lastClickedIndex, firstSelectedTokenIndex);
+            const end = Math.max(lastClickedIndex, firstSelectedTokenIndex);
+            if (lastClickedIndex !== -1) {
+                tokensArray.forEach((token, i) => {
+                    token.selected = i >= start && i <= end;
+                });
+            }
+            this.fireEvent("selection-change", {
+                tokens: this._selectedTokens,
+            });
+            return;
+        }
         this._handleTokenSelection(e);
+    }
+    _onfocusin(e) {
+        const target = e.target;
+        this.open = false;
+        this._itemNav.setCurrentItem(target);
+        if (!this.expanded) {
+            this.expanded = true;
+        }
+    }
+    _onfocusout(e) {
+        const relatedTarget = e.relatedTarget;
+        this._tokens.forEach(token => {
+            token.forcedTabIndex = "-1";
+        });
+        this._itemNav._currentIndex = -1;
+        this._skipTabIndex = true;
+        if (!this.contains(relatedTarget)) {
+            this._tokens[0].forcedTabIndex = "0";
+            this._skipTabIndex = false;
+        }
+        if (!this._tokenDeleting && !this._preventCollapse) {
+            this._preventCollapse = false;
+            this.expanded = false;
+        }
     }
     _toggleTokenSelection(tokens) {
         if (!tokens || !tokens.length) {
@@ -339,6 +531,9 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
         }
         const tokensAreSelected = tokens.every(token => token.selected);
         tokens.forEach(token => { token.selected = !tokensAreSelected; });
+        this.fireEvent("selection-change", {
+            tokens: this._selectedTokens,
+        });
     }
     _handleTokenSelection(e, deselectAll = true) {
         const target = e.target;
@@ -349,11 +544,13 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
                     token.selected = false;
                 }
             });
+            this.fireEvent("selection-change", {
+                tokens: this._selectedTokens,
+            });
         }
     }
     _fillClipboard(shortcutName, tokens) {
         const tokensTexts = tokens.filter(token => token.selected).map(token => token.text).join("\r\n");
-        /* fill clipboard with tokens' texts so parent can handle creation */
         const cutToClipboard = (e) => {
             if (e.clipboardData) {
                 e.clipboardData.setData("text/plain", tokensTexts);
@@ -367,7 +564,7 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
     /**
      * Scrolls the container of the tokens to its beginning.
      * This method is used by MultiInput and MultiComboBox.
-     * @private
+     * @protected
      */
     scrollToStart() {
         if (this._scrollEnablement.scrollContainer) {
@@ -377,10 +574,10 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
     /**
      * Scrolls the container of the tokens to its end when expanded.
      * This method is used by MultiInput and MultiComboBox.
-     * @private
+     * @protected
      */
     scrollToEnd() {
-        const expandedTokenizerScrollWidth = this.expandedContentDom && (this.effectiveDir !== "rtl" ? this.expandedContentDom.scrollWidth : -this.expandedContentDom.scrollWidth);
+        const expandedTokenizerScrollWidth = this.contentDom && (this.effectiveDir !== "rtl" ? this.contentDom.scrollWidth : -this.contentDom.scrollWidth);
         if (this._scrollEnablement.scrollContainer) {
             this._scrollEnablement.scrollTo(expandedTokenizerScrollWidth, 0, 5, 10);
         }
@@ -388,23 +585,29 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
     /**
      * Scrolls token to the visible area of the container.
      * Adds 4 pixels to the scroll position to ensure padding and border visibility on both ends
-     * @private
+     * @protected
      */
     _scrollToToken(token) {
-        if (!this.expandedContentDom) {
+        if (!this.contentDom) {
             return;
         }
         const tokenRect = token.getBoundingClientRect();
-        const tokenContainerRect = this.expandedContentDom.getBoundingClientRect();
+        const tokenContainerRect = this.contentDom.getBoundingClientRect();
         if (tokenRect.left < tokenContainerRect.left) {
-            this._scrollEnablement.scrollTo(this.expandedContentDom.scrollLeft - (tokenContainerRect.left - tokenRect.left + 5), 0);
+            this._scrollEnablement.scrollTo(this.contentDom.scrollLeft - (tokenContainerRect.left - tokenRect.left + 5), 0);
         }
         else if (tokenRect.right > tokenContainerRect.right) {
-            this._scrollEnablement.scrollTo(this.expandedContentDom.scrollLeft + (tokenRect.right - tokenContainerRect.right + 5), 0);
+            this._scrollEnablement.scrollTo(this.contentDom.scrollLeft + (tokenRect.right - tokenContainerRect.right + 5), 0);
         }
     }
-    async closeMorePopover() {
-        (await this.getPopover()).close(false, false, true);
+    _getList() {
+        return this.getPopover().querySelector("[ui5-list]");
+    }
+    get _tokens() {
+        return this.getSlottedNodes("tokens");
+    }
+    get morePopoverOpener() {
+        return Object.keys(this.opener).length === 0 ? this : this.opener;
     }
     get _nMoreText() {
         if (!this._nMoreCount) {
@@ -416,19 +619,26 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
         return Tokenizer_1.i18nBundle.getText(TOKENIZER_SHOW_ALL_ITEMS, this._nMoreCount);
     }
     get showNMore() {
-        return !this.expanded && this.showMore && !!this.overflownTokens.length;
+        return !this.expanded && !!this.overflownTokens.length;
     }
     get contentDom() {
         return this.shadowRoot.querySelector(".ui5-tokenizer--content");
     }
-    get expandedContentDom() {
-        return this.shadowRoot.querySelector(".ui5-tokenizer-expanded--content");
-    }
-    get narrowContentDom() {
-        return this.shadowRoot.querySelector(".ui5-tokenizer-nmore--content");
+    get moreLink() {
+        return this.shadowRoot.querySelector(".ui5-tokenizer-more-text");
     }
     get tokenizerLabel() {
-        return Tokenizer_1.i18nBundle.getText(TOKENIZER_ARIA_LABEL);
+        const effectiveLabelText = getEffectiveAriaLabelText(this);
+        return effectiveLabelText || Tokenizer_1.i18nBundle.getText(TOKENIZER_ARIA_LABEL);
+    }
+    get tokenizerAriaDescription() {
+        return getEffectiveAriaLabelText(this) ? Tokenizer_1.i18nBundle.getText(TOKENIZER_ARIA_LABEL) : undefined;
+    }
+    get _ariaDisabled() {
+        return this.disabled || undefined;
+    }
+    get _ariaReadonly() {
+        return this.readonly || undefined;
     }
     get morePopoverTitle() {
         return Tokenizer_1.i18nBundle.getText(TOKENIZER_POPOVER_REMOVE);
@@ -437,13 +647,14 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
         if (!this.contentDom) {
             return [];
         }
+        const tokensArray = this._tokens;
         // Reset the overflow prop of the tokens first in order
         // to use their dimensions for calculation because already
         // hidden tokens are set to 'display: none'
-        this._getTokens().forEach(token => {
+        tokensArray.forEach(token => {
             token.overflows = false;
         });
-        return this._getTokens().filter(token => {
+        return tokensArray.filter(token => {
             const parentRect = this.contentDom.getBoundingClientRect();
             const tokenRect = token.getBoundingClientRect();
             const tokenEnd = Number(tokenRect.right.toFixed(2));
@@ -454,123 +665,76 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
             return token.overflows;
         });
     }
-    get noValueStatePopover() {
-        return this.valueState === ValueState.None || this.valueState === ValueState.Success;
-    }
-    get valueStateMessageText() {
-        return this.getSlottedNodes("valueStateMessage").map(el => el.cloneNode(true));
-    }
-    /**
-     * This method is relevant for sap_horizon theme only
-     */
-    get _valueStateMessageIcon() {
-        const iconPerValueState = {
-            Error: "error",
-            Warning: "alert",
-            Success: "sys-enter-2",
-            Information: "information",
-        };
-        return this.valueState !== ValueState.None ? iconPerValueState[this.valueState] : "";
-    }
     get _isPhone() {
         return isPhone();
     }
     get _selectedTokens() {
-        return this._getTokens().filter(token => token.selected);
+        return this._tokens.filter(token => token.selected);
     }
-    get classes() {
-        return {
-            wrapper: {
-                "ui5-tokenizer-root": true,
-                "ui5-tokenizer-nmore--wrapper": this.showMore,
-                "ui5-tokenizer-no-padding": !this._getTokens().length,
-            },
-            content: {
-                "ui5-tokenizer--content": true,
-                "ui5-tokenizer-expanded--content": !this.showNMore,
-                "ui5-tokenizer-nmore--content": this.showNMore,
-            },
-            popover: {
-                "ui5-popover-with-value-state-header-phone": this._isPhone && !this.noValueStatePopover,
-                "ui5-popover-with-value-state-header": !this._isPhone && !this.noValueStatePopover,
-            },
-            popoverValueState: {
-                "ui5-valuestatemessage-root": true,
-                "ui5-valuestatemessage-header": true,
-                "ui5-valuestatemessage--success": this.valueState === ValueState.Success,
-                "ui5-valuestatemessage--error": this.valueState === ValueState.Error,
-                "ui5-valuestatemessage--warning": this.valueState === ValueState.Warning,
-                "ui5-valuestatemessage--information": this.valueState === ValueState.Information,
-            },
-        };
+    get _nMoreListMode() {
+        if (this.readonly || this.disabled) {
+            return ListSelectionMode.None;
+        }
+        return ListSelectionMode.Delete;
     }
     get styles() {
         return {
             popover: {
-                "min-width": this.popoverMinWidth ? `${this.popoverMinWidth}px` : "",
-            },
-            popoverValueStateMessage: {
-                "width": this.popoverMinWidth && !isPhone() ? `${this.popoverMinWidth}px` : "100%",
-                "min-height": "2rem",
-            },
-            popoverHeader: {
-                "min-height": "2rem",
-            },
-            popoverHeaderTitle: {
-                "justify-content": "left",
+                "min-width": this.popoverMinWidth ? `${this.popoverMinWidth}px` : `${this.getBoundingClientRect().width}px`,
             },
         };
-    }
-    _tokensCountText() {
-        const iTokenCount = this._getTokens().length;
-        if (iTokenCount === 0) {
-            return Tokenizer_1.i18nBundle.getText(TOKENIZER_ARIA_CONTAIN_TOKEN);
-        }
-        if (iTokenCount === 1) {
-            return Tokenizer_1.i18nBundle.getText(TOKENIZER_ARIA_CONTAIN_ONE_TOKEN);
-        }
-        return Tokenizer_1.i18nBundle.getText(TOKENIZER_ARIA_CONTAIN_SEVERAL_TOKENS, iTokenCount);
     }
     /**
      * @protected
      */
     _focusLastToken() {
-        if (this.tokens.length === 0) {
+        const tokens = this._tokens;
+        if (tokens.length === 0) {
             return;
         }
-        const lastToken = this.tokens[this.tokens.length - 1];
+        const lastToken = tokens[tokens.length - 1];
         lastToken.focus();
-        this._itemNav.setCurrentItem(lastToken);
     }
     static async onDefine() {
         Tokenizer_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
     }
-    async getPopover() {
-        const staticAreaItem = await this.getStaticAreaItemDomRef();
-        return staticAreaItem.querySelector("[ui5-responsive-popover]");
+    getPopover() {
+        return this.shadowRoot.querySelector("[ui5-responsive-popover]");
     }
 };
 __decorate([
     property({ type: Boolean })
-], Tokenizer.prototype, "showMore", void 0);
+], Tokenizer.prototype, "readonly", void 0);
 __decorate([
     property({ type: Boolean })
 ], Tokenizer.prototype, "disabled", void 0);
+__decorate([
+    property({ defaultValue: undefined })
+], Tokenizer.prototype, "accessibleName", void 0);
+__decorate([
+    property({ defaultValue: undefined })
+], Tokenizer.prototype, "accessibleNameRef", void 0);
+__decorate([
+    property({ type: Boolean })
+], Tokenizer.prototype, "expanded", void 0);
+__decorate([
+    property({ type: Boolean })
+], Tokenizer.prototype, "open", void 0);
+__decorate([
+    property({ validator: DOMReference, defaultValue: "" })
+], Tokenizer.prototype, "opener", void 0);
+__decorate([
+    property({ validator: Integer })
+], Tokenizer.prototype, "popoverMinWidth", void 0);
+__decorate([
+    property({ type: Boolean })
+], Tokenizer.prototype, "preventInitialFocus", void 0);
 __decorate([
     property({ type: Boolean })
 ], Tokenizer.prototype, "preventPopoverOpen", void 0);
 __decorate([
     property({ type: Boolean })
-], Tokenizer.prototype, "expanded", void 0);
-__decorate([
-    property({ type: Object })
-], Tokenizer.prototype, "morePopoverOpener", void 0);
-__decorate([
-    property({ validator: Integer })
-], Tokenizer.prototype, "popoverMinWidth", void 0);
-__decorate([
-    property({ type: ValueState, defaultValue: ValueState.None })
-], Tokenizer.prototype, "valueState", void 0);
+], Tokenizer.prototype, "hidePopoverArrow", void 0);
 __decorate([
     property({ validator: Integer })
 ], Tokenizer.prototype, "_nMoreCount", void 0);
@@ -578,46 +742,88 @@ __decorate([
     property({ validator: Integer })
 ], Tokenizer.prototype, "_tokensCount", void 0);
 __decorate([
-    slot({ type: HTMLElement, "default": true, individualSlots: true })
+    slot({
+        type: HTMLElement,
+        "default": true,
+        individualSlots: true,
+        invalidateOnChildChange: {
+            properties: ["_isVisible"],
+            slots: false,
+        },
+    })
 ], Tokenizer.prototype, "tokens", void 0);
-__decorate([
-    slot()
-], Tokenizer.prototype, "valueStateMessage", void 0);
 Tokenizer = Tokenizer_1 = __decorate([
     customElement({
         tag: "ui5-tokenizer",
         languageAware: true,
         renderer: litRender,
         template: TokenizerTemplate,
-        styles: TokenizerCss,
-        staticAreaStyles: [
+        styles: [
+            TokenizerCss,
             ResponsivePopoverCommonCss,
-            ValueStateMessageCss,
             SuggestionsCss,
             TokenizerPopoverCss,
         ],
-        staticAreaTemplate: TokenizerPopoverTemplate,
         dependencies: [
             ResponsivePopover,
             List,
-            StandardListItem,
+            ListItemStandard,
             Title,
             Button,
+            Icon,
         ],
-    }),
+    })
+    /**
+     * Fired when tokens are being deleted (delete icon, delete or backspace is pressed)
+     * @param {Array} tokens An array containing the deleted tokens.
+     * @public
+     */
+    ,
     event("token-delete", {
         detail: {
-            ref: { type: HTMLElement },
+            /**
+            * @public
+            */
+            tokens: { type: Array },
         },
-    }),
-    event("show-more-items-press", {
+    })
+    /**
+     * Fired when token selection is changed by user interaction
+     *
+     * @param {Array<Token>} tokens An array of the selected items.
+     * @public
+     */
+    ,
+    event("selection-change", {
         detail: {
-            ref: { type: HTMLElement },
+            tokens: { type: Array },
         },
-    }),
+    })
+    /**
+     * Fired when nMore link is pressed.
+     * @private
+     */
+    ,
+    event("show-more-items-press")
+    /**
+     * Fired before nMore Popover is opened.
+     * @private
+     */
+    ,
     event("before-more-popover-open")
 ], Tokenizer);
+const getTokensCountText = (iTokenCount) => {
+    const tokenCountMap = {
+        0: TOKENIZER_ARIA_CONTAIN_TOKEN,
+        1: TOKENIZER_ARIA_CONTAIN_ONE_TOKEN,
+    };
+    if (iTokenCount in tokenCountMap) {
+        return Tokenizer.i18nBundle.getText(tokenCountMap[iTokenCount]);
+    }
+    return Tokenizer.i18nBundle.getText(TOKENIZER_ARIA_CONTAIN_SEVERAL_TOKENS, iTokenCount);
+};
 Tokenizer.define();
 export default Tokenizer;
+export { getTokensCountText };
 export { ClipboardDataOperation };
 //# sourceMappingURL=Tokenizer.js.map

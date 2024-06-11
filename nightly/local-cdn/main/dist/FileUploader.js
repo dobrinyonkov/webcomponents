@@ -11,7 +11,6 @@ import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
-import { getFeature } from "@ui5/webcomponents-base/dist/FeaturesRegistry.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import { getEventMark } from "@ui5/webcomponents-base/dist/MarkedEvents.js";
@@ -22,7 +21,6 @@ import Popover from "./Popover.js";
 import Icon from "./Icon.js";
 // Template
 import FileUploaderTemplate from "./generated/templates/FileUploaderTemplate.lit.js";
-import FileUploaderPopoverTemplate from "./generated/templates/FileUploaderPopoverTemplate.lit.js";
 // Styles
 import FileUploaderCss from "./generated/themes/FileUploader.css.js";
 import ResponsivePopoverCommonCss from "./generated/themes/ResponsivePopoverCommon.css.js";
@@ -52,12 +50,18 @@ import ValueStateMessageCss from "./generated/themes/ValueStateMessage.css.js";
  * @public
  */
 let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
-    static get formAssociated() {
-        return true;
+    async formElementAnchor() {
+        return this.getFocusDomRefAsync();
     }
-    constructor() {
-        super();
-        this._internals = this.attachInternals && this.attachInternals();
+    get formFormattedValue() {
+        if (this.files) {
+            const formData = new FormData();
+            for (let i = 0; i < this.files.length; i++) {
+                formData.append(this.name, this.files[i]);
+            }
+            return formData;
+        }
+        return null;
     }
     _onmouseover() {
         this.content.forEach(item => {
@@ -86,6 +90,22 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
             e.preventDefault();
         }
     }
+    _ondrag(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    _ondrop(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const files = e.dataTransfer?.files;
+        if (files) {
+            this._input.files = files;
+            this._updateValue(files);
+            this.fireEvent("change", {
+                files,
+            });
+        }
+    }
     _onfocusin() {
         this.focused = true;
     }
@@ -103,30 +123,11 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
         }
         return FileUploader_1._emptyFilesList;
     }
-    onBeforeRendering() {
-        this._enableFormSupport();
-    }
     onAfterRendering() {
         if (!this.value) {
             this._input.value = "";
         }
         this.toggleValueStatePopover(this.shouldOpenValueStateMessagePopover);
-    }
-    _enableFormSupport() {
-        const formSupport = getFeature("FormSupport");
-        if (formSupport) {
-            if (this._canUseNativeFormSupport) {
-                this._setFormValue();
-            }
-            else {
-                formSupport.syncNativeFileInput(this, (element, nativeInput) => {
-                    nativeInput.disabled = !!element.disabled;
-                }, this._onChange.bind(this));
-            }
-        }
-        else if (this.name) {
-            console.warn(`In order for the "name" property to have effect, you should also: import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`); // eslint-disable-line
-        }
     }
     _onChange(e) {
         const changedFiles = e.target.files;
@@ -140,15 +141,6 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
             return `${acc}"${currFile.name}" `;
         }, "");
     }
-    _setFormValue() {
-        const formData = new FormData();
-        if (this.files) {
-            for (let i = 0; i < this.files.length; i++) {
-                formData.append(this.name, this.files[i]);
-            }
-        }
-        this._internals.setFormValue(formData);
-    }
     toggleValueStatePopover(open) {
         if (open) {
             this.openValueStatePopover();
@@ -157,21 +149,21 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
             this.closeValueStatePopover();
         }
     }
-    async openValueStatePopover() {
-        const popover = await this._getPopover();
+    openValueStatePopover() {
+        const popover = this._getPopover();
         if (popover) {
-            popover.showAt(this);
+            popover.opener = this;
+            popover.open = true;
         }
     }
-    async closeValueStatePopover() {
-        const popover = await this._getPopover();
+    closeValueStatePopover() {
+        const popover = this._getPopover();
         if (popover) {
-            popover.close();
+            popover.open = false;
         }
     }
-    async _getPopover() {
-        const staticAreaItem = await this.getStaticAreaItemDomRef();
-        return staticAreaItem.querySelector(".ui5-valuestatemessage-popover");
+    _getPopover() {
+        return this.shadowRoot.querySelector(".ui5-valuestatemessage-popover");
     }
     /**
      * in case when the component is not placed in the DOM, return empty FileList, like native input would do
@@ -190,22 +182,15 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
     get titleText() {
         return FileUploader_1.i18nBundle.getText(FILEUPLOADER_TITLE);
     }
-    get _canUseNativeFormSupport() {
-        return !!(this._internals && this._internals.setFormValue);
-    }
-    get _keepInputInShadowDOM() {
-        // only put input in the light dom when ui5-file-uploader is placed inside form and there is no support for form elements
-        return this._canUseNativeFormSupport || !this.name;
-    }
     get _input() {
         return (this.shadowRoot.querySelector("input[type=file]") || this.querySelector("input[type=file][data-ui5-form-support]"));
     }
     get valueStateTextMappings() {
         return {
-            "Success": FileUploader_1.i18nBundle.getText(VALUE_STATE_SUCCESS),
+            "Positive": FileUploader_1.i18nBundle.getText(VALUE_STATE_SUCCESS),
             "Information": FileUploader_1.i18nBundle.getText(VALUE_STATE_INFORMATION),
-            "Error": FileUploader_1.i18nBundle.getText(VALUE_STATE_ERROR),
-            "Warning": FileUploader_1.i18nBundle.getText(VALUE_STATE_WARNING),
+            "Negative": FileUploader_1.i18nBundle.getText(VALUE_STATE_ERROR),
+            "Critical": FileUploader_1.i18nBundle.getText(VALUE_STATE_WARNING),
         };
     }
     get valueStateText() {
@@ -215,7 +200,7 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
         return this.valueState !== ValueState.None;
     }
     get hasValueStateText() {
-        return this.hasValueState && this.valueState !== ValueState.Success;
+        return this.hasValueState && this.valueState !== ValueState.Positive;
     }
     get valueStateMessageText() {
         return this.getSlottedNodes("valueStateMessage").map(el => el.cloneNode(true));
@@ -231,9 +216,9 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
      */
     get _valueStateMessageInputIcon() {
         const iconPerValueState = {
-            Error: "error",
-            Warning: "alert",
-            Success: "sys-enter-2",
+            Negative: "error",
+            Critical: "alert",
+            Positive: "sys-enter-2",
             Information: "information",
         };
         return this.valueState !== ValueState.None ? iconPerValueState[this.valueState] : "";
@@ -242,9 +227,9 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
         return {
             popoverValueState: {
                 "ui5-valuestatemessage-root": true,
-                "ui5-valuestatemessage--success": this.valueState === ValueState.Success,
-                "ui5-valuestatemessage--error": this.valueState === ValueState.Error,
-                "ui5-valuestatemessage--warning": this.valueState === ValueState.Warning,
+                "ui5-valuestatemessage--success": this.valueState === ValueState.Positive,
+                "ui5-valuestatemessage--error": this.valueState === ValueState.Negative,
+                "ui5-valuestatemessage--warning": this.valueState === ValueState.Critical,
                 "ui5-valuestatemessage--information": this.valueState === ValueState.Information,
             },
         };
@@ -296,18 +281,18 @@ __decorate([
 __decorate([
     slot()
 ], FileUploader.prototype, "valueStateMessage", void 0);
-__decorate([
-    slot()
-], FileUploader.prototype, "formSupport", void 0);
 FileUploader = FileUploader_1 = __decorate([
     customElement({
         tag: "ui5-file-uploader",
         languageAware: true,
+        formAssociated: true,
         renderer: litRender,
-        styles: FileUploaderCss,
+        styles: [
+            FileUploaderCss,
+            ResponsivePopoverCommonCss,
+            ValueStateMessageCss,
+        ],
         template: FileUploaderTemplate,
-        staticAreaTemplate: FileUploaderPopoverTemplate,
-        staticAreaStyles: [ResponsivePopoverCommonCss, ValueStateMessageCss],
         dependencies: [
             Input,
             Popover,

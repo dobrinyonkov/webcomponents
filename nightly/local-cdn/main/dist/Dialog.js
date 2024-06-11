@@ -5,7 +5,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var Dialog_1;
-import { isPhone, isDesktop } from "@ui5/webcomponents-base/dist/Device.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
@@ -36,9 +35,9 @@ const STEP_SIZE = 16;
  * Defines the icons corresponding to the dialog's state.
  */
 const ICON_PER_STATE = {
-    [ValueState.Error]: "error",
-    [ValueState.Warning]: "alert",
-    [ValueState.Success]: "sys-enter-2",
+    [ValueState.Negative]: "error",
+    [ValueState.Critical]: "alert",
+    [ValueState.Positive]: "sys-enter-2",
     [ValueState.Information]: "information",
 };
 /**
@@ -76,15 +75,15 @@ const ICON_PER_STATE = {
  * When the `ui5-dialog` has the `draggable` property set to `true` and the header is focused, the user can move the dialog
  * with the following keyboard shortcuts:
  *
- * - [UP/DOWN] arrow keys - Move the dialog up/down.
- * - [LEFT/RIGHT] arrow keys - Move the dialog left/right.
+ * - [Up] or [Down] arrow keys - Move the dialog up/down.
+ * - [Left] or [Right] arrow keys - Move the dialog left/right.
  *
  * #### Resizing
  * When the `ui5-dialog` has the `resizable` property set to `true` and the header is focused, the user can change the size of the dialog
  * with the following keyboard shortcuts:
  *
- * - [SHIFT] + [UP/DOWN] - Decrease/Increase the height of the dialog.
- * - [SHIFT] + [LEFT/RIGHT] - Decrease/Increase the width of the dialog.
+ * - [Shift] + [Up] or [Down] - Decrease/Increase the height of the dialog.
+ * - [Shift] + [Left] or [Right] - Decrease/Increase the width of the dialog.
  *
  * ### ES6 Module Import
  *
@@ -128,20 +127,8 @@ let Dialog = Dialog_1 = class Dialog extends Popup {
     static _isHeader(element) {
         return element.classList.contains("ui5-popup-header-root") || element.getAttribute("slot") === "header";
     }
-    /**
-     * Shows the dialog.
-     * @param [preventInitialFocus=false] Prevents applying the focus inside the popup
-     * @public
-     * @returns Resolves when the dialog is open
-     */
-    async show(preventInitialFocus = false) {
-        await super._open(preventInitialFocus);
-    }
     get isModal() {
         return true;
-    }
-    get shouldHideBackdrop() {
-        return false;
     }
     get _ariaLabelledBy() {
         let ariaLabelledById;
@@ -164,9 +151,6 @@ let Dialog = Dialog_1 = class Dialog extends Popup {
     }
     get ariaDescribedByHeaderTextDraggableAndResizable() {
         return Dialog_1.i18nBundle.getText(DIALOG_HEADER_ARIA_DESCRIBEDBY_DRAGGABLE_RESIZABLE);
-    }
-    get _displayProp() {
-        return "flex";
     }
     /**
      * Determines if the header should be shown.
@@ -205,7 +189,7 @@ let Dialog = Dialog_1 = class Dialog extends Popup {
         if (this.accessibleRole === PopupAccessibleRole.None) {
             return undefined;
         }
-        if (this.state === ValueState.Error || this.state === ValueState.Warning) {
+        if (this.state === ValueState.Negative || this.state === ValueState.Critical) {
             return PopupAccessibleRole.AlertDialog.toLowerCase();
         }
         return this.accessibleRole.toLowerCase();
@@ -217,17 +201,6 @@ let Dialog = Dialog_1 = class Dialog extends Popup {
     onBeforeRendering() {
         super.onBeforeRendering();
         this._isRTL = this.effectiveDir === "rtl";
-        this.onPhone = isPhone();
-        this.onDesktop = isDesktop();
-    }
-    onAfterRendering() {
-        super.onAfterRendering();
-        if (!this.isOpen() && this.open) {
-            this.show();
-        }
-        else if (this.isOpen() && !this.open) {
-            this.close();
-        }
     }
     onEnterDOM() {
         super.onEnterDOM();
@@ -462,12 +435,6 @@ __decorate([
     property({ type: ValueState, defaultValue: ValueState.None })
 ], Dialog.prototype, "state", void 0);
 __decorate([
-    property({ type: Boolean })
-], Dialog.prototype, "onPhone", void 0);
-__decorate([
-    property({ type: Boolean })
-], Dialog.prototype, "onDesktop", void 0);
-__decorate([
     slot()
 ], Dialog.prototype, "header", void 0);
 __decorate([
@@ -478,6 +445,7 @@ Dialog = Dialog_1 = __decorate([
         tag: "ui5-dialog",
         template: DialogTemplate,
         styles: [
+            Popup.styles,
             browserScrollbarCSS,
             PopupsCommonCss,
             dialogCSS,

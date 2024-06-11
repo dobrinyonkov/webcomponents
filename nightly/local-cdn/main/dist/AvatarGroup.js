@@ -15,6 +15,7 @@ import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import { isEnter, isSpace, } from "@ui5/webcomponents-base/dist/Keys.js";
+import { isDesktop } from "@ui5/webcomponents-base/dist/Device.js";
 import Button from "./Button.js";
 import AvatarSize from "./types/AvatarSize.js";
 import AvatarGroupType from "./types/AvatarGroupType.js";
@@ -67,13 +68,6 @@ const offsets = {
  * - `Individual` type: The avatars are displayed side-by-side and each
  * avatar has its own click/tap area.
  *
- * ### Responsive Behavior
- *
- * When the available space is less than the width required to display all avatars,
- * an overflow visualization appears as a button placed at the end with the same shape
- * and size as the avatars. The visualization displays the number of avatars that have overflowed
- * and are not currently visible.
- *
  * ### Usage
  *
  * Use the `AvatarGroup` if:
@@ -87,6 +81,13 @@ const offsets = {
  * - You want to display a gallery for simple images.
  * - You want to use it for other visual content than avatars.
  *
+ * ### Responsive Behavior
+ *
+ * When the available space is less than the width required to display all avatars,
+ * an overflow visualization appears as a button placed at the end with the same shape
+ * and size as the avatars. The visualization displays the number of avatars that have overflowed
+ * and are not currently visible.
+ *
  * ### Keyboard Handling
  * The component provides advanced keyboard handling.
  * When focused, the user can use the following keyboard
@@ -94,17 +95,17 @@ const offsets = {
  *
  * `type` Individual:
  *
- * - [TAB] - Move focus to the overflow button
- * - [LEFT] - Navigate one avatar to the left
- * - [RIGHT] - Navigate one avatar to the right
- * - [HOME] - Navigate to the first avatar
- * - [END] - Navigate to the last avatar
- * - [SPACE],[ENTER],[RETURN] - Trigger `ui5-click` event
+ * - [Tab] - Move focus to the overflow button
+ * - [Left] - Navigate one avatar to the left
+ * - [Right] - Navigate one avatar to the right
+ * - [Home] - Navigate to the first avatar
+ * - [End] - Navigate to the last avatar
+ * - [Space] / [Enter] or [Return] - Trigger `ui5-click` event
  *
  * `type` Group:
  *
- * - [TAB] - Move focus to the next interactive element after the component
- * - [SPACE],[ENTER],[RETURN] - Trigger `ui5-click` event
+ * - [Tab] - Move focus to the next interactive element after the component
+ * - [Space] / [Enter] or [Return] - Trigger `ui5-click` event
  * @constructor
  * @extends UI5Element
  * @since 1.0.0-rc.11
@@ -243,6 +244,9 @@ let AvatarGroup = AvatarGroup_1 = class AvatarGroup extends UI5Element {
         this._prepareAvatars();
     }
     onEnterDOM() {
+        if (isDesktop()) {
+            this.setAttribute("desktop", "");
+        }
         ResizeHandler.register(this, this._onResizeHandler);
     }
     onExitDOM() {
@@ -387,18 +391,15 @@ let AvatarGroup = AvatarGroup_1 = class AvatarGroup extends UI5Element {
         }
     }
     _getAriaHasPopup() {
-        if (this.ariaHaspopup === "") {
-            return;
-        }
-        return this.ariaHaspopup;
+        return this.accessibilityAttributes.hasPopup;
     }
 };
 __decorate([
     property({ type: AvatarGroupType, defaultValue: AvatarGroupType.Group })
 ], AvatarGroup.prototype, "type", void 0);
 __decorate([
-    property()
-], AvatarGroup.prototype, "ariaHaspopup", void 0);
+    property({ type: Object })
+], AvatarGroup.prototype, "accessibilityAttributes", void 0);
 __decorate([
     property({ noAttribute: true })
 ], AvatarGroup.prototype, "_overflowButtonText", void 0);

@@ -42,15 +42,15 @@ import "@ui5/webcomponents-icons/dist/information.js";
  * When the `ui5-dialog` has the `draggable` property set to `true` and the header is focused, the user can move the dialog
  * with the following keyboard shortcuts:
  *
- * - [UP/DOWN] arrow keys - Move the dialog up/down.
- * - [LEFT/RIGHT] arrow keys - Move the dialog left/right.
+ * - [Up] or [Down] arrow keys - Move the dialog up/down.
+ * - [Left] or [Right] arrow keys - Move the dialog left/right.
  *
  * #### Resizing
  * When the `ui5-dialog` has the `resizable` property set to `true` and the header is focused, the user can change the size of the dialog
  * with the following keyboard shortcuts:
  *
- * - [SHIFT] + [UP/DOWN] - Decrease/Increase the height of the dialog.
- * - [SHIFT] + [LEFT/RIGHT] - Decrease/Increase the width of the dialog.
+ * - [Shift] + [Up] or [Down] - Decrease/Increase the height of the dialog.
+ * - [Shift] + [Left] or [Right] - Decrease/Increase the width of the dialog.
  *
  * ### ES6 Module Import
  *
@@ -117,21 +117,13 @@ declare class Dialog extends Popup {
     /**
      * Defines the state of the `Dialog`.
      *
-     * **Note:** If `"Error"` and `"Warning"` state is set, it will change the
+     * **Note:** If `"Negative"` and `"Critical"` states is set, it will change the
      * accessibility role to "alertdialog", if the accessibleRole property is set to `"Dialog"`.
      * @default "None"
      * @public
      * @since 1.0.0-rc.15
      */
     state: `${ValueState}`;
-    /**
-     * @private
-     */
-    onPhone: boolean;
-    /**
-     * @private
-     */
-    onDesktop: boolean;
     _screenResizeHandler: () => void;
     _dragMouseMoveHandler: (e: MouseEvent) => void;
     _dragMouseUpHandler: (e: MouseEvent) => void;
@@ -172,22 +164,13 @@ declare class Dialog extends Popup {
     constructor();
     static onDefine(): Promise<void>;
     static _isHeader(element: HTMLElement): boolean;
-    /**
-     * Shows the dialog.
-     * @param [preventInitialFocus=false] Prevents applying the focus inside the popup
-     * @public
-     * @returns Resolves when the dialog is open
-     */
-    show(preventInitialFocus?: boolean): Promise<void>;
     get isModal(): boolean;
-    get shouldHideBackdrop(): boolean;
     get _ariaLabelledBy(): string | undefined;
     get ariaRoleDescriptionHeaderText(): string | undefined;
     get effectiveAriaDescribedBy(): string | undefined;
     get ariaDescribedByHeaderTextResizable(): string;
     get ariaDescribedByHeaderTextDraggable(): string;
     get ariaDescribedByHeaderTextDraggableAndResizable(): string;
-    get _displayProp(): string;
     /**
      * Determines if the header should be shown.
      */
@@ -201,7 +184,6 @@ declare class Dialog extends Popup {
     get _role(): string | undefined;
     _show(): void;
     onBeforeRendering(): void;
-    onAfterRendering(): void;
     onEnterDOM(): void;
     onExitDOM(): void;
     /**

@@ -13,6 +13,7 @@ import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import Button from "@ui5/webcomponents/dist/Button.js";
 import ToggleButton from "@ui5/webcomponents/dist/ToggleButton.js";
+import { isLegacyThemeFamily } from "@ui5/webcomponents-base/dist/config/Theme.js";
 import "@ui5/webcomponents-icons/dist/slim-arrow-up.js";
 import "@ui5/webcomponents-icons/dist/slim-arrow-down.js";
 import "@ui5/webcomponents-icons/dist/pushpin-off.js";
@@ -38,7 +39,6 @@ import { DYNAMIC_PAGE_ARIA_LABEL_EXPAND_HEADER, DYNAMIC_PAGE_ARIA_LABEL_SNAP_HEA
  * @constructor
  * @extends UI5Element
  * @private
- * @since 1.23.0
  */
 let DynamicPageHeaderActions = DynamicPageHeaderActions_1 = class DynamicPageHeaderActions extends UI5Element {
     static async onDefine() {
@@ -48,6 +48,9 @@ let DynamicPageHeaderActions = DynamicPageHeaderActions_1 = class DynamicPageHea
         return this.snapped ? "slim-arrow-down" : "slim-arrow-up";
     }
     get pinButtonIcon() {
+        if (isLegacyThemeFamily()) {
+            return "pushpin-off";
+        }
         return this.pinned ? "pushpin-on" : "pushpin-off";
     }
     get expandButton() {
@@ -75,6 +78,12 @@ let DynamicPageHeaderActions = DynamicPageHeaderActions_1 = class DynamicPageHea
     }
     onPinClick() {
         this.fireEvent("pin-button-click");
+    }
+    onExpandHoverIn() {
+        this.fireEvent("expand-button-hover-in");
+    }
+    onExpandHoverOut() {
+        this.fireEvent("expand-button-hover-out");
     }
     get showPinButton() {
         return !this.hidePinButton && !this.snapped;
@@ -114,6 +123,13 @@ DynamicPageHeaderActions = DynamicPageHeaderActions_1 = __decorate([
      */
     ,
     event("pin-button-click")
+    /**
+     * Event that is being fired by hovering over the expand button.
+     *
+     * @protected
+     */
+    ,
+    event("expand-button-hover")
 ], DynamicPageHeaderActions);
 DynamicPageHeaderActions.define();
 export default DynamicPageHeaderActions;

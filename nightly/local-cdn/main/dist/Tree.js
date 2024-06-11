@@ -8,13 +8,19 @@ import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
+import DragRegistry from "@ui5/webcomponents-base/dist/util/dragAndDrop/DragRegistry.js";
+import findClosestPosition from "@ui5/webcomponents-base/dist/util/dragAndDrop/findClosestPosition.js";
+import Orientation from "@ui5/webcomponents-base/dist/types/Orientation.js";
+import MovePlacement from "@ui5/webcomponents-base/dist/types/MovePlacement.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
+import DropIndicator from "./DropIndicator.js";
 import TreeItem from "./TreeItem.js";
 import TreeItemCustom from "./TreeItemCustom.js";
 import TreeList from "./TreeList.js";
-import ListMode from "./types/ListMode.js";
+import ListSelectionMode from "./types/ListSelectionMode.js";
+import ListAccessibleRole from "./types/ListAccessibleRole.js";
 // Template
 import TreeTemplate from "./generated/templates/TreeTemplate.lit.js";
 // Styles
@@ -43,15 +49,15 @@ import TreeCss from "./generated/themes/Tree.css.js";
  * The `ui5-tree` provides advanced keyboard handling.
  * The user can use the following keyboard shortcuts in order to navigate trough the tree:
  *
- * - [UP/DOWN] - Navigates up and down the tree items that are currently visible.
- * - [RIGHT] - Drills down the tree by expanding the tree nodes.
- * - [LEFT] - Goes up the tree and collapses the tree nodes.
+ * - [Up] or [Down] - Navigates up and down the tree items that are currently visible.
+ * - [Right] - Drills down the tree by expanding the tree nodes.
+ * - [Left] - Goes up the tree and collapses the tree nodes.
  *
  * The user can use the following keyboard shortcuts to perform selection,
- * when the `mode` property is in use:
+ * when the `selectionMode` property is in use:
  *
- * - [SPACE] - Selects the currently focused item upon keyup.
- * - [ENTER]  - Selects the currently focused item upon keydown.
+ * - [Space] - Selects the currently focused item upon keyup.
+ * - [Enter]  - Selects the currently focused item upon keydown.
  *
  * ### ES6 Module Import
  * `import "@ui5/webcomponents/dist/Tree.js";`
@@ -63,6 +69,12 @@ import TreeCss from "./generated/themes/Tree.css.js";
  * @since 1.0.0-rc.8
  */
 let Tree = class Tree extends UI5Element {
+    onEnterDOM() {
+        DragRegistry.subscribe(this);
+    }
+    onExitDOM() {
+        DragRegistry.unsubscribe(this);
+    }
     onBeforeRendering() {
         this._prepareTreeItems();
     }
@@ -71,17 +83,89 @@ let Tree = class Tree extends UI5Element {
         // This code should be removed once a framework-level fix is implemented
         this.shadowRoot.querySelector("[ui5-tree-list]").onBeforeRendering();
     }
+    get dropIndicatorDOM() {
+        return this.shadowRoot.querySelector("[ui5-drop-indicator]");
+    }
     get list() {
         return this.getDomRef();
     }
     get _role() {
-        return "tree";
+        return ListAccessibleRole.Tree;
     }
     get _label() {
         return getEffectiveAriaLabelText(this);
     }
     get _hasHeader() {
         return !!this.header.length;
+    }
+    _ondragenter(e) {
+        e.preventDefault();
+    }
+    _ondragleave(e) {
+        if (e.relatedTarget instanceof Node && this.shadowRoot.contains(e.relatedTarget)) {
+            return;
+        }
+        this.dropIndicatorDOM.targetReference = null;
+    }
+    _ondragover(e) {
+        const draggedElement = DragRegistry.getDraggedElement();
+        const allLiNodesTraversed = []; // use the only <li> nodes to determine positioning
+        if (!(e.target instanceof HTMLElement) || !draggedElement) {
+            return;
+        }
+        this.walk(item => {
+            allLiNodesTraversed.push(item.shadowRoot.querySelector("li"));
+        });
+        const closestPosition = findClosestPosition(allLiNodesTraversed, e.clientY, Orientation.Vertical);
+        if (!closestPosition) {
+            this.dropIndicatorDOM.targetReference = null;
+            return;
+        }
+        let placements = closestPosition.placements;
+        closestPosition.element = closestPosition.element.getRootNode().host;
+        if (draggedElement.contains(closestPosition.element)) {
+            return;
+        }
+        if (closestPosition.element === draggedElement) {
+            placements = placements.filter(placement => placement !== MovePlacement.On);
+        }
+        const placementAccepted = placements.some(placement => {
+            const closestElement = closestPosition.element;
+            const beforeItemMovePrevented = !this.fireEvent("move-over", {
+                source: {
+                    element: draggedElement,
+                },
+                destination: {
+                    element: closestElement,
+                    placement,
+                },
+            }, true);
+            if (beforeItemMovePrevented) {
+                e.preventDefault();
+                this.dropIndicatorDOM.targetReference = closestElement;
+                this.dropIndicatorDOM.placement = placement;
+                return true;
+            }
+            return false;
+        });
+        if (!placementAccepted) {
+            this.dropIndicatorDOM.targetReference = null;
+        }
+    }
+    _ondrop(e) {
+        e.preventDefault();
+        const draggedElement = DragRegistry.getDraggedElement();
+        this.fireEvent("move", {
+            source: {
+                element: draggedElement,
+            },
+            destination: {
+                element: this.dropIndicatorDOM.targetReference,
+                placement: this.dropIndicatorDOM.placement,
+            },
+        });
+        draggedElement.focus();
+        this.dropIndicatorDOM.targetReference = null;
     }
     _onListItemStepIn(e) {
         const treeItem = e.detail.item;
@@ -196,8 +280,8 @@ let Tree = class Tree extends UI5Element {
     }
 };
 __decorate([
-    property({ type: ListMode, defaultValue: ListMode.None })
-], Tree.prototype, "mode", void 0);
+    property({ type: ListSelectionMode, defaultValue: ListSelectionMode.None })
+], Tree.prototype, "selectionMode", void 0);
 __decorate([
     property()
 ], Tree.prototype, "noDataText", void 0);
@@ -214,9 +298,6 @@ __decorate([
     property()
 ], Tree.prototype, "accessibleNameRef", void 0);
 __decorate([
-    property({ defaultValue: undefined, noAttribute: true })
-], Tree.prototype, "accessibleRoleDescription", void 0);
-__decorate([
     slot({ type: HTMLElement, invalidateOnChildChange: true, "default": true })
 ], Tree.prototype, "items", void 0);
 __decorate([
@@ -232,6 +313,7 @@ Tree = __decorate([
             TreeList,
             TreeItem,
             TreeItemCustom,
+            DropIndicator,
         ],
     })
     /**
@@ -302,7 +384,7 @@ Tree = __decorate([
      * Fired when the Delete button of any tree item is pressed.
      *
      * **Note:** A Delete button is displayed on each item,
-     * when the component `mode` property is set to `Delete`.
+     * when the component `selectionMode` property is set to `Delete`.
      * @param {HTMLElement} item the deleted item.
      * @public
      */
@@ -328,7 +410,7 @@ Tree = __decorate([
     })
     /**
      * Fired when selection is changed by user interaction
-     * in `SingleSelect`, `SingleSelectBegin`, `SingleSelectEnd` and `MultiSelect` modes.
+     * in `Single`, `SingleStart`, `SingleEnd` and `Multiple` modes.
      * @param {Array} selectedItems An array of the selected items.
      * @param {Array} previouslySelectedItems An array of the previously selected items.
      * @param {HTMLElement} targetItem The item triggering the event.

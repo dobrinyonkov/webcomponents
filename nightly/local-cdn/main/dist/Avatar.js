@@ -40,8 +40,8 @@ import "@ui5/webcomponents-icons/dist/alert.js";
  *
  * ### Keyboard Handling
  *
- * - [SPACE, ENTER, RETURN] - Fires the `click` event if the `interactive` property is set to true.
- * - [SHIFT] - If [SPACE] is pressed, pressing [SHIFT] releases the component without triggering the click event.
+ * - [Space] / [Enter] or [Return] - Fires the `click` event if the `interactive` property is set to true.
+ * - [Shift] - If [Space] is pressed, pressing [Shift] releases the component without triggering the click event.
  *
  * ### ES6 Module Import
  * `import "@ui5/webcomponents/dist/Avatar.js";`
@@ -183,13 +183,13 @@ let Avatar = Avatar_1 = class Avatar extends UI5Element {
     }
     _fireClick() {
         this.fireEvent("click");
-        this.pressed = !this.pressed;
     }
     _getAriaHasPopup() {
-        if (!this._interactive || this.ariaHaspopup === "") {
+        const ariaHaspopup = this.accessibilityAttributes.hasPopup;
+        if (!this._interactive || !ariaHaspopup) {
             return;
         }
-        return this.ariaHaspopup;
+        return ariaHaspopup;
     }
 };
 __decorate([
@@ -198,9 +198,6 @@ __decorate([
 __decorate([
     property({ type: Boolean })
 ], Avatar.prototype, "interactive", void 0);
-__decorate([
-    property({ type: Boolean })
-], Avatar.prototype, "pressed", void 0);
 __decorate([
     property()
 ], Avatar.prototype, "icon", void 0);
@@ -229,8 +226,8 @@ __decorate([
     property()
 ], Avatar.prototype, "accessibleName", void 0);
 __decorate([
-    property()
-], Avatar.prototype, "ariaHaspopup", void 0);
+    property({ type: Object })
+], Avatar.prototype, "accessibilityAttributes", void 0);
 __decorate([
     property({ noAttribute: true })
 ], Avatar.prototype, "forcedTabIndex", void 0);

@@ -12,6 +12,7 @@ import { isLeft, isRight } from "@ui5/webcomponents-base/dist/Keys.js";
 import "@ui5/webcomponents-icons/dist/navigation-right-arrow.js";
 import "@ui5/webcomponents-icons/dist/navigation-down-arrow.js";
 import "@ui5/webcomponents-icons/dist/circle-task-2.js";
+import "@ui5/webcomponents-icons/dist/arrow-right.js";
 import Icon from "@ui5/webcomponents/dist/Icon.js";
 import SideNavigationSelectableItemBase from "./SideNavigationSelectableItemBase.js";
 import SideNavigationItemTemplate from "./generated/templates/SideNavigationItemTemplate.lit.js";
@@ -150,6 +151,9 @@ let SideNavigationItem = class SideNavigationItem extends SideNavigationSelectab
         }
         return this.selected;
     }
+    get isSideNavigationItem() {
+        return true;
+    }
 };
 __decorate([
     property({ type: Boolean })
@@ -175,5 +179,9 @@ SideNavigationItem = __decorate([
     })
 ], SideNavigationItem);
 SideNavigationItem.define();
+const isInstanceOfSideNavigationItem = (object) => {
+    return "isSideNavigationItem" in object;
+};
 export default SideNavigationItem;
+export { isInstanceOfSideNavigationItem };
 //# sourceMappingURL=SideNavigationItem.js.map

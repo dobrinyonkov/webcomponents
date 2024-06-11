@@ -74,12 +74,16 @@ let SideNavigationSelectableItemBase = class SideNavigationSelectableItemBase ex
         this.sideNavigation?.focusItem(this);
     }
     _activate(e) {
+        e.stopPropagation();
         if (this.isOverflow) {
             this.fireEvent("click");
         }
         else {
             this.sideNavigation?._handleItemClick(e, this);
         }
+    }
+    get isSideNavigationSelectableItemBase() {
+        return true;
     }
 };
 __decorate([
@@ -104,7 +108,7 @@ SideNavigationSelectableItemBase = __decorate([
      * Base class for the navigation items that support actions.
      *
      * @constructor
-     * @extends UI5Element
+     * @extends SideNavigationItemBase
      * @abstract
      * @public
      * @since 1.24.0
@@ -112,5 +116,9 @@ SideNavigationSelectableItemBase = __decorate([
     ,
     customElement()
 ], SideNavigationSelectableItemBase);
+const isInstanceOfSideNavigationSelectableItemBase = (object) => {
+    return "isSideNavigationSelectableItemBase" in object;
+};
 export default SideNavigationSelectableItemBase;
+export { isInstanceOfSideNavigationSelectableItemBase };
 //# sourceMappingURL=SideNavigationSelectableItemBase.js.map

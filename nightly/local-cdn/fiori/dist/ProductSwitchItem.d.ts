@@ -13,7 +13,7 @@ import type { IProductSwitchItem } from "./ProductSwitch.js";
  * When focused, the user can use the following keyboard
  * shortcuts in order to perform a navigation:
  *
- * - [SPACE/ENTER/RETURN] - Trigger `ui5-click` event
+ * - [Space] / [Enter] or [Return] - Trigger `ui5-click` event
  *
  * ### ES6 Module Import
  * `import "@ui5/webcomponents-fiori/dist/ProductSwitchItem.js";`
@@ -76,11 +76,6 @@ declare class ProductSwitchItem extends UI5Element implements IProductSwitchItem
      * @private
      */
     private active;
-    /**
-     * Indicates whether the element is focused.
-     * @private
-     */
-    private focused;
     /**
      * Used to set the selected state of the component. Only one selected in a sequence.
      * **Note:** Set by the `ProductSwitch`

@@ -1,20 +1,18 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
+import type { AccessibilityAttributes } from "@ui5/webcomponents-base/dist/types.js";
 import type { I18nText } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import type { ITabbable } from "@ui5/webcomponents-base/dist/delegate/ItemNavigation.js";
 import LinkDesign from "./types/LinkDesign.js";
 import WrappingType from "./types/WrappingType.js";
-import HasPopup from "./types/HasPopup.js";
+import LinkAccessibleRole from "./types/LinkAccessibleRole.js";
 type LinkClickEventDetail = {
     altKey: boolean;
     ctrlKey: boolean;
     metaKey: boolean;
     shiftKey: boolean;
 };
-type AccessibilityAttributes = {
-    expanded?: "true" | "false" | boolean;
-    hasPopup?: `${HasPopup}`;
-};
+type LinkAccessibilityAttributes = Pick<AccessibilityAttributes, "expanded" | "hasPopup">;
 /**
  * @class
  *
@@ -65,10 +63,10 @@ declare class Link extends UI5Element implements ITabbable {
     /**
      * Defines the tooltip of the component.
      * @default ""
-     * @private
-     * @since 1.18.0
+     * @public
+     * @since 2.0.0
      */
-    title: string;
+    tooltip: string;
     /**
      * Defines the component href.
      *
@@ -104,8 +102,8 @@ declare class Link extends UI5Element implements ITabbable {
     /**
      * Defines how the text of a component will be displayed when there is not enough space.
      *
-     * **Note:** for option "Normal" the text will wrap and the words will not be broken based on hyphenation.
-     * @default "None"
+     * **Note:** By default the text will wrap. If "None" is set - the text will truncate.
+     * @default "Normal"
      * @public
      */
     wrappingType: `${WrappingType}`;
@@ -126,32 +124,27 @@ declare class Link extends UI5Element implements ITabbable {
     /**
      * Defines the ARIA role of the component.
      *
-     * **Note:** Use the "button" role in cases when navigation is not expected to occur and the href property is not defined.
+     * **Note:** Use the <code>LinkAccessibleRole.Button</code> role in cases when navigation is not expected to occur and the href property is not defined.
      * @default "link"
      * @public
      * @since 1.9.0
      */
-    accessibleRole: string;
+    accessibleRole: `${LinkAccessibleRole}`;
     /**
-     * An object of strings that defines several additional accessibility attribute values
-     * for customization depending on the use case.
+     * Defines the additional accessibility attributes that will be applied to the component.
+     * The following fields are supported:
      *
-     * It supports the following fields:
+     * - **expanded**: Indicates whether the button, or another grouping element it controls, is currently expanded or collapsed.
+     * Accepts the following string values: `true` or `false`.
      *
-     * - `expanded`: Indicates whether the anchor element, or another grouping element it controls, is currently expanded or collapsed. Accepts the following string values:
-     *	- `true`
-     *	- `false`
-     * - `hasPopup`: Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by the anchor element. Accepts the following string values:
-     *	- `Dialog`
-     *	- `Grid`
-     *	- `ListBox`
-     *	- `Menu`
-     *	- `Tree`
+     * - **hasPopup**: Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by the button.
+     * Accepts the following string values: `dialog`, `grid`, `listbox`, `menu` or `tree`.
+     *
      * @public
      * @since 1.1.0
      * @default {}
      */
-    accessibilityAttributes: AccessibilityAttributes;
+    accessibilityAttributes: LinkAccessibilityAttributes;
     _rel: string | undefined;
     forcedTabIndex: string;
     /**
@@ -171,7 +164,7 @@ declare class Link extends UI5Element implements ITabbable {
     get linkTypeText(): string;
     get parsedRef(): string | undefined;
     get effectiveAccRole(): string;
-    get _hasPopup(): string | undefined;
+    get _hasPopup(): ("dialog" | "grid" | "listbox" | "menu" | "tree") | undefined;
     static onDefine(): Promise<void>;
     _onclick(e: MouseEvent | KeyboardEvent): void;
     _onfocusin(e: FocusEvent): void;
@@ -180,4 +173,4 @@ declare class Link extends UI5Element implements ITabbable {
     _onkeyup(e: KeyboardEvent): void;
 }
 export default Link;
-export type { LinkClickEventDetail, AccessibilityAttributes, };
+export type { LinkClickEventDetail, LinkAccessibilityAttributes, };

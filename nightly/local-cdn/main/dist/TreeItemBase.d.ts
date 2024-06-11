@@ -43,6 +43,13 @@ declare class TreeItemBase extends ListItem {
      */
     expanded: boolean;
     /**
+     * Defines whether the item is movable.
+     * @default false
+     * @public
+     * @since 2.0.0
+     */
+    movable: boolean;
+    /**
     * Defines whether the selection of a tree node is displayed as partially selected.
     *
     * **Note:** The indeterminate state can be set only programmatically and can’t be achieved by user
@@ -53,7 +60,7 @@ declare class TreeItemBase extends ListItem {
     * -  If a tree node has `selected` set to `true` and `indeterminate` set to `false`, it is displayed as selected.
     * -  If a tree node has `selected` set to `false`, it is displayed as not selected regardless of the value of the `indeterminate` property.
     *
-    * **Note:** This property takes effect only when the `ui5-tree` is in `MultiSelect` mode.
+    * **Note:** This property takes effect only when the `ui5-tree` is in `Multiple` mode.
     * @default false
     * @public
     * @since 1.1.0
@@ -72,7 +79,7 @@ declare class TreeItemBase extends ListItem {
     /**
      * Defines the state of the `additionalText`.
      *
-     * Available options are: `"None"` (by default), `"Success"`, `"Warning"`, `"Information"` and `"Error"`.
+     * Available options are: `"None"` (by default), `"Positive"`, `"Critical"`, `"Information"` and `"Negative"`.
      * @default "None"
      * @public
      * @since 1.0.0-rc.15
@@ -120,7 +127,7 @@ declare class TreeItemBase extends ListItem {
     get effectiveLevel(): number;
     get hasParent(): boolean;
     get _toggleIconName(): "navigation-down-arrow" | "navigation-right-arrow";
-    get _ariaLabel(): string | undefined;
+    get _ariaLabel(): string;
     get _accInfo(): {
         role: string;
         ariaExpanded: boolean | undefined;
@@ -130,7 +137,7 @@ declare class TreeItemBase extends ListItem {
         ariaSelectedText: string | undefined;
         listItemAriaLabel: string | undefined;
         ariaOwns: string | undefined;
-        ariaHaspopup: "dialog" | "menu" | "grid" | "listbox" | "tree";
+        ariaHaspopup: ("dialog" | "grid" | "listbox" | "menu" | "tree") | undefined;
         ariaLabel: string;
         ariaLabelRadioButton: string;
         ariaSelected?: boolean | undefined;
@@ -149,7 +156,7 @@ declare class TreeItemBase extends ListItem {
      */
     toggle(): void;
     _toggleClick(e: MouseEvent | KeyboardEvent): void;
-    _onkeydown(e: KeyboardEvent): void;
+    _onkeydown(e: KeyboardEvent): Promise<void>;
     get iconAccessibleName(): string;
     static onDefine(): Promise<void>;
 }

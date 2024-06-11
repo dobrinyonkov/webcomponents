@@ -28,6 +28,7 @@ import DynamicPageHeaderActions from "./DynamicPageHeaderActions.js";
 // Texts
 import { DYNAMIC_PAGE_ARIA_LABEL_EXPANDED_HEADER, DYNAMIC_PAGE_ARIA_LABEL_SNAPPED_HEADER, } from "./generated/i18n/i18n-defaults.js";
 const SCROLL_DEBOUNCE_RATE = 5; // ms
+const SCROLL_THRESHOLD = 10; // px
 /**
  * @class
  *
@@ -83,8 +84,11 @@ const SCROLL_DEBOUNCE_RATE = 5; // ms
  *
  * @constructor
  * @extends UI5Element
- * @since 1.23.0
+ * @since 2.0.0
  * @public
+ * @csspart content - Used to style the content of the component
+ * @csspart fit-content - Used to style the fit content container of the component.
+ * @csspart footer - Used to style the footer of the component
  */
 let DynamicPage = DynamicPage_1 = class DynamicPage extends UI5Element {
     constructor() {
@@ -104,7 +108,8 @@ let DynamicPage = DynamicPage_1 = class DynamicPage extends UI5Element {
     }
     onBeforeRendering() {
         if (this.dynamicPageTitle) {
-            this.dynamicPageTitle.snapped = this.headerSnapped;
+            this.dynamicPageTitle.snapped = this._headerSnapped;
+            this.dynamicPageTitle.interactive = this.hasHeading;
         }
     }
     get dynamicPageTitle() {
@@ -120,26 +125,49 @@ let DynamicPage = DynamicPage_1 = class DynamicPage extends UI5Element {
         return this.shadowRoot.querySelector("ui5-dynamic-page-header-actions");
     }
     get actionsInTitle() {
-        return this.headerSnapped || this.showHeaderInStickArea || this.headerPinned;
+        return this._headerSnapped || this.showHeaderInStickArea || this.headerPinned;
     }
     get headerInTitle() {
-        return !this.headerSnapped && (this.showHeaderInStickArea || this.headerPinned);
+        return !this._headerSnapped && (this.showHeaderInStickArea || this.headerPinned);
     }
     get headerInContent() {
-        return !this.headerSnapped && !this.headerInTitle;
+        return !this.showHeaderInStickArea && !this.headerInTitle;
     }
     get _headerLabel() {
-        return this.headerSnapped
+        return this._headerSnapped
             ? DynamicPage_1.i18nBundle.getText(DYNAMIC_PAGE_ARIA_LABEL_SNAPPED_HEADER)
             : DynamicPage_1.i18nBundle.getText(DYNAMIC_PAGE_ARIA_LABEL_EXPANDED_HEADER);
     }
     get _headerExpanded() {
-        return !this.headerSnapped;
+        return !this._headerSnapped;
     }
     get _accAttributesForHeaderActions() {
         return {
             controls: `${this._id}-header`,
         };
+    }
+    get headerTabIndex() {
+        return (this._headerSnapped || this.showHeaderInStickArea) ? -1 : 0;
+    }
+    get headerAriaHidden() {
+        return (this._headerSnapped || this.showHeaderInStickArea);
+    }
+    get hasHeading() {
+        return this.headerArea.length > 0;
+    }
+    get headerSnapped() {
+        return this._headerSnapped;
+    }
+    /**
+     * Defines if the header is snapped.
+     *
+     * @default false
+     * @public
+     */
+    set headerSnapped(snapped) {
+        if (snapped !== this._headerSnapped) {
+            this._toggleHeader();
+        }
     }
     snapOnScroll() {
         debounce(() => this.snapTitleByScroll(), SCROLL_DEBOUNCE_RATE);
@@ -149,59 +177,69 @@ let DynamicPage = DynamicPage_1 = class DynamicPage extends UI5Element {
             return;
         }
         const scrollTop = this.scrollContainer.scrollTop;
+        const lastHeaderSnapped = this._headerSnapped;
         if (this.skipSnapOnScroll) {
             this.skipSnapOnScroll = false;
             return;
         }
         if (scrollTop > this.dynamicPageHeader.getBoundingClientRect().height) {
-            this.headerSnapped = true;
             this.showHeaderInStickArea = false;
+            this._headerSnapped = true;
         }
         else {
-            this.headerSnapped = false;
+            this._headerSnapped = false;
         }
-        this.dynamicPageTitle.snapped = this.headerSnapped;
+        if (lastHeaderSnapped !== this._headerSnapped) {
+            this.fireEvent("title-toggle");
+        }
+        this.dynamicPageTitle.snapped = this._headerSnapped;
     }
     async onExpandClick() {
-        const prevented = !this.fireEvent("expand-click");
-        if (prevented) {
-            return;
-        }
         this._toggleHeader();
+        this.fireEvent("title-toggle");
         await renderFinished();
         this.headerActions?.focusExpandButton();
         announce(this._headerLabel, InvisibleMessageMode.Polite);
     }
     async onPinClick() {
-        const prevented = !this.fireEvent("pin-click");
-        if (prevented) {
-            return;
-        }
         this.headerPinned = !this.headerPinned;
+        this.fireEvent("pin-button-toggle");
         await renderFinished();
         this.headerActions?.focusPinButton();
     }
     async onToggleTitle() {
-        const prevented = !this.fireEvent("title-click");
-        if (prevented) {
+        if (!this.hasHeading) {
             return;
         }
         this._toggleHeader();
+        this.fireEvent("title-toggle");
         await renderFinished();
         this.dynamicPageTitle.focus();
     }
-    _toggleHeader() {
+    async _toggleHeader() {
+        if (this.scrollContainer.scrollTop === SCROLL_THRESHOLD) {
+            this.scrollContainer.scrollTop = 0;
+        }
         this.showHeaderInStickArea = !this.showHeaderInStickArea;
-        this.headerSnapped = !this.headerSnapped;
+        this._headerSnapped = !this._headerSnapped;
         this.skipSnapOnScroll = true;
+        await renderFinished();
+        if (this._headerSnapped && this.scrollContainer.scrollTop < SCROLL_THRESHOLD) {
+            this.scrollContainer.scrollTop = SCROLL_THRESHOLD;
+        }
+    }
+    async onExpandHoverIn() {
+        this.dynamicPageTitle?.setAttribute("hovered", "");
+        await renderFinished();
+    }
+    async onExpandHoverOut() {
+        this.dynamicPageTitle?.removeAttribute("hovered");
+        await renderFinished();
     }
     updateMediaRange() {
         this.mediaRange = MediaRange.getCurrentRange(MediaRange.RANGESETS.RANGE_4STEPS, this.getDomRef().offsetWidth);
     }
 };
-__decorate([
-    property({ type: Boolean })
-], DynamicPage.prototype, "headerSnapped", void 0);
 __decorate([
     property({ type: Boolean })
 ], DynamicPage.prototype, "hidePinButton", void 0);
@@ -226,35 +264,34 @@ __decorate([
 __decorate([
     slot({ type: HTMLElement })
 ], DynamicPage.prototype, "footerArea", void 0);
+__decorate([
+    property({ type: Boolean })
+], DynamicPage.prototype, "_headerSnapped", void 0);
+__decorate([
+    property({ type: Boolean })
+], DynamicPage.prototype, "headerSnapped", null);
 DynamicPage = DynamicPage_1 = __decorate([
     customElement({
         tag: "ui5-dynamic-page",
         renderer: litRender,
         styles: DynamicPageCss,
         template: DynamicPageTemplate,
-        dependencies: [DynamicPageHeader, DynamicPageTitle, DynamicPageHeaderActions],
+        dependencies: [DynamicPageHeaderActions],
     })
     /**
-     * Fired when the pin header button is clicked.
+     * Fired when the pin header button is toggled.
      *
      * @public
      */
     ,
-    event("pin-click")
+    event("pin-button-toggle")
     /**
-     * Fired when the expand or collapse header button is clicked.
+     * Fired when the expand/collapse area of the title is toggled.
      *
      * @public
      */
     ,
-    event("expand-click")
-    /**
-     * Fired when the expand/collapse area of the title is clicked.
-     *
-     * @public
-     */
-    ,
-    event("title-click")
+    event("title-toggle")
 ], DynamicPage);
 DynamicPage.define();
 export default DynamicPage;

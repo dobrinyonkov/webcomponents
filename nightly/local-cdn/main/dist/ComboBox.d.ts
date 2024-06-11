@@ -8,25 +8,28 @@ import "@ui5/webcomponents-icons/dist/alert.js";
 import "@ui5/webcomponents-icons/dist/sys-enter-2.js";
 import "@ui5/webcomponents-icons/dist/information.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import type { IIcon } from "./Icon.js";
 import ComboBoxItem from "./ComboBoxItem.js";
 import Popover from "./Popover.js";
 import ResponsivePopover from "./ResponsivePopover.js";
 import type { ListItemClickEventDetail } from "./List.js";
 import ComboBoxFilter from "./types/ComboBoxFilter.js";
-import type FormSupportT from "./features/InputElementsFormSupport.js";
 import PopoverHorizontalAlign from "./types/PopoverHorizontalAlign.js";
-import { InputEventDetail } from "./Input.js";
+import type { InputEventDetail } from "./Input.js";
 /**
  * Interface for components that may be slotted inside a `ui5-combobox`
  * @public
  */
-interface IComboBoxItem {
+interface IComboBoxItem extends UI5Element {
     text: string;
     focused: boolean;
-    isGroupItem: boolean;
+    isGroupItem?: boolean;
     selected?: boolean;
     additionalText?: string;
+    stableDomRef: string;
+    _isVisible?: boolean;
+    items?: Array<IComboBoxItem>;
 }
 type ValueStateAnnouncement = Record<Exclude<ValueState, ValueState.None>, string>;
 type ValueStateTypeAnnouncement = Record<Exclude<ValueState, ValueState.None>, string>;
@@ -53,15 +56,15 @@ type ComboBoxSelectionChangeEventDetail = {
  *
  * The `ui5-combobox` provides advanced keyboard handling.
  *
- * - [F4], [ALT]+[UP], or [ALT]+[DOWN] - Toggles the picker.
- * - [ESC] - Closes the picker, if open. If closed, cancels changes and reverts the typed in value.
- * - [ENTER] or [RETURN] - If picker is open, takes over the currently selected item and closes it.
- * - [DOWN] - Selects the next matching item in the picker.
- * - [UP] - Selects the previous matching item in the picker.
- * - [PAGEDOWN] - Moves selection down by page size (10 items by default).
- * - [PAGEUP] - Moves selection up by page size (10 items by default).
- * - [HOME] - If focus is in the ComboBox, moves cursor at the beginning of text. If focus is in the picker, selects the first item.
- * - [END] - If focus is in the ComboBox, moves cursor at the end of text. If focus is in the picker, selects the last item.
+ * - [F4], [Alt]+[Up], or [Alt]+[Down] - Toggles the picker.
+ * - [Escape] - Closes the picker, if open. If closed, cancels changes and reverts the typed in value.
+ * - [Enter] or [Return] - If picker is open, takes over the currently selected item and closes it.
+ * - [Down] - Selects the next matching item in the picker.
+ * - [Up] - Selects the previous matching item in the picker.
+ * - [Page Down] - Moves selection down by page size (10 items by default).
+ * - [Page Up] - Moves selection up by page size (10 items by default).
+ * - [Home] - If focus is in the ComboBox, moves cursor at the beginning of text. If focus is in the picker, selects the first item.
+ * - [End] - If focus is in the ComboBox, moves cursor at the end of text. If focus is in the picker, selects the last item.
  *
  * ### ES6 Module Import
  *
@@ -71,7 +74,7 @@ type ComboBoxSelectionChangeEventDetail = {
  * @public
  * @since 1.0.0-rc.6
  */
-declare class ComboBox extends UI5Element {
+declare class ComboBox extends UI5Element implements IFormInputElement {
     /**
      * Defines the value of the component.
      * @default ""
@@ -80,6 +83,15 @@ declare class ComboBox extends UI5Element {
      * @public
      */
     value: string;
+    /**
+     * Determines the name by which the component will be identified upon submission in an HTML form.
+     *
+     * **Note:** This property is only applicable within the context of an HTML Form element.
+     * @default ""
+     * @public
+     * @since 2.0.0
+     */
+    name: string;
     /**
      * Defines whether the value will be autocompleted to match an item
      * @default false
@@ -187,6 +199,7 @@ declare class ComboBox extends UI5Element {
     items: Array<IComboBoxItem>;
     /**
      * Defines the value state message that will be displayed as pop up under the component.
+     * The value state message slot should contain only one root element.
      *
      * **Note:** If not specified, a default text (in the respective language) will be displayed.
      *
@@ -212,10 +225,13 @@ declare class ComboBox extends UI5Element {
     _userTypedValue: string;
     responsivePopover?: ResponsivePopover;
     valueStatePopover?: Popover;
-    FormSupport?: typeof FormSupportT;
     static i18nBundle: I18nBundle;
+    get formValidityMessage(): string;
+    get formValidity(): ValidityStateFlags;
+    formElementAnchor(): Promise<HTMLElement | undefined>;
+    get formFormattedValue(): string;
     constructor();
-    onBeforeRendering(): void;
+    onBeforeRendering(): Promise<void>;
     get iconsCount(): number;
     onAfterRendering(): Promise<void>;
     shouldClosePopover(): Promise<boolean>;
@@ -230,12 +246,14 @@ declare class ComboBox extends UI5Element {
     closeValueStatePopover(): Promise<void>;
     _getValueStatePopover(): Promise<Popover>;
     _resetFilter(): void;
+    _resetItemVisibility(): void;
     _arrowClick(): void;
     _handleMobileInput(e: CustomEvent<InputEventDetail>): void;
     _input(e: InputEvent): void;
     shouldAutocomplete(e: InputEvent): boolean;
     _startsWithMatchingItems(str: string): Array<IComboBoxItem>;
     _clearFocus(): void;
+    _getItems(): IComboBoxItem[];
     handleNavKeyPress(e: KeyboardEvent): void;
     _handleItemNavigation(e: KeyboardEvent, indexOfItem: number, isForward: boolean): void;
     _handleArrowDown(e: KeyboardEvent, indexOfItem: number): void;
@@ -250,13 +268,8 @@ declare class ComboBox extends UI5Element {
     _closeRespPopover(e?: Event): void;
     _openRespPopover(): Promise<void>;
     _filterItems(str: string): IComboBoxItem[];
-    /**
-     * Returns true if the group header should be shown (if there is a filtered suggestion item for this group item)
-     * @private
-     */
-    static _groupItemFilter(item: IComboBoxItem, idx: number, allItems: Array<IComboBoxItem>, filteredItems: Array<IComboBoxItem>): boolean | undefined;
-    _getFirstMatchingItem(current: string): ComboBoxItem | undefined;
-    _applyAtomicValueAndSelection(item: ComboBoxItem, filterValue: string, highlightValue: boolean): void;
+    _getFirstMatchingItem(current: string): IComboBoxItem | void;
+    _applyAtomicValueAndSelection(item: IComboBoxItem, filterValue: string, highlightValue: boolean): void;
     _selectMatchingItem(): void;
     _fireChangeEvent(): void;
     _inputChange(e: Event): void;
@@ -265,6 +278,7 @@ declare class ComboBox extends UI5Element {
     _onItemFocus(): void;
     _announceSelectedItem(indexOfItem: number): void;
     _clear(): void;
+    _makeAllVisible(item: IComboBoxItem): void;
     _scrollToItem(indexOfItem: number, forward: boolean): Promise<void>;
     _announceValueStateText(): void;
     get _headerTitleText(): string;
@@ -303,6 +317,7 @@ declare class ComboBox extends UI5Element {
             "min-width": string;
             "max-width": string;
         };
+        popoverValueStateMessage: {};
     };
     get classes(): {
         popover: {

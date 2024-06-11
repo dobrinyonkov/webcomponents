@@ -25,7 +25,7 @@ import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
  * @constructor
  * @extends UI5Element
  * @public
- * @since 1.23.0
+ * @since 2.0.0
  */
 declare class DynamicPageHeader extends UI5Element {
     /**

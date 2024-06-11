@@ -14,6 +14,7 @@ import type ColorPicker from "./ColorPicker.js";
 interface IColorPaletteItem extends HTMLElement, ITabbable {
     value?: string;
     index?: number;
+    selected?: boolean;
 }
 type ColorPaletteNavigationItem = IColorPaletteItem | Button;
 type ColorPaletteItemClickEventDetail = {
@@ -91,7 +92,9 @@ declare class ColorPalette extends UI5Element {
     _itemNavigation: ItemNavigation;
     _itemNavigationRecentColors: ItemNavigation;
     _recentColors: Array<string>;
-    moreColorsFeature?: ColorPaletteMoreColors;
+    moreColorsFeature: ColorPaletteMoreColors | Record<string, any>;
+    _currentlySelected?: ColorPaletteItem;
+    _shouldFocusRecentColors: boolean;
     static i18nBundle: I18nBundle;
     static onDefine(): Promise<void>;
     constructor();
@@ -99,21 +102,37 @@ declare class ColorPalette extends UI5Element {
     onAfterRendering(): void;
     selectColor(item: ColorPaletteItem): void;
     _setColor(color: string): void;
+    get effectiveColorItems(): IColorPaletteItem[];
+    /**
+     * Ensures that only one item is selected or only the last selected item remains active if more than one are explicitly set as 'selected'.
+     * @private
+     */
+    _ensureSingleSelectionOrDeselectAll(): void;
     _onclick(e: MouseEvent): void;
     _onkeyup(e: KeyboardEvent): void;
     _onkeydown(e: KeyboardEvent): void;
+    handleSelection(target: ColorPaletteItem): void;
+    _handleDefaultColorClick(e: KeyboardEvent): void;
+    _onDefaultColorKeyUp(e: KeyboardEvent): void;
     _onDefaultColorKeyDown(e: KeyboardEvent): void;
     _onMoreColorsKeyDown(e: KeyboardEvent): void;
+    _isUpOrDownNavigatableColorPaletteItem(e: KeyboardEvent): boolean | undefined;
     _onColorContainerKeyDown(e: KeyboardEvent): void;
     _onRecentColorsContainerKeyDown(e: KeyboardEvent): void;
     focusColorElement(element: ColorPaletteNavigationItem, itemNavigation: ItemNavigation): void;
     focusFirstDisplayColorElement(): void;
     focusFirstFocusableElement(): void;
     get firstFocusableElement(): ColorPaletteNavigationItem;
-    _chooseCustomColor(): Promise<void>;
-    _closeDialog(): Promise<void>;
-    _openMoreColorsDialog(): Promise<void>;
+    _chooseCustomColor(): void;
+    _addRecentColor(color: string): void;
+    _closeDialog(): void;
+    _openMoreColorsDialog(): void;
     _onDefaultColorClick(): void;
+    /**
+     * Returns the selected item.
+     */
+    get selectedItem(): IColorPaletteItem | undefined;
+    get allColorsInPalette(): IColorPaletteItem[];
     /**
      * Returns the selected color.
      */
@@ -122,7 +141,7 @@ declare class ColorPalette extends UI5Element {
     get colorContainerLabel(): string;
     get colorPaletteMoreColorsText(): string;
     get colorPaletteDefaultColorText(): string;
-    get _showMoreColors(): false | ColorPaletteMoreColors | undefined;
+    get _showMoreColors(): false | ColorPaletteMoreColors | Record<string, any>;
     get rowSize(): number;
     get hasRecentColors(): string | false;
     get recentColors(): string[];
@@ -134,8 +153,8 @@ declare class ColorPalette extends UI5Element {
             "ui5-cp-root-phone": boolean;
         };
     };
-    _getDialog(): Promise<Dialog>;
-    getColorPicker(): Promise<ColorPicker>;
+    _getDialog(): Dialog;
+    getColorPicker(): ColorPicker;
 }
 export default ColorPalette;
 export type { ColorPaletteItemClickEventDetail, IColorPaletteItem, };

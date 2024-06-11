@@ -1,9 +1,10 @@
-import UI5Element, { ChangeInfo } from "@ui5/webcomponents-base/dist/UI5Element.js";
+import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
+import type { ChangeInfo } from "@ui5/webcomponents-base/dist/UI5Element.js";
 import type { ResizeObserverCallback } from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import "@ui5/webcomponents-icons/dist/overflow.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import ToolbarAlign from "./types/ToolbarAlign.js";
-import ToolbarItem from "./ToolbarItem.js";
+import type ToolbarItem from "./ToolbarItem.js";
 import Button from "./Button.js";
 import Popover from "./Popover.js";
 type ToolbarMinWidthChangeEventDetail = {
@@ -21,7 +22,7 @@ type ToolbarMinWidthChangeEventDetail = {
  * The `ui5-toolbar` provides advanced keyboard handling.
  *
  * - The control is not interactive, but can contain of interactive elements
- * - [TAB] - iterates through elements
+ * - [Tab] - iterates through elements
  *
  * ### ES6 Module Import
  * `import "@ui5/webcomponents/dist/Toolbar.js";`
@@ -83,7 +84,6 @@ declare class Toolbar extends UI5Element {
     itemsWidthMeasured: boolean;
     ITEMS_WIDTH_MAP: Map<string, number>;
     static get styles(): (string | import("@ui5/webcomponents-base/dist/types.js").StyleDataCSP | import("@ui5/webcomponents-base/dist/types.js").ComponentStylesData[])[];
-    static get staticAreaStyles(): (string | import("@ui5/webcomponents-base/dist/types.js").StyleDataCSP | import("@ui5/webcomponents-base/dist/types.js").ComponentStylesData[])[];
     static get dependencies(): (typeof UI5Element)[];
     static onDefine(): Promise<void>;
     constructor();
@@ -158,11 +158,11 @@ declare class Toolbar extends UI5Element {
      * Returns if the overflow popup is open.
      * @public
      */
-    isOverflowOpen(): Promise<boolean>;
-    openOverflow(): Promise<void>;
-    closeOverflow(): Promise<void>;
+    isOverflowOpen(): boolean;
+    openOverflow(): void;
+    closeOverflow(): void;
     toggleOverflow(): void;
-    getOverflowPopover(): Promise<Popover | null>;
+    getOverflowPopover(): Popover | null;
     /**
      * Layout management
      */
@@ -182,8 +182,8 @@ declare class Toolbar extends UI5Element {
     /**
      * Private members
      */
-    attachListeners(): Promise<void>;
-    detachListeners(): Promise<void>;
+    attachListeners(): void;
+    detachListeners(): void;
     onToolbarItemChange(): void;
     getItemsInfo(items: Array<ToolbarItem>): ({
         toolbarTemplate: object;

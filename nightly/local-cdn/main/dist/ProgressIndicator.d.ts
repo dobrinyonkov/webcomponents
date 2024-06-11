@@ -14,6 +14,7 @@ import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
  * ### ES6 Module Import
  *
  * `import "@ui5/webcomponents/dist/ProgressIndicator.js";`
+ * @csspart bar - Used to style the main bar of the `ui5-progress-indicator`
  * @csspart remaining-bar - Used to style the remaining bar of the `ui5-progress-indicator`
  * @constructor
  * @extends UI5Element
@@ -28,12 +29,6 @@ declare class ProgressIndicator extends UI5Element {
      * @since 1.16.0
     */
     accessibleName: string;
-    /**
-     * Defines whether component is in disabled state.
-     * @default false
-     * @public
-     */
-    disabled: boolean;
     /**
      * Defines whether the component value is shown.
      * @default false
@@ -91,7 +86,6 @@ declare class ProgressIndicator extends UI5Element {
     get valueStateText(): string;
     get showIcon(): boolean;
     get valueStateIcon(): string;
-    get _ariaDisabled(): true | undefined;
     static onDefine(): Promise<void>;
 }
 export default ProgressIndicator;
