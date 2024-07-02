@@ -6,7 +6,7 @@ import "@ui5/webcomponents-icons/dist/complete.js";
 import "@ui5/webcomponents-icons/dist/border.js";
 import "@ui5/webcomponents-icons/dist/tri-state.js";
 import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
-import WrappingType from "./types/WrappingType.js";
+import type WrappingType from "./types/WrappingType.js";
 /**
  * @class
  *
@@ -25,7 +25,7 @@ import WrappingType from "./types/WrappingType.js";
  * ### Usage
  *
  * You can define the checkbox text with via the `text` property. If the text exceeds the available width, it is truncated by default.
- * In case you prefer text to wrap, set the `wrappingType` property to "Normal".
+ * In case you prefer text to truncate, set the `wrappingType` property to "None".
  * The touchable area for toggling the `ui5-checkbox` ends where the text ends.
  *
  * You can disable the `ui5-checkbox` by setting the `disabled` property to
@@ -52,18 +52,18 @@ import WrappingType from "./types/WrappingType.js";
 declare class CheckBox extends UI5Element implements IFormInputElement {
     /**
      * Receives id(or many ids) of the elements that label the component
-     * @default ""
+     * @default undefined
      * @public
      * @since 1.1.0
      */
-    accessibleNameRef: string;
+    accessibleNameRef?: string;
     /**
      * Defines the accessible ARIA name of the component.
      * @public
-     * @default ""
+     * @default undefined
      * @since 1.1.0
      */
-    accessibleName: string;
+    accessibleName?: string;
     /**
      * Defines whether the component is disabled.
      *
@@ -143,7 +143,8 @@ declare class CheckBox extends UI5Element implements IFormInputElement {
      * Defines whether the component text wraps when there is not enough space.
      *
      * **Note:** for option "Normal" the text will wrap and the words will not be broken based on hyphenation.
-     * @default "None"
+     * **Note:** for option "None" the text will be truncated with an ellipsis.
+     * @default "Normal"
      * @public
      */
     wrappingType: `${WrappingType}`;
@@ -151,10 +152,10 @@ declare class CheckBox extends UI5Element implements IFormInputElement {
      * Determines the name by which the component will be identified upon submission in an HTML form.
      *
      * **Note:** This property is only applicable within the context of an HTML Form element.
-     * @default ""
+     * @default undefined
      * @public
      */
-    name: string;
+    name?: string;
     /**
      * Defines the active state (pressed or not) of the component.
      * @private

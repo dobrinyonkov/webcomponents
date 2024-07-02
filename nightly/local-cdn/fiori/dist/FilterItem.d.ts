@@ -26,10 +26,10 @@ declare class FilterItem extends UI5Element {
     text: string;
     /**
      * Defines the additional text of the component.
-     * @default ""
+     * @default undefined
      * @public
      */
-    additionalText: string;
+    additionalText?: string;
     /**
      * Defines the `values` list.
      * @public

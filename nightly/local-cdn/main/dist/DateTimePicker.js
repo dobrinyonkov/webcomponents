@@ -22,7 +22,7 @@ import Calendar from "./Calendar.js";
 import DatePicker from "./DatePicker.js";
 import TimeSelectionClocks from "./TimeSelectionClocks.js";
 // i18n texts
-import { TIMEPICKER_SUBMIT_BUTTON, TIMEPICKER_CANCEL_BUTTON, DATETIME_DESCRIPTION, DATETIME_PICKER_DATE_BUTTON, DATETIME_PICKER_TIME_BUTTON, } from "./generated/i18n/i18n-defaults.js";
+import { TIMEPICKER_SUBMIT_BUTTON, TIMEPICKER_CANCEL_BUTTON, DATETIME_DESCRIPTION, DATETIME_PICKER_DATE_BUTTON, DATETIME_PICKER_TIME_BUTTON, DATETIMEPICKER_POPOVER_ACCESSIBLE_NAME, } from "./generated/i18n/i18n-defaults.js";
 // Template
 import DateTimePickerTemplate from "./generated/templates/DateTimePickerTemplate.lit.js";
 // Styles
@@ -95,6 +95,29 @@ const PHONE_MODE_BREAKPOINT = 640; // px
 let DateTimePicker = DateTimePicker_1 = class DateTimePicker extends DatePicker {
     constructor() {
         super();
+        /**
+         * Defines the visibility of the time view in `phoneMode`.
+         * For more information, see the `phoneMode` property.
+         *
+         * **Note:** The date view would be displayed by default.
+         * @default false
+         * @private
+         */
+        this._showTimeView = false;
+        /**
+         * Defines if the `DateTimePicker` should be displayed in phone mode.
+         * The phone mode turns on when the component is used on small screens or phone devices.
+         * In phone mode the user can see either the calendar view, or the time view
+         * and can switch between the views via toggle buttons.
+         * @default false
+         * @private
+         */
+        this._phoneMode = false;
+        /**
+         * Selected, but not yet confirmed date/time
+         * @private
+         */
+        this._previewValues = {};
         this._handleResizeBound = this._handleResize.bind(this);
     }
     /**
@@ -186,8 +209,17 @@ let DateTimePicker = DateTimePicker_1 = class DateTimePicker extends DatePicker 
     get phone() {
         return super.phone || this._phoneMode;
     }
+    /**
+     * @override
+     */
     get dateAriaDescription() {
         return DateTimePicker_1.i18nBundle.getText(DATETIME_DESCRIPTION);
+    }
+    /**
+     * @override
+     */
+    get pickerAccessibleName() {
+        return DateTimePicker_1.i18nBundle.getText(DATETIMEPICKER_POPOVER_ACCESSIBLE_NAME);
     }
     /**
      * Defines whether the dialog on mobile should have header

@@ -85,14 +85,14 @@ const ICON_PER_STATUS_DESIGN = {
  * - [Delete] - close an item (trigger "item-close" event)
  *
  * #### Fast Navigation
- * This component provides a fast navigation using the the following keyboard shortcuts:
+ * This component provides a fast navigation using the following keyboard shortcuts:
  *
  * - [Shift] + [Enter] - 'More'/'Less' link will be triggered
  * - [Shift] + [F10] - 'Menu' (Actions) button will be triggered (clicked)
  *
  * ### ES6 Module Import
  *
- * `import "@ui5/webcomponents/dist/NotificationListItem.js";`
+ * `import "@ui5/webcomponents-fiori/dist/NotificationListItem.js";`
  *
  * @constructor
  * @extends NotificationListItemBase
@@ -103,6 +103,46 @@ const ICON_PER_STATUS_DESIGN = {
 let NotificationListItem = NotificationListItem_1 = class NotificationListItem extends NotificationListItemBase {
     constructor() {
         super();
+        /**
+        * Defines if the `titleText` and `description` should wrap,
+        * they truncate by default.
+        *
+        * **Note:** by default the `titleText` and `description`,
+        * and a `ShowMore/Less` button would be displayed.
+        * @default "None"
+        * @public
+        * @since 1.0.0-rc.15
+        */
+        this.wrappingType = "None";
+        /**
+         * Defines the status indicator of the item.
+         * @default "None"
+         * @public
+         */
+        this.state = "None";
+        /**
+         * Defines if the `Close` button would be displayed.
+         * @default false
+         * @public
+         */
+        this.showClose = false;
+        /**
+         * Defines the `Important` label of the item.
+         * @default "Standard"
+         * @public
+         */
+        this.importance = "Standard";
+        /**
+        * Defines the state of the `titleText` and `description`,
+        * if less or more information is displayed.
+        * @private
+        */
+        this._showMorePressed = false;
+        /**
+        * Defines the visibility of the `showMore` button.
+        * @private
+        */
+        this._showMore = false;
         // the titleText overflow height
         this._titleTextOverflowHeight = 0;
         // the description overflow height
@@ -204,7 +244,7 @@ let NotificationListItem = NotificationListItem_1 = class NotificationListItem e
             ids.push(`${id}-description`);
         }
         if (this.hasFootNotes) {
-            ids.push(`${id}-footer`);
+            ids.push(`${id}-footnotes`);
         }
         return ids.join(" ");
     }
@@ -383,16 +423,16 @@ let NotificationListItem = NotificationListItem_1 = class NotificationListItem e
     }
 };
 __decorate([
-    property({ type: WrappingType, defaultValue: WrappingType.None })
+    property()
 ], NotificationListItem.prototype, "wrappingType", void 0);
 __decorate([
-    property({ type: ValueState, defaultValue: ValueState.None })
+    property()
 ], NotificationListItem.prototype, "state", void 0);
 __decorate([
     property({ type: Boolean })
 ], NotificationListItem.prototype, "showClose", void 0);
 __decorate([
-    property({ type: NotificationListItemImportance, defaultValue: NotificationListItemImportance.Standard })
+    property()
 ], NotificationListItem.prototype, "importance", void 0);
 __decorate([
     property({ type: Boolean })

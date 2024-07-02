@@ -1,7 +1,7 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import "@ui5/webcomponents-icons/dist/slim-arrow-down.js";
-import ButtonDesign from "./types/ButtonDesign.js";
+import type ButtonDesign from "./types/ButtonDesign.js";
 import Button from "./Button.js";
 /**
  * @class
@@ -55,10 +55,10 @@ declare class SplitButton extends UI5Element {
      * Example:
      *
      * See all the available icons in the [Icon Explorer](https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html).
-     * @default ""
+     * @default undefined
      * @public
      */
-    icon: string;
+    icon?: string;
     /**
      * Defines whether the arrow button should have the active state styles or not.
      * @default false

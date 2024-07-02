@@ -36,7 +36,7 @@ let MultiComboBoxItemGroup = class MultiComboBoxItemGroup extends UI5Element {
 };
 __decorate([
     property()
-], MultiComboBoxItemGroup.prototype, "text", void 0);
+], MultiComboBoxItemGroup.prototype, "headerText", void 0);
 __decorate([
     slot({
         "default": true,

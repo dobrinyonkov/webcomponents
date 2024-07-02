@@ -14,7 +14,6 @@ import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 import { isShow, isDown, isUp, isSpace, isSpaceCtrl, isSpaceShift, isRight, isHome, isEnd, isTabNext, isTabPrevious, isUpShift, isDownShift, isLeftCtrl, isRightCtrl, isUpCtrl, isDownCtrl, isHomeCtrl, isEndCtrl, isCtrlA, isInsertShift, isBackSpace, isDelete, isEscape, isEnter, } from "@ui5/webcomponents-base/dist/Keys.js";
-import Integer from "@ui5/webcomponents-base/dist/types/Integer.js";
 import "@ui5/webcomponents-icons/dist/slim-arrow-down.js";
 import { renderFinished } from "@ui5/webcomponents-base/dist/Render.js";
 import { isPhone, isAndroid, isFirefox, } from "@ui5/webcomponents-base/dist/Device.js";
@@ -51,7 +50,6 @@ import ResponsivePopoverCommonCss from "./generated/themes/ResponsivePopoverComm
 import ValueStateMessageCss from "./generated/themes/ValueStateMessage.css.js";
 import SuggestionsCss from "./generated/themes/Suggestions.css.js";
 import MultiComboBoxPopover from "./generated/themes/MultiComboBoxPopover.css.js";
-import ComboBoxFilter from "./types/ComboBoxFilter.js";
 import CheckBox from "./CheckBox.js";
 import Input from "./Input.js";
 import SuggestionItem from "./SuggestionItem.js";
@@ -110,7 +108,7 @@ let MultiComboBox = MultiComboBox_1 = class MultiComboBox extends UI5Element {
     }
     get formFormattedValue() {
         const selectedItems = (this.items || []).filter(item => item.selected);
-        if (selectedItems.length) {
+        if (selectedItems.length && this.name) {
             const formData = new FormData();
             formData.append(this.name, this.value);
             for (let i = 0; i < selectedItems.length; i++) {
@@ -122,6 +120,101 @@ let MultiComboBox = MultiComboBox_1 = class MultiComboBox extends UI5Element {
     }
     constructor() {
         super();
+        /**
+         * Defines the value of the component.
+         *
+         * **Note:** The property is updated upon typing.
+         * @default ""
+         * @formEvents change input
+         * @formProperty
+         * @public
+         */
+        this.value = "";
+        /**
+         * Defines whether the value will be autcompleted to match an item
+         * @default false
+         * @public
+         * @since 1.4.0
+         */
+        this.noTypeahead = false;
+        /**
+         * Defines if the user input will be prevented, if no matching item has been found
+         * @default false
+         * @public
+         */
+        this.noValidation = false;
+        /**
+         * Defines whether the component is in disabled state.
+         *
+         * **Note:** A disabled component is completely noninteractive.
+         * @default false
+         * @public
+         */
+        this.disabled = false;
+        /**
+         * Defines the value state of the component.
+         * @default "None"
+         * @public
+         */
+        this.valueState = "None";
+        /**
+         * Defines whether the component is read-only.
+         *
+         * **Note:** A read-only component is not editable,
+         * but still provides visual feedback upon user interaction.
+         * @default false
+         * @public
+         */
+        this.readonly = false;
+        /**
+         * Defines whether the component is required.
+         * @default false
+         * @public
+         * @since 1.0.0-rc.5
+         */
+        this.required = false;
+        /**
+         * Defines the filter type of the component.
+         * @default "StartsWithPerTerm"
+         * @public
+         */
+        this.filter = "StartsWithPerTerm";
+        /**
+         * Defines whether the clear icon of the multi-combobox will be shown.
+         * @default false
+         * @public
+         * @since 1.20.1
+         */
+        this.showClearIcon = false;
+        /**
+         * Determines if the select all checkbox is visible on top of suggestions.
+         * @default false
+         * @public
+         */
+        this.showSelectAll = false;
+        this._effectiveValueState = "None";
+        /**
+         * Indicates whether the dropdown is open. True if the dropdown is open, false otherwise.
+         * @default false
+         * @private
+         */
+        this._open = false;
+        this._valueBeforeOpen = this.value;
+        this.filterSelected = false;
+        this.focused = false;
+        this._tokenizerFocused = false;
+        this._iconPressed = false;
+        this._inputWidth = 0;
+        this._listWidth = 0;
+        this._performingSelectionTwice = false;
+        this._allSelected = false;
+        this._effectiveShowClearIcon = false;
+        this._dialogInputValueState = "None";
+        /**
+         * Indicates whether the tokenizer has tokens
+         * @private
+         */
+        this.tokenizerAvailable = false;
         this._filteredItems = [];
         this.selectedItems = [];
         this._previouslySelectedItems = [];
@@ -278,7 +371,7 @@ let MultiComboBox = MultiComboBox_1 = class MultiComboBox extends UI5Element {
         if (this._getSelectedItems().length) {
             return "";
         }
-        return this.placeholder;
+        return this.placeholder || "";
     }
     _handleArrowLeft() {
         const inputDomRef = this._inputDom;
@@ -387,7 +480,7 @@ let MultiComboBox = MultiComboBox_1 = class MultiComboBox extends UI5Element {
     }
     _handleTokenCreationUponPaste(pastedText, e) {
         const separatedText = pastedText.split(/\r\n|\r|\n|\t/g).filter(t => !!t);
-        const matchingItems = this._getItems().filter(item => separatedText.includes(item.text) && !item.selected);
+        const matchingItems = this._getItems().filter(item => !item.isGroupItem && !item.selected && separatedText.includes(item.text));
         if (matchingItems.length > 1) {
             e.preventDefault();
             this._selectItems(matchingItems);
@@ -408,7 +501,7 @@ let MultiComboBox = MultiComboBox_1 = class MultiComboBox extends UI5Element {
         const selectedItem = this._getSelectedItems()[0];
         const focusedToken = this._tokenizer.tokens.find(token => token.focused);
         const value = this.value;
-        const matchingItem = this._getItems().find(item => item.text.localeCompare(value, undefined, { sensitivity: "base" }) === 0);
+        const matchingItem = this._getItems().find(item => item.text?.localeCompare(value, undefined, { sensitivity: "base" }) === 0);
         e.preventDefault();
         if (this.readonly) {
             return;
@@ -705,7 +798,7 @@ let MultiComboBox = MultiComboBox_1 = class MultiComboBox extends UI5Element {
     }
     _handleEnter() {
         const lowerCaseValue = this.value.toLowerCase();
-        const matchingItem = this._getItems().find(item => (item.text.toLowerCase() === lowerCaseValue && !item.isGroupItem));
+        const matchingItem = this._getItems().find(item => (!item.isGroupItem && item.text.toLowerCase() === lowerCaseValue));
         const oldValueState = this.valueState;
         const innerInput = this._innerInput;
         if (this._internals?.form) {
@@ -953,13 +1046,13 @@ let MultiComboBox = MultiComboBox_1 = class MultiComboBox extends UI5Element {
         if (!this._getItems().length) {
             return;
         }
-        const matchingItems = this._startsWithMatchingItems(current).filter(item => !item.isGroupItem && !item.selected);
+        const matchingItems = this._startsWithMatchingItems(current).filter(item => !item.selected);
         if (matchingItems.length) {
             return matchingItems[0];
         }
     }
     _startsWithMatchingItems(str) {
-        return Filters.StartsWith(str, this._getItems(), "text");
+        return Filters.StartsWith(str, this._getItems().filter(item => !item.isGroupItem), "text");
     }
     _revertSelection() {
         this._filteredItems.forEach(item => {
@@ -1350,7 +1443,7 @@ __decorate([
     property({ type: Boolean })
 ], MultiComboBox.prototype, "disabled", void 0);
 __decorate([
-    property({ type: ValueState, defaultValue: ValueState.None })
+    property()
 ], MultiComboBox.prototype, "valueState", void 0);
 __decorate([
     property({ type: Boolean })
@@ -1359,7 +1452,7 @@ __decorate([
     property({ type: Boolean })
 ], MultiComboBox.prototype, "required", void 0);
 __decorate([
-    property({ type: ComboBoxFilter, defaultValue: ComboBoxFilter.StartsWithPerTerm })
+    property()
 ], MultiComboBox.prototype, "filter", void 0);
 __decorate([
     property({ type: Boolean })
@@ -1374,7 +1467,7 @@ __decorate([
     property({ type: Boolean })
 ], MultiComboBox.prototype, "showSelectAll", void 0);
 __decorate([
-    property({ type: ValueState, defaultValue: ValueState.None })
+    property()
 ], MultiComboBox.prototype, "_effectiveValueState", void 0);
 __decorate([
     property({ type: Boolean })
@@ -1383,10 +1476,10 @@ __decorate([
     property()
 ], MultiComboBox.prototype, "_valueBeforeOpen", void 0);
 __decorate([
-    property({ type: Object, noAttribute: true, multiple: true })
+    property({ type: Array })
 ], MultiComboBox.prototype, "_filteredItems", void 0);
 __decorate([
-    property({ type: Object, noAttribute: true, multiple: true })
+    property({ type: Array })
 ], MultiComboBox.prototype, "_previouslySelectedItems", void 0);
 __decorate([
     property({ type: Boolean })
@@ -1401,10 +1494,10 @@ __decorate([
     property({ type: Boolean, noAttribute: true })
 ], MultiComboBox.prototype, "_iconPressed", void 0);
 __decorate([
-    property({ validator: Integer, noAttribute: true })
+    property({ type: Number, noAttribute: true })
 ], MultiComboBox.prototype, "_inputWidth", void 0);
 __decorate([
-    property({ validator: Integer, noAttribute: true, defaultValue: 0 })
+    property({ type: Number, noAttribute: true })
 ], MultiComboBox.prototype, "_listWidth", void 0);
 __decorate([
     property({ type: Boolean, noAttribute: true })
@@ -1416,7 +1509,7 @@ __decorate([
     property({ type: Boolean, noAttribute: true })
 ], MultiComboBox.prototype, "_effectiveShowClearIcon", void 0);
 __decorate([
-    property({ type: ValueState, defaultValue: ValueState.None })
+    property()
 ], MultiComboBox.prototype, "_dialogInputValueState", void 0);
 __decorate([
     property({ type: Boolean })

@@ -73,10 +73,22 @@ declare class ViewSettingsDialog extends UI5Element {
      */
     sortDescending: boolean;
     /**
+     * Indicates if the dialog is open.
+     * @public
+     * @default false
+     * @since 2.0.0
+     */
+    open: boolean;
+    /**
      * Keeps recently focused list in order to focus it on next dialog open.
      * @private
      */
-    _recentlyFocused: List;
+    _recentlyFocused?: List;
+    /**
+     * Stores current settings of the dialog.
+     * @private
+     */
+    _currentSettings: VSDInternalSettings;
     /**
      * Stores settings of the dialog before the initial open.
      * @private
@@ -88,16 +100,11 @@ declare class ViewSettingsDialog extends UI5Element {
      */
     _confirmedSettings: VSDInternalSettings;
     /**
-     * Stores current settings of the dialog.
-     * @private
-     */
-    _currentSettings: VSDInternalSettings;
-    /**
      * Defnies the current mode of the component.
      * @since 1.0.0-rc.16
      * @private
      */
-    _currentMode: ViewSettingsDialogMode;
+    _currentMode: `${ViewSettingsDialogMode}`;
     /**
      * When in Filter By mode, defines whether we need to show the list of keys, or the list with values.
      * @since 1.0.0-rc.16
@@ -122,7 +129,6 @@ declare class ViewSettingsDialog extends UI5Element {
     _sortOrder?: List;
     _sortBy?: List;
     static i18nBundle: I18nBundle;
-    constructor();
     onBeforeRendering(): void;
     onInvalidation(changeInfo: ChangeInfo): void;
     _setAdditionalTexts(): void;
@@ -174,17 +180,14 @@ declare class ViewSettingsDialog extends UI5Element {
     get _dialogDomRef(): Dialog;
     /**
      * Shows the dialog.
-     * @public
      */
-    show(): void;
+    beforeDialogOpen(): void;
+    afterDialogOpen(): void;
+    afterDialogClose(): void;
     _handleModeChange(e: CustomEvent): void;
     _handleFilterValueItemClick(e: CustomEvent<ListItemClickEventDetail>): void;
     _navigateToFilters(): void;
     _changeCurrentFilter(e: CustomEvent<ListItemClickEventDetail>): void;
-    /**
-     * Closes the dialog.
-     */
-    close(): void;
     /**
      * Sets focus on recently used control within the dialog.
      */

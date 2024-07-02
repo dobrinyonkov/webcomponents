@@ -12,10 +12,10 @@ import ListItemBase from "@ui5/webcomponents/dist/ListItemBase.js";
 declare class NotificationListItemBase extends ListItemBase {
     /**
      * Defines the `titleText` of the item.
-     * @default ""
+     * @default undefined
      * @public
      */
-    titleText: string;
+    titleText?: string;
     /**
      * Defines if the `notification` is new or has been already read.
      *
@@ -42,7 +42,6 @@ declare class NotificationListItemBase extends ListItemBase {
     get hasTitleText(): boolean;
     get loadingText(): string;
     get isLoading(): boolean;
-    onEnterDOM(): void;
     /**
      * Event handlers
      */

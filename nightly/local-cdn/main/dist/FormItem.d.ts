@@ -1,6 +1,6 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import type { IFormItem } from "./Form.js";
-import FormItemSpacing from "./types/FormItemSpacing.js";
+import type FormItemSpacing from "./types/FormItemSpacing.js";
 /**
  * @class
  *
@@ -22,8 +22,10 @@ import FormItemSpacing from "./types/FormItemSpacing.js";
  * @csspart content - Used to style the content part of the form item.
  *
  * @constructor
+ * @implements {IFormItem}
  * @public
  * @since 2.0.0
+ * @experimental This component is availabe since 2.0 under an experimental flag and its API and behaviour are subject to change.
  * @extends UI5Element
  */
 declare class FormItem extends UI5Element implements IFormItem {

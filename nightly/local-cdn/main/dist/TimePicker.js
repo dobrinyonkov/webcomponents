@@ -30,7 +30,7 @@ import Input from "./Input.js";
 import Button from "./Button.js";
 import TimeSelectionClocks from "./TimeSelectionClocks.js";
 import TimeSelectionInputs from "./TimeSelectionInputs.js";
-import { TIMEPICKER_SUBMIT_BUTTON, TIMEPICKER_CANCEL_BUTTON, TIMEPICKER_INPUT_DESCRIPTION, } from "./generated/i18n/i18n-defaults.js";
+import { TIMEPICKER_SUBMIT_BUTTON, TIMEPICKER_CANCEL_BUTTON, TIMEPICKER_INPUT_DESCRIPTION, TIMEPICKER_POPOVER_ACCESSIBLE_NAME, } from "./generated/i18n/i18n-defaults.js";
 // Styles
 import TimePickerCss from "./generated/themes/TimePicker.css.js";
 import TimePickerPopoverCss from "./generated/themes/TimePickerPopover.css.js";
@@ -98,6 +98,35 @@ import ResponsivePopoverCommonCss from "./generated/themes/ResponsivePopoverComm
  * @since 1.0.0-rc.6
  */
 let TimePicker = TimePicker_1 = class TimePicker extends UI5Element {
+    constructor() {
+        super(...arguments);
+        /**
+         * Defines the value state of the component.
+         * @default "None"
+         * @public
+         */
+        this.valueState = "None";
+        /**
+         * Defines the disabled state of the comonent.
+         * @default false
+         * @public
+         */
+        this.disabled = false;
+        /**
+         * Defines the readonly state of the comonent.
+         * @default false
+         * @public
+         */
+        this.readonly = false;
+        /**
+         * Defines the open or closed state of the popover.
+         * @public
+         * @default false
+         * @since 2.0
+         */
+        this.open = false;
+        this._isInputsPopoverOpen = false;
+    }
     static async onDefine() {
         [TimePicker_1.i18nBundle] = await Promise.all([
             getI18nBundle("@ui5/webcomponents"),
@@ -118,6 +147,9 @@ let TimePicker = TimePicker_1 = class TimePicker extends UI5Element {
     }
     get dateAriaDescription() {
         return TimePicker_1.i18nBundle.getText(TIMEPICKER_INPUT_DESCRIPTION);
+    }
+    get pickerAccessibleName() {
+        return TimePicker_1.i18nBundle.getText(TIMEPICKER_POPOVER_ACCESSIBLE_NAME);
     }
     get accInfo() {
         return {
@@ -143,7 +175,7 @@ let TimePicker = TimePicker_1 = class TimePicker extends UI5Element {
      * @protected
      */
     get _formatPattern() {
-        const hasHours = !!this.formatPattern.match(/H/i);
+        const hasHours = !!this.formatPattern?.match(/H/i);
         const fallback = !this.formatPattern || !hasHours;
         const localeData = getCachedLocaleDataInstance(getLocale());
         return fallback ? localeData.getTimePattern("medium") : this.formatPattern;
@@ -439,13 +471,13 @@ let TimePicker = TimePicker_1 = class TimePicker extends UI5Element {
     }
 };
 __decorate([
-    property({ type: String, defaultValue: undefined })
+    property()
 ], TimePicker.prototype, "value", void 0);
 __decorate([
     property()
 ], TimePicker.prototype, "name", void 0);
 __decorate([
-    property({ type: ValueState, defaultValue: ValueState.None })
+    property()
 ], TimePicker.prototype, "valueState", void 0);
 __decorate([
     property({ type: Boolean })
@@ -454,7 +486,7 @@ __decorate([
     property({ type: Boolean })
 ], TimePicker.prototype, "readonly", void 0);
 __decorate([
-    property({ defaultValue: undefined })
+    property()
 ], TimePicker.prototype, "placeholder", void 0);
 __decorate([
     property()

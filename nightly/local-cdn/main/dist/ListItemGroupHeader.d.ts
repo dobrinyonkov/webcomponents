@@ -15,16 +15,15 @@ declare class ListItemGroupHeader extends ListItemBase {
      * Defines the text alternative of the component.
      *
      * **Note:** If not provided a default text alternative will be set, if present.
-     * @default ""
+     * @default undefined
      * @public
      */
-    accessibleName: string;
+    accessibleName?: string;
     static i18nBundle: I18nBundle;
     get groupItem(): boolean;
     get _pressable(): boolean;
     get groupHeaderText(): string;
     get ariaLabelText(): string;
     static onDefine(): Promise<void>;
-    onEnterDOM(): void;
 }
 export default ListItemGroupHeader;

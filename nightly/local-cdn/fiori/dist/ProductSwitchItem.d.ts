@@ -24,21 +24,20 @@ import type { IProductSwitchItem } from "./ProductSwitch.js";
  * @since 1.0.0-rc.5
  */
 declare class ProductSwitchItem extends UI5Element implements IProductSwitchItem {
-    constructor();
     /**
      * Defines the title of the component.
-     * @default ""
+     * @default undefined
      * @since 1.0.0-rc.15
      * @public
      */
-    titleText: string;
+    titleText?: string;
     /**
      * Defines the subtitle of the component.
-     * @default ""
+     * @default undefined
      * @since 1.0.0-rc.15
      * @public
      */
-    subtitleText: string;
+    subtitleText?: string;
     /**
      * Defines the icon to be displayed as a graphical element within the component.
      *
@@ -47,10 +46,10 @@ declare class ProductSwitchItem extends UI5Element implements IProductSwitchItem
      * `<ui5-product-switch-item icon="palette">`
      *
      * See all the available icons in the [Icon Explorer](https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html).
-     * @default ""
+     * @default undefined
      * @public
      */
-    icon: string;
+    icon?: string;
     /**
      * Defines a target where the `targetSrc` content must be open.
      *
@@ -61,16 +60,18 @@ declare class ProductSwitchItem extends UI5Element implements IProductSwitchItem
      * - `_blank`
      * - `_parent`
      * - `_search`
-     * @default "_self"
+     *
+     * **Note:** By default target will be open in the same frame as it was clicked.
+     * @default undefined
      * @public
      */
-    target: string;
+    target?: string;
     /**
      * Defines the component target URI. Supports standard hyperlink behavior.
-     * @default ""
+     * @default undefined
      * @public
      */
-    targetSrc: string;
+    targetSrc?: string;
     /**
      * Used to switch the active state (pressed or not) of the component.
      * @private
@@ -84,11 +85,13 @@ declare class ProductSwitchItem extends UI5Element implements IProductSwitchItem
     /**
      * Defines the component tabindex.
      */
-    forcedTabIndex: string;
+    forcedTabIndex?: string;
     _deactivate: () => void;
+    constructor();
     onEnterDOM(): void;
     onExitDOM(): void;
     _onmousedown(): void;
+    get _effectiveTarget(): string;
     _onkeydown(e: KeyboardEvent): void;
     _onkeyup(e: KeyboardEvent): void;
     _onfocusout(): void;

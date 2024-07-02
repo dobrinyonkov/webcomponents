@@ -4,8 +4,8 @@ import type { I18nText } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import type { ITabbable } from "@ui5/webcomponents-base/dist/delegate/ItemNavigation.js";
 import LinkDesign from "./types/LinkDesign.js";
-import WrappingType from "./types/WrappingType.js";
-import LinkAccessibleRole from "./types/LinkAccessibleRole.js";
+import type WrappingType from "./types/WrappingType.js";
+import type LinkAccessibleRole from "./types/LinkAccessibleRole.js";
 type LinkClickEventDetail = {
     altKey: boolean;
     ctrlKey: boolean;
@@ -47,6 +47,8 @@ type LinkAccessibilityAttributes = Pick<AccessibilityAttributes, "expanded" | "h
  * @constructor
  * @extends UI5Element
  * @public
+ * @csspart icon - Used to style the provided icon within the link
+ * @csspart endIcon - Used to style the provided endIcon within the link
  * @slot {Array<Node>} default - Defines the text of the component.
  *
  * **Note:** Although this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
@@ -62,19 +64,19 @@ declare class Link extends UI5Element implements ITabbable {
     disabled: boolean;
     /**
      * Defines the tooltip of the component.
-     * @default ""
+     * @default undefined
      * @public
      * @since 2.0.0
      */
-    tooltip: string;
+    tooltip?: string;
     /**
      * Defines the component href.
      *
      * **Note:** Standard hyperlink behavior is supported.
-     * @default ""
+     * @default undefined
      * @public
      */
-    href: string;
+    href?: string;
     /**
      * Defines the component target.
      *
@@ -87,10 +89,10 @@ declare class Link extends UI5Element implements ITabbable {
      * - `_search`
      *
      * **This property must only be used when the `href` property is set.**
-     * @default ""
+     * @default undefined
      * @public
      */
-    target: string;
+    target?: string;
     /**
      * Defines the component design.
      *
@@ -109,23 +111,23 @@ declare class Link extends UI5Element implements ITabbable {
     wrappingType: `${WrappingType}`;
     /**
      * Defines the accessible ARIA name of the component.
-     * @default ""
+     * @default undefined
      * @public
      * @since 1.2.0
      */
-    accessibleName: string;
+    accessibleName?: string;
     /**
      * Receives id(or many ids) of the elements that label the input
-     * @default ""
+     * @default undefined
      * @public
      * @since 1.0.0-rc.15
      */
-    accessibleNameRef: string;
+    accessibleNameRef?: string;
     /**
      * Defines the ARIA role of the component.
      *
      * **Note:** Use the <code>LinkAccessibleRole.Button</code> role in cases when navigation is not expected to occur and the href property is not defined.
-     * @default "link"
+     * @default "Link"
      * @public
      * @since 1.9.0
      */
@@ -145,8 +147,36 @@ declare class Link extends UI5Element implements ITabbable {
      * @default {}
      */
     accessibilityAttributes: LinkAccessibilityAttributes;
+    /**
+     * Defines the icon, displayed as graphical element within the component before the link's text.
+     * The SAP-icons font provides numerous options.
+     *
+     * **Note:** Usage of icon-only link is not supported, the link must always have a text.
+     *
+     * **Note:** We recommend using аn icon in the beginning or the end only, and with text.
+     *
+     * See all the available icons within the [Icon Explorer](https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html).
+     * @default undefined
+     * @since 2.0.0
+     * @public
+     */
+    icon?: string;
+    /**
+     * Defines the icon, displayed as graphical element within the component after the link's text.
+     * The SAP-icons font provides numerous options.
+     *
+     * **Note:** Usage of icon-only link is not supported, the link must always have a text.
+     *
+     * **Note:** We recommend using аn icon in the beginning or the end only, and with text.
+     *
+     * See all the available icons within the [Icon Explorer](https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html).
+     * @default undefined
+     * @since 2.0.0
+     * @public
+     */
+    endIcon?: string;
     _rel: string | undefined;
-    forcedTabIndex: string;
+    forcedTabIndex?: string;
     /**
      * Indicates if the element is on focus.
      * @private
@@ -156,7 +186,7 @@ declare class Link extends UI5Element implements ITabbable {
     static i18nBundle: I18nBundle;
     constructor();
     onBeforeRendering(): void;
-    _isCrossOrigin(): boolean;
+    _isCrossOrigin(href: string): boolean;
     get effectiveTabIndex(): string;
     get ariaLabelText(): string | undefined;
     get hasLinkType(): boolean;

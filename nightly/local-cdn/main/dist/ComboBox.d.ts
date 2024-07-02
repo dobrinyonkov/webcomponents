@@ -13,8 +13,9 @@ import type { IIcon } from "./Icon.js";
 import ComboBoxItem from "./ComboBoxItem.js";
 import Popover from "./Popover.js";
 import ResponsivePopover from "./ResponsivePopover.js";
+import List from "./List.js";
 import type { ListItemClickEventDetail } from "./List.js";
-import ComboBoxFilter from "./types/ComboBoxFilter.js";
+import type ComboBoxFilter from "./types/ComboBoxFilter.js";
 import PopoverHorizontalAlign from "./types/PopoverHorizontalAlign.js";
 import type { InputEventDetail } from "./Input.js";
 /**
@@ -22,7 +23,8 @@ import type { InputEventDetail } from "./Input.js";
  * @public
  */
 interface IComboBoxItem extends UI5Element {
-    text: string;
+    text?: string;
+    headerText?: string;
     focused: boolean;
     isGroupItem?: boolean;
     selected?: boolean;
@@ -87,11 +89,11 @@ declare class ComboBox extends UI5Element implements IFormInputElement {
      * Determines the name by which the component will be identified upon submission in an HTML form.
      *
      * **Note:** This property is only applicable within the context of an HTML Form element.
-     * @default ""
+     * @default undefined
      * @public
      * @since 2.0.0
      */
-    name: string;
+    name?: string;
     /**
      * Defines whether the value will be autocompleted to match an item
      * @default false
@@ -112,10 +114,10 @@ declare class ComboBox extends UI5Element implements IFormInputElement {
     /**
      * Defines a short hint intended to aid the user with data entry when the
      * component has no value.
-     * @default ""
+     * @default undefined
      * @public
      */
-    placeholder: string;
+    placeholder?: string;
     /**
      * Defines whether the component is in disabled state.
      *
@@ -176,22 +178,34 @@ declare class ComboBox extends UI5Element implements IFormInputElement {
     _isValueStateFocused: boolean;
     /**
      * Defines the accessible ARIA name of the component.
-     * @default ""
+     * @default undefined
      * @public
      * @since 1.0.0-rc.15
      */
-    accessibleName: string;
+    accessibleName?: string;
     /**
      * Receives id(or many ids) of the elements that label the component
-     * @default ""
+     * @default undefined
      * @public
      * @since 1.0.0-rc.15
      */
-    accessibleNameRef: string;
+    accessibleNameRef?: string;
     _iconPressed: boolean;
     _filteredItems: Array<IComboBoxItem>;
-    _listWidth: number;
+    _listWidth?: number;
     _effectiveShowClearIcon: boolean;
+    /**
+     * Indicates whether the value state message popover is open.
+     * @private
+     * @since 2.0.0
+     */
+    valueStateOpen: boolean;
+    /**
+     * Indicates whether the items picker is open.
+     * @private
+     * @since 2.0.0
+     */
+    open: boolean;
     /**
      * Defines the component items.
      * @public
@@ -223,31 +237,30 @@ declare class ComboBox extends UI5Element implements IFormInputElement {
     _lastValue: string;
     _selectedItemText: string;
     _userTypedValue: string;
-    responsivePopover?: ResponsivePopover;
-    valueStatePopover?: Popover;
     static i18nBundle: I18nBundle;
     get formValidityMessage(): string;
     get formValidity(): ValidityStateFlags;
     formElementAnchor(): Promise<HTMLElement | undefined>;
     get formFormattedValue(): string;
     constructor();
-    onBeforeRendering(): Promise<void>;
+    onBeforeRendering(): void;
     get iconsCount(): number;
-    onAfterRendering(): Promise<void>;
-    shouldClosePopover(): Promise<boolean>;
+    onAfterRendering(): void;
     _focusin(e: FocusEvent): void;
     _focusout(e: FocusEvent): void;
+    _beforeOpenPopover(): void;
     _afterOpenPopover(): void;
     _afterClosePopover(): void;
-    _toggleRespPopover(): Promise<void>;
-    storeResponsivePopoverWidth(): Promise<void>;
-    toggleValueStatePopover(open: boolean): void;
-    openValueStatePopover(): Promise<void>;
-    closeValueStatePopover(): Promise<void>;
-    _getValueStatePopover(): Promise<Popover>;
+    _toggleRespPopover(): void;
+    storeResponsivePopoverWidth(): void;
+    _handleValueStatePopoverFocusout(): void;
+    _handleValueStatePopoverAfterClose(): void;
+    _getValueStatePopover(): Popover;
+    _getItemsList(): List;
     _resetFilter(): void;
     _resetItemVisibility(): void;
     _arrowClick(): void;
+    _handleMobileKeydown(e: KeyboardEvent): void;
     _handleMobileInput(e: CustomEvent<InputEventDetail>): void;
     _input(e: InputEvent): void;
     shouldAutocomplete(e: InputEvent): boolean;
@@ -256,6 +269,7 @@ declare class ComboBox extends UI5Element implements IFormInputElement {
     _getItems(): IComboBoxItem[];
     handleNavKeyPress(e: KeyboardEvent): void;
     _handleItemNavigation(e: KeyboardEvent, indexOfItem: number, isForward: boolean): void;
+    _handleTypeAhead(value: string, filterValue: string, checkForGroupItem: boolean): void;
     _handleArrowDown(e: KeyboardEvent, indexOfItem: number): void;
     _handleArrowUp(e: KeyboardEvent, indexOfItem: number): void;
     _handlePageUp(e: KeyboardEvent, indexOfItem: number): void;
@@ -264,12 +278,14 @@ declare class ComboBox extends UI5Element implements IFormInputElement {
     _handleEnd(e: KeyboardEvent): void;
     _keyup(): void;
     _keydown(e: KeyboardEvent): void;
+    _handlePopoverKeydown(e: KeyboardEvent): void;
+    _handlePopoverFocusout(): void;
     _click(): void;
-    _closeRespPopover(e?: Event): void;
-    _openRespPopover(): Promise<void>;
+    _closeRespPopover(e?: Event | null): void;
+    _openRespPopover(): void;
     _filterItems(str: string): IComboBoxItem[];
     _getFirstMatchingItem(current: string): IComboBoxItem | void;
-    _applyAtomicValueAndSelection(item: IComboBoxItem, filterValue: string, highlightValue: boolean): void;
+    _applyAtomicValueAndSelection(item: IComboBoxItem, filterValue: string): void;
     _selectMatchingItem(): void;
     _fireChangeEvent(): void;
     _inputChange(e: Event): void;
@@ -279,12 +295,14 @@ declare class ComboBox extends UI5Element implements IFormInputElement {
     _announceSelectedItem(indexOfItem: number): void;
     _clear(): void;
     _makeAllVisible(item: IComboBoxItem): void;
-    _scrollToItem(indexOfItem: number, forward: boolean): Promise<void>;
+    _scrollToItem(indexOfItem: number, forward: boolean): void;
     _announceValueStateText(): void;
     get _headerTitleText(): string;
     get _iconAccessibleNameText(): string;
     get inner(): HTMLInputElement;
-    _getPicker(): Promise<ResponsivePopover>;
+    _getPicker(): ResponsivePopover;
+    _getPickerInput(): HTMLInputElement;
+    get openOnMobile(): boolean;
     get hasValueState(): boolean;
     get hasValueStateText(): boolean;
     get ariaValueStateHiddenText(): string;
@@ -299,7 +317,6 @@ declare class ComboBox extends UI5Element implements IFormInputElement {
      * This method is relevant for sap_horizon theme only
      */
     get _valueStateMessageIcon(): string;
-    get open(): boolean;
     get _isPhone(): boolean;
     get itemTabIndex(): undefined;
     get ariaLabelText(): string | undefined;

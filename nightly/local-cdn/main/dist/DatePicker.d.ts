@@ -151,10 +151,10 @@ declare class DatePicker extends DateComponentBase implements IFormInputElement 
      * Determines the name by which the component will be identified upon submission in an HTML form.
      *
      * **Note:** This property is only applicable within the context of an HTML Form element.
-     * @default ""
+     * @default undefined
      * @public
      */
-    name: string;
+    name?: string;
     /**
      * Defines the visibility of the week numbers column.
      *
@@ -174,19 +174,19 @@ declare class DatePicker extends DateComponentBase implements IFormInputElement 
     open: boolean;
     /**
      * Defines the aria-label attribute for the component.
-     * @default ""
+     * @default undefined
      * @public
      * @since 1.0.0-rc.15
      */
-    accessibleName: string;
+    accessibleName?: string;
     /**
      * Receives id(or many ids) of the elements that label the component.
-     * @default ""
+     * @default undefined
      * @public
      * @since 1.0.0-rc.15
      */
-    accessibleNameRef: string;
-    _respPopoverConfig: object;
+    accessibleNameRef?: string;
+    _respPopoverConfig?: object;
     _calendarCurrentPicker: string;
     liveValue?: string;
     /**
@@ -298,6 +298,7 @@ declare class DatePicker extends DateComponentBase implements IFormInputElement 
     get openIconTitle(): string;
     get openIconName(): string;
     get dateAriaDescription(): string;
+    get pickerAccessibleName(): string;
     /**
      * Defines whether the dialog on mobile should have header
      * @private

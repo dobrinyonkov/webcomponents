@@ -60,12 +60,51 @@ import viewSettingsDialogCSS from "./generated/themes/ViewSettingsDialog.css.js"
  */
 let ViewSettingsDialog = ViewSettingsDialog_1 = class ViewSettingsDialog extends UI5Element {
     constructor() {
-        super();
+        super(...arguments);
+        /**
+         * Defines the initial sort order.
+         * @default false
+         * @public
+         */
+        this.sortDescending = false;
+        /**
+         * Indicates if the dialog is open.
+         * @public
+         * @default false
+         * @since 2.0.0
+         */
+        this.open = false;
+        /**
+         * Stores current settings of the dialog.
+         * @private
+         */
         this._currentSettings = {
             sortOrder: [],
             sortBy: [],
             filters: [],
         };
+        /**
+         * Stores settings of the dialog before the initial open.
+         * @private
+         */
+        this._initialSettings = this._currentSettings;
+        /**
+         * Stores settings of the dialog after confirmation.
+         * @private
+         */
+        this._confirmedSettings = this._currentSettings;
+        /**
+         * Defnies the current mode of the component.
+         * @since 1.0.0-rc.16
+         * @private
+         */
+        this._currentMode = "Sort";
+        /**
+         * When in Filter By mode, defines whether we need to show the list of keys, or the list with values.
+         * @since 1.0.0-rc.16
+         * @private
+         */
+        this._filterStepTwo = false;
     }
     onBeforeRendering() {
         if (this._currentSettings.filters && this._currentSettings.filters.length) {
@@ -246,9 +285,8 @@ let ViewSettingsDialog = ViewSettingsDialog_1 = class ViewSettingsDialog extends
     }
     /**
      * Shows the dialog.
-     * @public
      */
-    show() {
+    beforeDialogOpen() {
         if (!this._dialog) {
             this._sortOrder = this._sortOrderListDomRef;
             this._sortBy = this._sortByList;
@@ -262,8 +300,14 @@ let ViewSettingsDialog = ViewSettingsDialog_1 = class ViewSettingsDialog extends
             this._restoreSettings(this._confirmedSettings);
         }
         this.fireEvent("before-open", {}, true, false);
-        this._dialog.open = true;
-        this._dialog.querySelector("[ui5-list]")?.focusFirstItem();
+    }
+    afterDialogOpen() {
+        this._dialog?.querySelector("[ui5-list]")?.focusFirstItem();
+        this._focusRecentlyUsedControl();
+        this.fireEvent("open");
+    }
+    afterDialogClose() {
+        this.fireEvent("close");
     }
     _handleModeChange(e) {
         const mode = e.detail.selectedItems[0].getAttribute("mode");
@@ -294,14 +338,6 @@ let ViewSettingsDialog = ViewSettingsDialog_1 = class ViewSettingsDialog extends
         });
     }
     /**
-     * Closes the dialog.
-     */
-    close() {
-        if (this._dialog) {
-            this._dialog.open = false;
-        }
-    }
-    /**
      * Sets focus on recently used control within the dialog.
      */
     _focusRecentlyUsedControl() {
@@ -317,7 +353,7 @@ let ViewSettingsDialog = ViewSettingsDialog_1 = class ViewSettingsDialog extends
      * Stores current settings as confirmed and fires `confirm` event.
      */
     _confirmSettings() {
-        this.close();
+        this.open = false;
         this._confirmedSettings = this._currentSettings;
         this.fireEvent("confirm", this.eventsParams);
     }
@@ -327,7 +363,7 @@ let ViewSettingsDialog = ViewSettingsDialog_1 = class ViewSettingsDialog extends
     _cancelSettings() {
         this._restoreSettings(this._confirmedSettings);
         this.fireEvent("cancel", this.eventsParams);
-        this.close();
+        this.open = false;
     }
     get eventsParams() {
         const _currentSortOrderSelected = this._currentSettings.sortOrder.filter(item => item.selected)[0], _currentSortBySelected = this._currentSettings.sortBy.filter(item => item.selected)[0], sortOrder = _currentSortOrderSelected && _currentSortOrderSelected.text, sortDescending = !this._currentSettings.sortOrder[0].selected, sortBy = _currentSortBySelected && _currentSortBySelected.text, sortByElementIndex = _currentSortBySelected && _currentSortBySelected.index, sortByItem = this.sortItems[sortByElementIndex];
@@ -465,8 +501,14 @@ __decorate([
     property({ type: Boolean })
 ], ViewSettingsDialog.prototype, "sortDescending", void 0);
 __decorate([
+    property({ type: Boolean })
+], ViewSettingsDialog.prototype, "open", void 0);
+__decorate([
     property({ type: Object })
 ], ViewSettingsDialog.prototype, "_recentlyFocused", void 0);
+__decorate([
+    property({ type: Object })
+], ViewSettingsDialog.prototype, "_currentSettings", void 0);
 __decorate([
     property({ type: Object })
 ], ViewSettingsDialog.prototype, "_initialSettings", void 0);
@@ -474,10 +516,7 @@ __decorate([
     property({ type: Object })
 ], ViewSettingsDialog.prototype, "_confirmedSettings", void 0);
 __decorate([
-    property({ type: Object })
-], ViewSettingsDialog.prototype, "_currentSettings", void 0);
-__decorate([
-    property({ type: ViewSettingsDialogMode, defaultValue: ViewSettingsDialogMode.Sort })
+    property()
 ], ViewSettingsDialog.prototype, "_currentMode", void 0);
 __decorate([
     property({ type: Boolean, noAttribute: true })
@@ -580,6 +619,20 @@ ViewSettingsDialog = ViewSettingsDialog_1 = __decorate([
      */
     ,
     event("before-open")
+    /**
+     * Fired after the dialog is opened.
+     * @since 2.0.0
+     * @public
+     */
+    ,
+    event("open")
+    /**
+     * Fired after the dialog is closed.
+     * @since 2.0.0
+     * @public
+     */
+    ,
+    event("close")
 ], ViewSettingsDialog);
 ViewSettingsDialog.define();
 export default ViewSettingsDialog;

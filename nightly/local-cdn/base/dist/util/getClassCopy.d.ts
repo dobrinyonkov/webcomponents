@@ -22,6 +22,10 @@ declare const getClassCopy: (klass: typeof UI5Element, constructorCallback: () =
         _state: import("../UI5ElementMetadata.js").State;
         _internals?: ElementInternals | undefined;
         _getRealDomRef?: (() => HTMLElement) | undefined;
+        initializedProperties: Map<string, unknown>;
+        _rendered: boolean;
+        _initShadowRoot(): void;
+        _onShadowRootSlotChange(e: Event): void;
         readonly _id: string;
         render(): object;
         connectedCallback(): Promise<void>;
@@ -45,8 +49,6 @@ declare const getClassCopy: (klass: typeof UI5Element, constructorCallback: () =
         attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
         formAssociatedCallback(): void;
         _updateAttribute(name: string, newValue: import("../UI5ElementMetadata.js").PropertyValue): void;
-        _upgradeProperty(this: Record<string, any>, propertyName: string): void;
-        _upgradeAllProperties(): void;
         _getChildChangeListener(slotName: string): (param: import("../UI5Element.js").ChangeInfo & {
             target: UI5Element;
         }) => void;
@@ -55,6 +57,7 @@ declare const getClassCopy: (klass: typeof UI5Element, constructorCallback: () =
         _detachSlotChange(child: HTMLSlotElement, slotName: string): void;
         _onSlotChange(slotName: string): void;
         onInvalidation(changeInfo: import("../UI5Element.js").ChangeInfo): void;
+        updateAttributes(): void;
         _render(): void;
         _assignIndividualSlotsToChildren(): void;
         _waitForDomRef(): Promise<void> & {

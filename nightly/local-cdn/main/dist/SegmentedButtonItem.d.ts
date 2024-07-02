@@ -42,11 +42,11 @@ declare class SegmentedButtonItem extends UI5Element implements IButton, ISegmen
      * Defines the tooltip of the component.
      *
      * **Note:** A tooltip attribute should be provided for icon-only buttons, in order to represent their exact meaning/function.
-     * @default ""
+     * @default undefined
      * @public
      * @since 1.2.0
      */
-    tooltip: string;
+    tooltip?: string;
     /**
      * Defines the accessible ARIA name of the component.
      * @default undefined
@@ -56,21 +56,21 @@ declare class SegmentedButtonItem extends UI5Element implements IButton, ISegmen
     accessibleName?: string;
     /**
      * Receives id(or many ids) of the elements that label the component.
-     * @default ""
+     * @default undefined
      * @public
      * @since 1.1.0
      */
-    accessibleNameRef: string;
+    accessibleNameRef?: string;
     /**
      * Defines the icon, displayed as graphical element within the component.
      * The SAP-icons font provides numerous options.
      *
      * Example:
      * See all the available icons within the [Icon Explorer](https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html).
-     * @default ""
+     * @default undefined
      * @public
      */
-    icon: string;
+    icon?: string;
     /**
      * Defines if the button has icon and no text.
      * @private
@@ -85,7 +85,7 @@ declare class SegmentedButtonItem extends UI5Element implements IButton, ISegmen
      * Defines the tabIndex of the component.
      * @private
      */
-    forcedTabIndex: string;
+    forcedTabIndex?: string;
     /**
      * Defines the index of the item inside of the SegmentedButton.
      * @default 0
@@ -108,11 +108,11 @@ declare class SegmentedButtonItem extends UI5Element implements IButton, ISegmen
     static i18nBundle: I18nBundle;
     get ariaDescription(): string;
     constructor();
-    _onclick(): void;
+    _onclick(e: MouseEvent): void;
     onEnterDOM(): void;
     onBeforeRendering(): void;
     _onkeyup(e: KeyboardEvent): void;
-    get tabIndexValue(): string;
+    get tabIndexValue(): string | undefined;
     get ariaLabelText(): string | undefined;
     get showIconTooltip(): boolean;
     static onDefine(): Promise<void>;

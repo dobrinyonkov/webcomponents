@@ -1,5 +1,7 @@
 import type UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import type { ChangeInfo } from "@ui5/webcomponents-base/dist/UI5Element.js";
+import "@ui5/webcomponents-icons/dist/slim-arrow-left.js";
+import "@ui5/webcomponents-icons/dist/slim-arrow-right.js";
 import CalendarPart from "./CalendarPart.js";
 import type { DayPickerChangeEventDetail } from "./DayPicker.js";
 import type { MonthPickerChangeEventDetail } from "./MonthPicker.js";
@@ -9,7 +11,7 @@ import CalendarPickersMode from "./types/CalendarPickersMode.js";
 import CalendarLegend from "./CalendarLegend.js";
 import type { CalendarLegendItemSelectionChangeEventDetail } from "./CalendarLegend.js";
 import SpecialCalendarDate from "./SpecialCalendarDate.js";
-import CalendarLegendItemType from "./types/CalendarLegendItemType.js";
+import type CalendarLegendItemType from "./types/CalendarLegendItemType.js";
 import "@ui5/webcomponents-localization/dist/features/calendar/Gregorian.js";
 interface ICalendarPicker {
     _showPreviousPage: () => void;
@@ -20,6 +22,12 @@ interface ICalendarPicker {
     _firstYear?: number;
     _lastYear?: number;
 }
+/**
+ * Interface for components that may be slotted inside a `ui5-calendar`.
+ *
+ * **Note:** Use with `ui5-date` or `ui5-date-range` as calendar date selection types.
+ * @public
+ */
 interface ICalendarSelectedDates extends UI5Element {
     value?: string;
     startValue?: string;
@@ -156,13 +164,13 @@ declare class Calendar extends CalendarPart {
      * Which picker is currently visible to the user: day/month/year
      * @private
      */
-    _currentPicker: string;
+    _currentPicker: "day" | "month" | "year";
     _previousButtonDisabled: boolean;
     _nextButtonDisabled: boolean;
-    _headerMonthButtonText: string;
-    _headerYearButtonText: string;
-    _headerYearButtonTextSecType: string;
-    _pickersMode: CalendarPickersMode;
+    _headerMonthButtonText?: string;
+    _headerYearButtonText?: string;
+    _headerYearButtonTextSecType?: string;
+    _pickersMode: `${CalendarPickersMode}`;
     _valueIsProcessed: boolean;
     /**
      * Defines the calendar legend of the component.
@@ -172,7 +180,8 @@ declare class Calendar extends CalendarPart {
     calendarLegend: Array<CalendarLegend>;
     /**
      * Defines the selected date or dates (depending on the `selectionMode` property)
-     * for this calendar as instances of `ui5-date`.
+     * for this calendar as instances of `ui5-date` or `ui5-date-range`.
+     * Use `ui5-date` for single or multiple selection, and `ui5-date-range` for range selection.
      * @public
      */
     dates: Array<ICalendarSelectedDates>;
@@ -188,6 +197,7 @@ declare class Calendar extends CalendarPart {
      */
     _selectedItemType: `${CalendarLegendItemType}`;
     constructor();
+    static onDefine(): Promise<void>;
     /**
      * @private
      */
@@ -210,10 +220,12 @@ declare class Calendar extends CalendarPart {
      * The user clicked the "month" button in the header
      */
     onHeaderShowMonthPress(e: CustomEvent): void;
+    showMonth(): void;
     /**
      * The user clicked the "year" button in the header
      */
     onHeaderShowYearPress(e: CustomEvent): void;
+    showYear(): void;
     get _currentPickerDOM(): ICalendarPicker;
     /**
      * The year clicked the "Previous" button in the header
@@ -234,6 +246,11 @@ declare class Calendar extends CalendarPart {
      * @private
      */
     get _isHeaderMonthButtonHidden(): boolean;
+    /**
+     * The year button is hidden when the year picker is shown
+     * @private
+     */
+    get _isHeaderYearButtonHidden(): boolean;
     get _isDayPickerHidden(): boolean;
     get _isMonthPickerHidden(): boolean;
     get _isYearPickerHidden(): boolean;
@@ -245,6 +262,28 @@ declare class Calendar extends CalendarPart {
     _onkeydown(e: KeyboardEvent): void;
     _onLegendFocusOut(): void;
     get _specialDates(): SpecialCalendarDate[];
+    get classes(): {
+        prevButton: {
+            "ui5-calheader-arrowbtn": boolean;
+            "ui5-calheader-arrowbtn-disabled": boolean;
+        };
+        nextButton: {
+            "ui5-calheader-arrowbtn": boolean;
+            "ui5-calheader-arrowbtn-disabled": boolean;
+        };
+    };
+    get accInfo(): {
+        ariaLabelMonthButton: string;
+    };
+    get headerPreviousButtonText(): string | undefined;
+    get headerNextButtonText(): string | undefined;
+    get secondMonthButtonText(): string;
+    onMonthButtonKeyDown(e: KeyboardEvent): void;
+    onMonthButtonKeyUp(e: KeyboardEvent): void;
+    onYearButtonKeyDown(e: KeyboardEvent): void;
+    onYearButtonKeyUp(e: KeyboardEvent): void;
+    onPrevButtonClick(e: MouseEvent): void;
+    onNextButtonClick(e: MouseEvent): void;
     /**
      * Returns an array of UTC timestamps, representing the selected dates.
      * @protected

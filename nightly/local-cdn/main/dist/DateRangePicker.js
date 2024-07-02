@@ -11,13 +11,14 @@ import { renderFinished } from "@ui5/webcomponents-base/dist/Render.js";
 import CalendarDate from "@ui5/webcomponents-localization/dist/dates/CalendarDate.js";
 import modifyDateBy from "@ui5/webcomponents-localization/dist/dates/modifyDateBy.js";
 import getTodayUTCTimestamp from "@ui5/webcomponents-localization/dist/dates/getTodayUTCTimestamp.js";
-import { DATERANGE_DESCRIPTION } from "./generated/i18n/i18n-defaults.js";
+import { DATERANGE_DESCRIPTION, DATERANGEPICKER_POPOVER_ACCESSIBLE_NAME, } from "./generated/i18n/i18n-defaults.js";
 import DateRangePickerTemplate from "./generated/templates/DateRangePickerTemplate.lit.js";
 // Styles
 import DateRangePickerCss from "./generated/themes/DateRangePicker.css.js";
 import DatePicker from "./DatePicker.js";
 import CalendarPickersMode from "./types/CalendarPickersMode.js";
 import CalendarDateRange from "./CalendarDateRange.js";
+const DEFAULT_DELIMITER = "-";
 /**
  * @class
  *
@@ -53,7 +54,7 @@ import CalendarDateRange from "./CalendarDateRange.js";
 let DateRangePicker = DateRangePicker_1 = class DateRangePicker extends DatePicker {
     get formFormattedValue() {
         const values = this._splitValueByDelimiter(this.value || "").filter(Boolean);
-        if (values.length) {
+        if (values.length && this.name) {
             const formData = new FormData();
             for (let i = 0; i < values.length; i++) {
                 formData.append(this.name, values[i]);
@@ -64,6 +65,13 @@ let DateRangePicker = DateRangePicker_1 = class DateRangePicker extends DatePick
     }
     constructor() {
         super();
+        /**
+        * Determines the symbol which separates the dates.
+        * If not supplied, the default time interval delimiter for the current locale will be used.
+        * @default "-"
+        * @public
+        */
+        this.delimiter = DEFAULT_DELIMITER;
         this._prevDelimiter = null;
     }
     /**
@@ -146,8 +154,17 @@ let DateRangePicker = DateRangePicker_1 = class DateRangePicker extends DatePick
     get _placeholder() {
         return this.placeholder !== undefined ? this.placeholder : `${this._displayFormat} ${this._effectiveDelimiter} ${this._displayFormat}`;
     }
+    /**
+     * @override
+     */
     get dateAriaDescription() {
         return DateRangePicker_1.i18nBundle.getText(DATERANGE_DESCRIPTION);
+    }
+    /**
+     * @override
+     */
+    get pickerAccessibleName() {
+        return DateRangePicker_1.i18nBundle.getText(DATERANGEPICKER_POPOVER_ACCESSIBLE_NAME);
     }
     /**
      * @override
@@ -238,8 +255,7 @@ let DateRangePicker = DateRangePicker_1 = class DateRangePicker extends DatePick
         input.setCaretPosition(caretPos); // Return the caret to the previous (or the adjusted, if dates flipped) position after rendering
     }
     get _effectiveDelimiter() {
-        const ctor = this.constructor;
-        return this.delimiter || (ctor.getMetadata().getProperties().delimiter.defaultValue);
+        return this.delimiter || DEFAULT_DELIMITER;
     }
     _splitValueByDelimiter(value) {
         const valuesArray = [];
@@ -306,7 +322,7 @@ let DateRangePicker = DateRangePicker_1 = class DateRangePicker extends DatePick
     }
 };
 __decorate([
-    property({ defaultValue: "-" })
+    property()
 ], DateRangePicker.prototype, "delimiter", void 0);
 __decorate([
     property()

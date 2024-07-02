@@ -20,7 +20,7 @@ import Popover from "./Popover.js";
 import ResponsivePopover from "./ResponsivePopover.js";
 import List from "./List.js";
 import type { ListSelectionChangeEventDetail } from "./List.js";
-import ComboBoxFilter from "./types/ComboBoxFilter.js";
+import type ComboBoxFilter from "./types/ComboBoxFilter.js";
 import type ListItemBase from "./ListItemBase.js";
 import type { InputEventDetail } from "./Input.js";
 import type PopoverHorizontalAlign from "./types/PopoverHorizontalAlign.js";
@@ -29,7 +29,8 @@ import type PopoverHorizontalAlign from "./types/PopoverHorizontalAlign.js";
  * @public
  */
 interface IMultiComboBoxItem extends UI5Element {
-    text: string;
+    text?: string;
+    headerText?: string;
     selected: boolean;
     isGroupItem?: boolean;
     stableDomRef: string;
@@ -104,11 +105,11 @@ declare class MultiComboBox extends UI5Element implements IFormInputElement {
      * **Note:** This property is only applicable within the context of an HTML Form element.
      * **Note:** When the component is used inside a form element,
      * the value is sent as the first element in the form data, even if it's empty.
-     * @default ""
+     * @default undefined
      * @public
      * @since 2.0.0
      */
-    name: string;
+    name?: string;
     /**
      * Defines whether the value will be autcompleted to match an item
      * @default false
@@ -119,10 +120,10 @@ declare class MultiComboBox extends UI5Element implements IFormInputElement {
     /**
      * Defines a short hint intended to aid the user with data entry when the
      * component has no value.
-     * @default ""
+     * @default undefined
      * @public
      */
-    placeholder: string;
+    placeholder?: string;
     /**
      * Defines if the user input will be prevented, if no matching item has been found
      * @default false
@@ -174,18 +175,18 @@ declare class MultiComboBox extends UI5Element implements IFormInputElement {
     showClearIcon: boolean;
     /**
      * Defines the accessible ARIA name of the component.
-     * @default ""
+     * @default undefined
      * @public
      * @since 1.4.0
      */
-    accessibleName: string;
+    accessibleName?: string;
     /**
      * Receives id(or many ids) of the elements that label the component.
-     * @default ""
+     * @default undefined
      * @public
      * @since 1.4.0
      */
-    accessibleNameRef: string;
+    accessibleNameRef?: string;
     /**
      * Determines if the select all checkbox is visible on top of suggestions.
      * @default false

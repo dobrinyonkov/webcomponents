@@ -13,11 +13,12 @@ import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import { getScopedVarName } from "@ui5/webcomponents-base/dist/CustomElementsScope.js";
+// @ts-ignore
+import encodeXML from "@ui5/webcomponents-base/dist/sap/base/security/encodeXML.js";
 import { isPhone, isAndroid, } from "@ui5/webcomponents-base/dist/Device.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 import { getFeature } from "@ui5/webcomponents-base/dist/FeaturesRegistry.js";
 import { isUp, isDown, isSpace, isEnter, isBackSpace, isDelete, isEscape, isTabNext, isPageUp, isPageDown, isHome, isEnd, } from "@ui5/webcomponents-base/dist/Keys.js";
-import Integer from "@ui5/webcomponents-base/dist/types/Integer.js";
 import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import { submitForm } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import { getAssociatedLabelForTexts, getAllAccessibleNameRefTexts, registerUI5Element, deregisterUI5Element, } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
@@ -111,6 +112,129 @@ let Input = Input_1 = class Input extends UI5Element {
     }
     constructor() {
         super();
+        /**
+         * Defines whether the component is in disabled state.
+         *
+         * **Note:** A disabled component is completely noninteractive.
+         * @default false
+         * @public
+         */
+        this.disabled = false;
+        /**
+         * Defines if characters within the suggestions are to be highlighted
+         * in case the input value matches parts of the suggestions text.
+         *
+         * **Note:** takes effect when `showSuggestions` is set to `true`
+         * @default false
+         * @private
+         * @since 1.0.0-rc.8
+         */
+        this.highlight = false;
+        /**
+         * Defines whether the component is read-only.
+         *
+         * **Note:** A read-only component is not editable,
+         * but still provides visual feedback upon user interaction.
+         * @default false
+         * @public
+         */
+        this.readonly = false;
+        /**
+         * Defines whether the component is required.
+         * @default false
+         * @public
+         * @since 1.0.0-rc.3
+         */
+        this.required = false;
+        /**
+         * Defines whether the value will be autcompleted to match an item
+         * @default false
+         * @public
+         * @since 1.4.0
+         */
+        this.noTypeahead = false;
+        /**
+         * Defines the HTML type of the component.
+         *
+         * **Notes:**
+         *
+         * - The particular effect of this property differs depending on the browser
+         * and the current language settings, especially for type `Number`.
+         * - The property is mostly intended to be used with touch devices
+         * that use different soft keyboard layouts depending on the given input type.
+         * @default "Text"
+         * @public
+         */
+        this.type = "Text";
+        /**
+         * Defines the value of the component.
+         *
+         * **Note:** The property is updated upon typing.
+         * @default ""
+         * @formEvents change input
+         * @formProperty
+         * @public
+         */
+        this.value = "";
+        /**
+         * Defines the inner stored value of the component.
+         *
+         * **Note:** The property is updated upon typing. In some special cases the old value is kept (e.g. deleting the value after the dot in a float)
+         * @default ""
+         * @private
+         */
+        this._innerValue = "";
+        /**
+         * Defines the value state of the component.
+         * @default "None"
+         * @public
+         */
+        this.valueState = "None";
+        /**
+         * Defines whether the component should show suggestions, if such are present.
+         *
+         * **Note:** You need to import the `InputSuggestions` module
+         * from `"@ui5/webcomponents/dist/features/InputSuggestions.js"` to enable this functionality.
+         * @default false
+         * @public
+         */
+        this.showSuggestions = false;
+        /**
+         * Defines whether the clear icon of the input will be shown.
+         * @default false
+         * @public
+         * @since 1.2.0
+         */
+        this.showClearIcon = false;
+        /**
+         * Defines whether the suggestions picker is open.
+         * The picker will not open if the `showSuggestions` property is set to `false`, the input is disabled or the input is readonly.
+         * The picker will close automatically and `close` event will be fired if the input is not in the viewport.
+         * @default false
+         * @public
+         * @since 2.0.0
+         */
+        this.open = false;
+        /**
+         * Defines whether the clear icon is visible.
+         * @default false
+         * @private
+         * @since 1.2.0
+         */
+        this._effectiveShowClearIcon = false;
+        /**
+         * @private
+         */
+        this.focused = false;
+        this.valueStateOpen = false;
+        /**
+         * Indicates whether the visual focus is on the value state header
+         * @private
+         */
+        this._isValueStateFocused = false;
+        this._inputAccInfo = {};
+        this._nativeInputAttributes = {};
+        this._inputIconFocused = false;
         // Indicates if there is selected suggestionItem.
         this.hasSuggestionItemSelected = false;
         // Represents the value before user moves selection from suggestion item to another
@@ -132,8 +256,6 @@ let Input = Input_1 = class Input extends UI5Element {
         this.lastConfirmedValue = "";
         // Indicates, if the user is typing. Gets reset once popup is closed
         this.isTyping = false;
-        // Suggestions array initialization
-        this.suggestionObjects = [];
         // Indicates whether the value of the input is comming from a suggestion item
         this._isLatestValueFromSuggestions = false;
         this._handleResizeBound = this._handleResize.bind(this);
@@ -148,13 +270,28 @@ let Input = Input_1 = class Input extends UI5Element {
         ResizeHandler.deregister(this, this._handleResizeBound);
         deregisterUI5Element(this);
     }
+    _highlightSuggestionItem(item) {
+        item.markupText = this.typedInValue ? this.Suggestions?.hightlightInput((item.text), this.typedInValue) : encodeXML(item.text || "");
+    }
+    _isGroupItem(item) {
+        return item.hasAttribute("ui5-suggestion-item-group");
+    }
     onBeforeRendering() {
         if (!this._keepInnerValue) {
             this._innerValue = this.value;
         }
         if (this.showSuggestions) {
             this.enableSuggestions();
-            this.suggestionObjects = this.Suggestions.defaultSlotProperties(this.typedInValue);
+            this.suggestionItems.forEach(item => {
+                if (item.hasAttribute("ui5-suggestion-item")) {
+                    this._highlightSuggestionItem(item);
+                }
+                else if (this._isGroupItem(item)) {
+                    item.items?.forEach(nestedItem => {
+                        this._highlightSuggestionItem(nestedItem);
+                    });
+                }
+            });
         }
         this._effectiveShowClearIcon = (this.showClearIcon && !!this.value && !this.readonly && !this.disabled);
         this.style.setProperty(getScopedVarName("--_ui5-input-icons-count"), `${this.iconsCount}`);
@@ -274,20 +411,17 @@ let Input = Input_1 = class Input extends UI5Element {
         }
     }
     _handleEnter(e) {
+        // if a group item is focused, this is false
         const suggestionItemPressed = !!(this.Suggestions && this.Suggestions.onEnter(e));
         const innerInput = this.getInputDOMRefSync();
-        let matchingIndex = -1;
-        // Check for autocompleted item
-        const matchingItem = this.suggestionItems.find((item, index) => {
-            matchingIndex = index;
-            return (item.text && item.text === this.value) || (item.textContent === this.value);
+        const matchingItem = this._selectableItems.find(item => {
+            return item.text === this.value;
         });
         if (matchingItem) {
-            const itemText = matchingItem.text ? matchingItem.text : (matchingItem.textContent || "");
-            const listItem = this.Suggestions._getItems()[matchingIndex];
+            const itemText = matchingItem.text;
             innerInput.setSelectionRange(itemText.length, itemText.length);
             if (!suggestionItemPressed) {
-                this.fireSelectionChange(matchingItem, listItem, true);
+                this.fireSelectionChange(matchingItem, true);
                 this.acceptSuggestion(matchingItem, true);
                 this.open = false;
             }
@@ -370,7 +504,7 @@ let Input = Input_1 = class Input extends UI5Element {
     innerFocusIn() { }
     _onfocusout(e) {
         const toBeFocused = e.relatedTarget;
-        if (this.Suggestions?._getPicker().contains(toBeFocused) || this.getSlottedNodes("valueStateMessage").some(el => el.contains(toBeFocused))) {
+        if (this.Suggestions?._getPicker().contains(toBeFocused) || this.contains(toBeFocused) || this.getSlottedNodes("valueStateMessage").some(el => el.contains(toBeFocused))) {
             return;
         }
         this._keepInnerValue = false;
@@ -407,10 +541,19 @@ let Input = Input_1 = class Input extends UI5Element {
             this._clearIconClicked = false;
             return;
         }
-        if (this.previousValue !== this.getInputDOMRefSync().value) {
+        const fireChange = () => {
             this.fireEvent(INPUT_EVENTS.CHANGE);
             this.previousValue = this.value;
             this.typedInValue = this.value;
+        };
+        if (this.previousValue !== this.getInputDOMRefSync().value) {
+            // if picker is open there might be a selected item, wait next tick to get the value applied
+            if (this.Suggestions?._getPicker().open && this.suggestionItems.some(item => item.hasAttribute("ui5-suggestion-item") && item.selected)) {
+                this._changeToBeFired = true;
+            }
+            else {
+                fireChange();
+            }
         }
     }
     _clear() {
@@ -497,17 +640,19 @@ let Input = Input_1 = class Input extends UI5Element {
         this.isTyping = true;
     }
     _startsWithMatchingItems(str) {
-        const textProp = this.suggestionItems[0].text ? "text" : "textContent";
-        return StartsWith(str, this.suggestionItems, textProp);
+        return StartsWith(str, Array.from(this.querySelectorAll("[ui5-suggestion-item], [ui5-suggestion-item-custom]")), "text");
     }
     _getFirstMatchingItem(current) {
         if (!this.suggestionItems.length) {
             return;
         }
-        const matchingItems = this._startsWithMatchingItems(current).filter(item => !item.groupItem);
+        const matchingItems = this._startsWithMatchingItems(current).filter(item => !this._isGroupItem(item));
         if (matchingItems.length) {
             return matchingItems[0];
         }
+    }
+    _handleSelectionChange(e) {
+        this.Suggestions?.onItemPress(e);
     }
     _handleTypeAhead(item) {
         const value = item.text ? item.text : item.textContent || "";
@@ -540,24 +685,16 @@ let Input = Input_1 = class Input extends UI5Element {
             this.blur();
             this.focused = false;
         }
+        if (this._changeToBeFired) {
+            this.fireEvent(INPUT_EVENTS.CHANGE);
+            this._changeToBeFired = false;
+        }
         this.open = false;
         this.isTyping = false;
         if (this.hasSuggestionItemSelected) {
             this.focus();
         }
         this._handlePickerAfterClose();
-    }
-    _handleSuggestionItemPress(e) {
-        this.Suggestions?.fnOnSuggestionItemPress(e);
-    }
-    _handleSelectionChange(e) {
-        this.Suggestions?.fnOnSuggestionItemPress(e);
-    }
-    _handleItemMouseOver(e) {
-        this.Suggestions?.fnOnSuggestionItemMouseOver(e);
-    }
-    _handleItemMouseOut(e) {
-        this.Suggestions?.fnOnSuggestionItemMouseOut(e);
     }
     _handlePickerAfterOpen() {
         this.Suggestions?._onOpen();
@@ -592,7 +729,7 @@ let Input = Input_1 = class Input extends UI5Element {
         }
     }
     acceptSuggestion(item, keyboardUsed) {
-        if (item.groupItem) {
+        if (this._isGroupItem(item)) {
             return;
         }
         const value = this.typedInValue || this.value;
@@ -619,8 +756,7 @@ let Input = Input_1 = class Input extends UI5Element {
      * @param item The item that is on select
      */
     updateValueOnSelect(item) {
-        const nonSelectable = item.type === "Inactive" || item.groupItem;
-        const itemValue = nonSelectable ? this.valueBeforeSelectionStart : (item.effectiveTitle || item.textContent || "");
+        const itemValue = this._isGroupItem(item) ? this.valueBeforeSelectionStart : item.text;
         this.value = itemValue;
         this._performTextSelection = true;
     }
@@ -670,10 +806,6 @@ let Input = Input_1 = class Input extends UI5Element {
     get nativeInputWidth() {
         return this.nativeInput ? this.nativeInput.offsetWidth : 0;
     }
-    getSuggestionByListItem(item) {
-        const key = parseInt(item.getAttribute("data-ui5-key"));
-        return this.suggestionItems[key];
-    }
     /**
      * Returns if the suggestions popover is scrollable.
      * The method returns `Promise` that resolves to true,
@@ -685,38 +817,30 @@ let Input = Input_1 = class Input extends UI5Element {
         }
         return this.Suggestions._isScrollable();
     }
-    /* Suggestions interface  */
-    onItemMouseOver(e) {
-        const item = e.target;
-        const suggestion = this.getSuggestionByListItem(item);
-        suggestion && suggestion.fireEvent("mouseover", {
-            item: suggestion,
-            targetRef: item,
-        });
-    }
-    onItemMouseOut(e) {
-        const item = e.target;
-        const suggestion = this.getSuggestionByListItem(item);
-        suggestion && suggestion.fireEvent("mouseout", {
-            item: suggestion,
-            targetRef: item,
-        });
-    }
     onItemMouseDown(e) {
         e.preventDefault();
     }
-    onItemSelected(suggestionItem, listItem, keyboardUsed) {
-        const shouldFireSelectionChange = !keyboardUsed && !listItem?.focused && this.valueBeforeItemSelection !== suggestionItem.text;
+    onItemSelected(suggestionItem, keyboardUsed) {
+        const shouldFireSelectionChange = !keyboardUsed && !suggestionItem?.focused && this.valueBeforeItemSelection !== suggestionItem.text;
         if (shouldFireSelectionChange) {
-            this.fireSelectionChange(suggestionItem, listItem, true);
+            this.fireSelectionChange(suggestionItem, true);
         }
         this.acceptSuggestion(suggestionItem, keyboardUsed);
+    }
+    _handleSuggestionItemPress(e) {
+        this.Suggestions?.onItemPress(e);
     }
     onItemSelect(item) {
         this.valueBeforeItemSelection = this.value;
         this.updateValueOnSelect(item);
         this.announceSelectedItem();
-        this.fireSelectionChange(this.getSuggestionByListItem(item), item, true);
+        this.fireSelectionChange(item, true);
+    }
+    get _flattenItems() {
+        return Array.from(this.querySelectorAll("[ui5-suggestion-item], [ui5-suggestion-item-group], [ui5-suggestion-item-custom]"));
+    }
+    get _selectableItems() {
+        return Array.from(this.querySelectorAll("[ui5-suggestion-item], [ui5-suggestion-item-custom]"));
     }
     get valueStateTypeMappings() {
         return {
@@ -740,15 +864,15 @@ let Input = Input_1 = class Input extends UI5Element {
             invisibleText.textContent = this.itemSelectionAnnounce;
         }
     }
-    fireSelectionChange(item, targetRef, isValueFromSuggestions) {
+    fireSelectionChange(item, isValueFromSuggestions) {
         if (this.Suggestions) {
-            this.fireEvent(INPUT_EVENTS.SELECTION_CHANGE, { item, targetRef });
+            this.fireEvent(INPUT_EVENTS.SELECTION_CHANGE, { item });
             this._isLatestValueFromSuggestions = isValueFromSuggestions;
         }
     }
     fireResetSelectionChange() {
         if (this._isLatestValueFromSuggestions) {
-            this.fireSelectionChange(null, null, false);
+            this.fireSelectionChange(null, false);
         }
     }
     get _readonly() {
@@ -879,7 +1003,7 @@ let Input = Input_1 = class Input extends UI5Element {
     }
     get availableSuggestionsCount() {
         if (this.showSuggestions && (this.value || this.Suggestions.isOpened())) {
-            const nonGroupItems = this.suggestionObjects.filter(item => !item.groupItem);
+            const nonGroupItems = this._selectableItems;
             switch (nonGroupItems.length) {
                 case 0:
                     return Input_1.i18nBundle.getText(INPUT_SUGGESTIONS_NO_HIT);
@@ -995,7 +1119,7 @@ __decorate([
     property({ type: Boolean })
 ], Input.prototype, "noTypeahead", void 0);
 __decorate([
-    property({ type: InputType, defaultValue: InputType.Text })
+    property()
 ], Input.prototype, "type", void 0);
 __decorate([
     property()
@@ -1004,7 +1128,7 @@ __decorate([
     property({ noAttribute: true })
 ], Input.prototype, "_innerValue", void 0);
 __decorate([
-    property({ type: ValueState, defaultValue: ValueState.None })
+    property()
 ], Input.prototype, "valueState", void 0);
 __decorate([
     property()
@@ -1013,13 +1137,13 @@ __decorate([
     property({ type: Boolean })
 ], Input.prototype, "showSuggestions", void 0);
 __decorate([
-    property({ validator: Integer })
+    property({ type: Number })
 ], Input.prototype, "maxlength", void 0);
 __decorate([
     property()
 ], Input.prototype, "accessibleName", void 0);
 __decorate([
-    property({ defaultValue: "" })
+    property()
 ], Input.prototype, "accessibleNameRef", void 0);
 __decorate([
     property({ type: Boolean })
@@ -1040,25 +1164,25 @@ __decorate([
     property({ type: Boolean })
 ], Input.prototype, "_isValueStateFocused", void 0);
 __decorate([
-    property({ type: Object, noAttribute: true })
+    property({ type: Object })
 ], Input.prototype, "_inputAccInfo", void 0);
 __decorate([
-    property({ type: Object, noAttribute: true })
+    property({ type: Object })
 ], Input.prototype, "_nativeInputAttributes", void 0);
 __decorate([
-    property({ validator: Integer })
+    property({ type: Number })
 ], Input.prototype, "_inputWidth", void 0);
 __decorate([
-    property({ validator: Integer })
+    property({ type: Number })
 ], Input.prototype, "_listWidth", void 0);
 __decorate([
     property({ type: Boolean, noAttribute: true })
 ], Input.prototype, "_inputIconFocused", void 0);
 __decorate([
-    property({ type: String, noAttribute: true, defaultValue: undefined })
+    property({ noAttribute: true })
 ], Input.prototype, "_associatedLabelsTexts", void 0);
 __decorate([
-    property({ type: String, noAttribute: true, defaultValue: undefined })
+    property({ noAttribute: true })
 ], Input.prototype, "_accessibleLabelsRefTexts", void 0);
 __decorate([
     slot({ type: HTMLElement, "default": true })
@@ -1107,7 +1231,6 @@ Input = Input_1 = __decorate([
      * Fired when the user navigates to a suggestion item via the ARROW keys,
      * as a preview, before the final selection.
      * @param {HTMLElement} item The previewed suggestion item.
-     * @param {HTMLElement} targetRef The DOM ref of the suggestion item.
      * @public
      * @since 2.0.0
      */
@@ -1118,10 +1241,6 @@ Input = Input_1 = __decorate([
             * @public
             */
             item: { type: HTMLElement },
-            /**
-            * @public
-            */
-            targetRef: { type: HTMLElement },
         },
     })
     /**
@@ -1137,7 +1256,7 @@ Input = Input_1 = __decorate([
             /**
             * @public
             */
-            scrollTop: { type: Integer },
+            scrollTop: { type: Number },
             /**
             * @public
             */

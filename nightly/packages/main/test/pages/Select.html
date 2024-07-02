@@ -19,7 +19,7 @@
 		max-height: 120px;
 	}
 </style>
-  <script type="module" crossorigin src="/ui5-webcomponents/nightly/assets/bundle.esm-f9153e7e.js"></script>
+  <script type="module" crossorigin src="/ui5-webcomponents/nightly/assets/bundle.esm-72b59b1e.js"></script>
   <link rel="stylesheet" href="/ui5-webcomponents/nightly/assets/Select-e17517bf.css">
 </head>
 
@@ -236,6 +236,15 @@
 			<ui5-option selected>Condensed</ui5-option>
 		</ui5-select>
 	</section>
+
+	<section>
+		<h2>Option with tooltip</h2>
+		<ui5-select>
+			<ui5-option id="selectOptionWithTooltip" tooltip="Tooltip">Long text for that will be truncated on small screens and it needs a tooltip</ui5-option>
+			<ui5-option>Compact</ui5-option>
+			<ui5-option selected>Condensed</ui5-option>
+		</ui5-select>
+	</section>
 </body>
 <script>
 	var countries =  [{ key: "Aus", text: "Australia" }, { key: "Aruba", text: "Aruba" }, { key: "Antigua", text: "Antigua and Barbuda" }, { key: "Bel", text: "Belgium" }, { key: "Bg", text: "Bulgaria" }, { key: "Bra", text: "Brazil" }];
@@ -265,7 +274,7 @@
 
 	select.addEventListener("ui5-change", function(e) {
 		lbl.innerHTML = "selected item :: " + e.detail.selectedOption.textContent + " :: " + (++counter);
-		inputResult.value = counter;
+		inputResult.value = `${counter}`;
 	});
 
 	select.addEventListener("change", function(e) {
@@ -274,17 +283,17 @@
 
 	select.addEventListener("ui5-open", function(e) {
 		++counterOpen;
-		inputResultOpen.value = counterOpen;
+		inputResultOpen.value = `${counterOpen}`;
 	});
 
 	select.addEventListener("ui5-close", function(e) {
 		++counterClose;
-		inputResultClose.value = counterClose
+		inputResultClose.value = `${counterClose}`;
 	});
 
 	select2.addEventListener("ui5-change", function(e) {
 		++counter;
-		inputResult.value = counter;
+		inputResult.value = `${counter}`;
 	});
 
 	// Input with Suggestions

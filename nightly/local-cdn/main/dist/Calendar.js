@@ -4,6 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var Calendar_1;
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
@@ -12,15 +13,17 @@ import transformDateToSecondaryType from "@ui5/webcomponents-localization/dist/d
 import convertMonthNumbersToMonthNames from "@ui5/webcomponents-localization/dist/dates/convertMonthNumbersToMonthNames.js";
 import CalendarDateComponent from "@ui5/webcomponents-localization/dist/dates/CalendarDate.js";
 import { renderFinished } from "@ui5/webcomponents-base/dist/Render.js";
-import { isF4, isF4Shift, } from "@ui5/webcomponents-base/dist/Keys.js";
+import { isEnter, isF4, isF4Shift, isSpace, } from "@ui5/webcomponents-base/dist/Keys.js";
 import getCachedLocaleDataInstance from "@ui5/webcomponents-localization/dist/getCachedLocaleDataInstance.js";
 import getLocale from "@ui5/webcomponents-base/dist/locale/getLocale.js";
+import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import DateFormat from "@ui5/webcomponents-localization/dist/DateFormat.js";
 import UI5Date from "@ui5/webcomponents-localization/dist/dates/UI5Date.js";
+import "@ui5/webcomponents-icons/dist/slim-arrow-left.js";
+import "@ui5/webcomponents-icons/dist/slim-arrow-right.js";
 import CalendarDate from "./CalendarDate.js";
 import CalendarDateRange from "./CalendarDateRange.js";
 import CalendarPart from "./CalendarPart.js";
-import CalendarHeader from "./CalendarHeader.js";
 import DayPicker from "./DayPicker.js";
 import MonthPicker from "./MonthPicker.js";
 import YearPicker from "./YearPicker.js";
@@ -28,13 +31,15 @@ import CalendarSelectionMode from "./types/CalendarSelectionMode.js";
 import CalendarPickersMode from "./types/CalendarPickersMode.js";
 import CalendarLegend from "./CalendarLegend.js";
 import SpecialCalendarDate from "./SpecialCalendarDate.js";
-import CalendarLegendItemType from "./types/CalendarLegendItemType.js";
+import Icon from "./Icon.js";
 // Default calendar for bundling
 import "@ui5/webcomponents-localization/dist/features/calendar/Gregorian.js";
 // Template
 import CalendarTemplate from "./generated/templates/CalendarTemplate.lit.js";
 // Styles
 import calendarCSS from "./generated/themes/Calendar.css.js";
+import CalendarHeaderCss from "./generated/themes/CalendarHeader.css.js";
+import { CALENDAR_HEADER_NEXT_BUTTON, CALENDAR_HEADER_PREVIOUS_BUTTON } from "./generated/i18n/i18n-defaults.js";
 /**
  * @class
  *
@@ -132,10 +137,47 @@ import calendarCSS from "./generated/themes/Calendar.css.js";
  * @public
  * @since 1.0.0-rc.11
  */
-let Calendar = class Calendar extends CalendarPart {
+let Calendar = Calendar_1 = class Calendar extends CalendarPart {
     constructor() {
         super();
+        /**
+         * Defines the type of selection used in the calendar component.
+         * Accepted property values are:
+         *
+         * - `CalendarSelectionMode.Single` - enables a single date selection.(default value)
+         * - `CalendarSelectionMode.Range` - enables selection of a date range.
+         * - `CalendarSelectionMode.Multiple` - enables selection of multiple dates.
+         * @default "Single"
+         * @public
+         */
+        this.selectionMode = "Single";
+        /**
+         * Defines the visibility of the week numbers column.
+         *
+         * **Note:** For calendars other than Gregorian,
+         * the week numbers are not displayed regardless of what is set.
+         * @default false
+         * @public
+         */
+        this.hideWeekNumbers = false;
+        /**
+         * Which picker is currently visible to the user: day/month/year
+         * @private
+         */
+        this._currentPicker = "day";
+        this._previousButtonDisabled = false;
+        this._nextButtonDisabled = false;
+        this._pickersMode = "DAY_MONTH_YEAR";
         this._valueIsProcessed = false;
+        /**
+         * Defines the selected item type of the calendar legend item (if such exists).
+         * @private
+         */
+        this._selectedItemType = "None";
+        this._valueIsProcessed = false;
+    }
+    static async onDefine() {
+        Calendar_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
     }
     /**
      * @private
@@ -231,7 +273,7 @@ let Calendar = class Calendar extends CalendarPart {
         const uniqueDates = new Set();
         const uniqueSpecialDates = [];
         validSpecialDates.forEach(date => {
-            const dateFromValue = UI5Date.getInstance(date.value);
+            const dateFromValue = this.getFormat().parse(date.value);
             const timestamp = dateFromValue.getTime();
             if (!uniqueDates.has(timestamp)) {
                 uniqueDates.add(timestamp);
@@ -294,17 +336,23 @@ let Calendar = class Calendar extends CalendarPart {
      * The user clicked the "month" button in the header
      */
     onHeaderShowMonthPress(e) {
+        this.showMonth();
+        this.fireEvent("show-month-view", e);
+    }
+    showMonth() {
         this._currentPickerDOM._autoFocus = false;
         this._currentPicker = "month";
-        this.fireEvent("show-month-view", e);
     }
     /**
      * The user clicked the "year" button in the header
      */
     onHeaderShowYearPress(e) {
+        this.showYear();
+        this.fireEvent("show-year-view", e);
+    }
+    showYear() {
         this._currentPickerDOM._autoFocus = false;
         this._currentPicker = "year";
-        this.fireEvent("show-year-view", e);
     }
     get _currentPickerDOM() {
         // Calendar's shadowRoot and all the pickers are always present - the "!" is safe to be used.
@@ -366,6 +414,13 @@ let Calendar = class Calendar extends CalendarPart {
      */
     get _isHeaderMonthButtonHidden() {
         return this._currentPicker === "month" || this._currentPicker === "year";
+    }
+    /**
+     * The year button is hidden when the year picker is shown
+     * @private
+     */
+    get _isHeaderYearButtonHidden() {
+        return this._currentPicker === "year";
     }
     get _isDayPickerHidden() {
         return this._currentPicker !== "day";
@@ -432,6 +487,81 @@ let Calendar = class Calendar extends CalendarPart {
     get _specialDates() {
         return this.getSlottedNodes("specialDates");
     }
+    get classes() {
+        return {
+            prevButton: {
+                "ui5-calheader-arrowbtn": true,
+                "ui5-calheader-arrowbtn-disabled": this._previousButtonDisabled,
+            },
+            nextButton: {
+                "ui5-calheader-arrowbtn": true,
+                "ui5-calheader-arrowbtn-disabled": this._nextButtonDisabled,
+            },
+        };
+    }
+    get accInfo() {
+        return {
+            ariaLabelMonthButton: this.hasSecondaryCalendarType
+                ? `${this._headerMonthButtonText}, ${this.secondMonthButtonText}` : `${this._headerMonthButtonText}`,
+        };
+    }
+    get headerPreviousButtonText() {
+        return Calendar_1.i18nBundle?.getText(CALENDAR_HEADER_PREVIOUS_BUTTON);
+    }
+    get headerNextButtonText() {
+        return Calendar_1.i18nBundle?.getText(CALENDAR_HEADER_NEXT_BUTTON);
+    }
+    get secondMonthButtonText() {
+        const secondMonthButtonText = this.secondaryCalendarTypeButtonText?.monthButtonText;
+        return secondMonthButtonText;
+    }
+    onMonthButtonKeyDown(e) {
+        if (isSpace(e)) {
+            e.preventDefault();
+        }
+        if (isEnter(e)) {
+            this.showMonth();
+            this.fireEvent("show-month-view", e);
+        }
+    }
+    onMonthButtonKeyUp(e) {
+        if (isSpace(e)) {
+            e.preventDefault();
+            this.showMonth();
+            this.fireEvent("show-month-view", e);
+        }
+    }
+    onYearButtonKeyDown(e) {
+        if (isSpace(e)) {
+            e.preventDefault();
+        }
+        if (isEnter(e)) {
+            this.showYear();
+            this.fireEvent("show-year-view", e);
+        }
+    }
+    onYearButtonKeyUp(e) {
+        if (isSpace(e)) {
+            this.showYear();
+            this.fireEvent("show-year-view", e);
+        }
+    }
+    onPrevButtonClick(e) {
+        if (this._previousButtonDisabled) {
+            e.preventDefault();
+            return;
+        }
+        this.onHeaderPreviousPress();
+        e.preventDefault();
+    }
+    onNextButtonClick(e) {
+        if (this._nextButtonDisabled) {
+            e.preventDefault();
+            return;
+        }
+        this.onHeaderNextPress();
+        e.preventDefault();
+    }
     /**
      * Returns an array of UTC timestamps, representing the selected dates.
      * @protected
@@ -451,16 +581,13 @@ let Calendar = class Calendar extends CalendarPart {
     }
 };
 __decorate([
-    property({
-        type: CalendarSelectionMode,
-        defaultValue: CalendarSelectionMode.Single,
-    })
+    property()
 ], Calendar.prototype, "selectionMode", void 0);
 __decorate([
     property({ type: Boolean })
 ], Calendar.prototype, "hideWeekNumbers", void 0);
 __decorate([
-    property({ defaultValue: "day" })
+    property()
 ], Calendar.prototype, "_currentPicker", void 0);
 __decorate([
     property({ type: Boolean })
@@ -478,7 +605,7 @@ __decorate([
     property()
 ], Calendar.prototype, "_headerYearButtonTextSecType", void 0);
 __decorate([
-    property({ type: CalendarPickersMode, defaultValue: CalendarPickersMode.DAY_MONTH_YEAR, noAttribute: true })
+    property({ noAttribute: true })
 ], Calendar.prototype, "_pickersMode", void 0);
 __decorate([
     slot({ type: HTMLElement })
@@ -490,23 +617,23 @@ __decorate([
     slot({ type: HTMLElement, invalidateOnChildChange: true })
 ], Calendar.prototype, "specialDates", void 0);
 __decorate([
-    property({ type: CalendarLegendItemType, defaultValue: CalendarLegendItemType.None })
+    property()
 ], Calendar.prototype, "_selectedItemType", void 0);
-Calendar = __decorate([
+Calendar = Calendar_1 = __decorate([
     customElement({
         tag: "ui5-calendar",
         fastNavigation: true,
         template: CalendarTemplate,
-        styles: calendarCSS,
+        styles: [calendarCSS, CalendarHeaderCss],
         dependencies: [
             SpecialCalendarDate,
             CalendarDate,
             CalendarDateRange,
-            CalendarHeader,
             DayPicker,
             MonthPicker,
             YearPicker,
             CalendarLegend,
+            Icon,
         ],
     })
     /**

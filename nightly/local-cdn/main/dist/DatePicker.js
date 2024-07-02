@@ -22,7 +22,7 @@ import { isPhone, isDesktop } from "@ui5/webcomponents-base/dist/Device.js";
 import CalendarPickersMode from "./types/CalendarPickersMode.js";
 import "@ui5/webcomponents-icons/dist/appointment-2.js";
 import "@ui5/webcomponents-icons/dist/decline.js";
-import { DATEPICKER_OPEN_ICON_TITLE, DATEPICKER_DATE_DESCRIPTION, INPUT_SUGGESTIONS_TITLE, FORM_TEXTFIELD_REQUIRED, } from "./generated/i18n/i18n-defaults.js";
+import { DATEPICKER_OPEN_ICON_TITLE, DATEPICKER_DATE_DESCRIPTION, INPUT_SUGGESTIONS_TITLE, FORM_TEXTFIELD_REQUIRED, DATEPICKER_POPOVER_ACCESSIBLE_NAME, } from "./generated/i18n/i18n-defaults.js";
 import DateComponentBase from "./DateComponentBase.js";
 import Icon from "./Icon.js";
 import Button from "./Button.js";
@@ -120,6 +120,60 @@ import ResponsivePopoverCommonCss from "./generated/themes/ResponsivePopoverComm
  * @public
  */
 let DatePicker = DatePicker_1 = class DatePicker extends DateComponentBase {
+    constructor() {
+        super(...arguments);
+        /**
+         * Defines a formatted date value.
+         * @default ""
+         * @formEvents change input
+         * @formProperty
+         * @public
+         */
+        this.value = "";
+        /**
+         * Defines the value state of the component.
+         * @default "None"
+         * @public
+         */
+        this.valueState = "None";
+        /**
+         * Defines whether the component is required.
+         * @since 1.0.0-rc.9
+         * @default false
+         * @public
+         */
+        this.required = false;
+        /**
+         * Determines whether the component is displayed as disabled.
+         * @default false
+         * @public
+         */
+        this.disabled = false;
+        /**
+         * Determines whether the component is displayed as read-only.
+         * @default false
+         * @public
+         */
+        this.readonly = false;
+        /**
+         * Defines the visibility of the week numbers column.
+         *
+         * **Note:** For calendars other than Gregorian,
+         * the week numbers are not displayed regardless of what is set.
+         * @default false
+         * @public
+         * @since 1.0.0-rc.8
+         */
+        this.hideWeekNumbers = false;
+        /**
+         * Defines the open or closed state of the popover.
+         * @public
+         * @default false
+         * @since 2.0.0
+         */
+        this.open = false;
+        this._calendarCurrentPicker = "day";
+    }
     get formValidityMessage() {
         return DatePicker_1.i18nBundle.getText(FORM_TEXTFIELD_REQUIRED);
     }
@@ -401,6 +455,9 @@ let DatePicker = DatePicker_1 = class DatePicker extends DateComponentBase {
     get dateAriaDescription() {
         return DatePicker_1.i18nBundle.getText(DATEPICKER_DATE_DESCRIPTION);
     }
+    get pickerAccessibleName() {
+        return DatePicker_1.i18nBundle.getText(DATEPICKER_POPOVER_ACCESSIBLE_NAME);
+    }
     /**
      * Defines whether the dialog on mobile should have header
      * @private
@@ -514,7 +571,7 @@ __decorate([
     property()
 ], DatePicker.prototype, "value", void 0);
 __decorate([
-    property({ type: ValueState, defaultValue: ValueState.None })
+    property()
 ], DatePicker.prototype, "valueState", void 0);
 __decorate([
     property({ type: Boolean })
@@ -526,7 +583,7 @@ __decorate([
     property({ type: Boolean })
 ], DatePicker.prototype, "readonly", void 0);
 __decorate([
-    property({ defaultValue: undefined })
+    property()
 ], DatePicker.prototype, "placeholder", void 0);
 __decorate([
     property()
@@ -541,13 +598,13 @@ __decorate([
     property()
 ], DatePicker.prototype, "accessibleName", void 0);
 __decorate([
-    property({ defaultValue: "" })
+    property()
 ], DatePicker.prototype, "accessibleNameRef", void 0);
 __decorate([
     property({ type: Object })
 ], DatePicker.prototype, "_respPopoverConfig", void 0);
 __decorate([
-    property({ defaultValue: "day" })
+    property()
 ], DatePicker.prototype, "_calendarCurrentPicker", void 0);
 __decorate([
     slot({ type: HTMLElement })

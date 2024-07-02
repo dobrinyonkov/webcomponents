@@ -39,6 +39,21 @@ import SideNavigationItemCss from "./generated/themes/SideNavigationItem.css.js"
 let SideNavigationItem = class SideNavigationItem extends SideNavigationSelectableItemBase {
     constructor() {
         super(...arguments);
+        /**
+         * Defines if the item is expanded
+         *
+         * @public
+         * @default false
+         */
+        this.expanded = false;
+        /**
+         * Defines if the item should be collapsible or not.
+         * It is true, for example, for the items inside the Popover of the Side Navigation
+         * @private
+         * @default false
+         * @since 1.10.0
+         */
+        this._fixed = false;
         this._onToggleClick = (e) => {
             e.stopPropagation();
             this.expanded = !this.expanded;
@@ -61,14 +76,6 @@ let SideNavigationItem = class SideNavigationItem extends SideNavigationSelectab
             super._onfocusin(e);
         };
         this._onclick = (e) => {
-            if (!this.sideNavCollapsed
-                && this.wholeItemToggleable
-                && e.pointerType === "mouse") {
-                e.preventDefault();
-                e.stopPropagation();
-                this.expanded = !this.expanded;
-                return;
-            }
             super._onclick(e);
         };
         this._onfocusout = () => {
@@ -164,9 +171,6 @@ __decorate([
 __decorate([
     slot({ type: HTMLElement, invalidateOnChildChange: true, "default": true })
 ], SideNavigationItem.prototype, "items", void 0);
-__decorate([
-    property({ type: Boolean })
-], SideNavigationItem.prototype, "wholeItemToggleable", void 0);
 SideNavigationItem = __decorate([
     customElement({
         tag: "ui5-side-navigation-item",
