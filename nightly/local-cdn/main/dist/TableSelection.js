@@ -4,7 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { isUpShift, isShift, } from "@ui5/webcomponents-base/dist/Keys.js";
+import { isUpShift, } from "@ui5/webcomponents-base/dist/Keys.js";
 import getActiveElement from "@ui5/webcomponents-base/dist/util/getActiveElement.js";
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
@@ -24,7 +24,7 @@ import { isSelectionCheckbox, isHeaderSelector, findRowInPath } from "./TableUti
  * * Multiple - select multiple rows.
  * * None - no selection active.
  *
- * As the selection is key-based, `ui5-table-row` components need to define a unique `key` property.
+ * As the selection is key-based, `ui5-table-row` components need to define a unique `row-key` property.
  *
  * ### Usage
  *
@@ -44,7 +44,7 @@ import { isSelectionCheckbox, isHeaderSelector, findRowInPath } from "./TableUti
  *
  * @constructor
  * @extends UI5Element
- * @since 2.0
+ * @since 2.0.0
  * @public
  * @experimental This web component is available since 2.0 with an experimental flag and its API and behavior are subject to change.
  */
@@ -65,6 +65,7 @@ let TableSelection = class TableSelection extends UI5Element {
          * @public
          */
         this.selected = "";
+        this.identifier = "TableSelection";
     }
     onTableActivate(table) {
         this._table = table;
@@ -88,7 +89,7 @@ let TableSelection = class TableSelection extends UI5Element {
         return this.mode !== TableSelectionMode.None;
     }
     getRowIdentifier(row) {
-        return row.key;
+        return row.rowKey;
     }
     isSelected(row) {
         if (!this._table || !this.isSelectable()) {
@@ -208,8 +209,8 @@ let TableSelection = class TableSelection extends UI5Element {
         if (!this._table) {
             return;
         }
-        if (!eventOrigin.hasAttribute("ui5-table-row") || !this._rangeSelection || isShift(e) || !isSelectionCheckbox(e)) {
-            // Stop range selection if a) Shift is relased or b) the event target is not a row or c) the event is not from the selection checkbox
+        if (!eventOrigin.hasAttribute("ui5-table-row") || !this._rangeSelection || !e.shiftKey) {
+            // Stop range selection if a) Shift is relased or b) the event target is not a row
             this._stopRangeSelection();
         }
         if (this._rangeSelection) {
@@ -237,7 +238,7 @@ let TableSelection = class TableSelection extends UI5Element {
             // Therefore, we need to manually set the checked attribute again, as clicking it would deselect it and leads to
             // a visual inconsistency.
             row.shadowRoot?.querySelector("#selection-component")?.toggleAttribute("checked", true);
-            if (startIndex === -1 || endIndex === -1 || row.key === startRow.key || row.key === this._rangeSelection.rows[this._rangeSelection.rows.length - 1].key) {
+            if (startIndex === -1 || endIndex === -1 || row.rowKey === startRow.rowKey || row.rowKey === this._rangeSelection.rows[this._rangeSelection.rows.length - 1].rowKey) {
                 return;
             }
             const change = endIndex - startIndex;

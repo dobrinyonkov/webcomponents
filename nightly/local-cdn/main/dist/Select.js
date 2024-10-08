@@ -21,7 +21,7 @@ import "@ui5/webcomponents-icons/dist/alert.js";
 import "@ui5/webcomponents-icons/dist/sys-enter-2.js";
 import "@ui5/webcomponents-icons/dist/information.js";
 import { isPhone } from "@ui5/webcomponents-base/dist/Device.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import "@ui5/webcomponents-icons/dist/decline.js";
 import InvisibleMessageMode from "@ui5/webcomponents-base/dist/types/InvisibleMessageMode.js";
 import { getScopedVarName } from "@ui5/webcomponents-base/dist/CustomElementsScope.js";
@@ -335,13 +335,14 @@ let Select = Select_1 = class Select extends UI5Element {
         return this.options.indexOf(item);
     }
     _select(index) {
+        const selectedIndex = this._selectedIndex;
         if (index < 0 || index >= this.options.length || this.options.length === 0) {
             return;
         }
-        if (this.options[this._selectedIndex]) {
-            this.options[this._selectedIndex].selected = false;
+        if (this.options[selectedIndex]) {
+            this.options[selectedIndex].selected = false;
         }
-        if (this._selectedIndex !== index) {
+        if (selectedIndex !== index) {
             this.fireEvent("live-change", { selectedOption: this.options[index] });
         }
         this.options[index].selected = true;
@@ -368,6 +369,7 @@ let Select = Select_1 = class Select extends UI5Element {
      * @private
      */
     _handleSelectionChange(index = this._selectedIndex) {
+        this._typedChars = "";
         this._select(index);
         this._toggleRespPopover();
     }
@@ -409,9 +411,12 @@ let Select = Select_1 = class Select extends UI5Element {
     _changeSelectedItem(oldIndex, newIndex) {
         const options = this.options;
         const previousOption = options[oldIndex];
+        const nextOption = options[newIndex];
+        if (previousOption === nextOption) {
+            return;
+        }
         previousOption.selected = false;
         previousOption.focused = false;
-        const nextOption = options[newIndex];
         nextOption.selected = true;
         nextOption.focused = true;
         this.fireEvent("live-change", { selectedOption: nextOption });
@@ -489,7 +494,7 @@ let Select = Select_1 = class Select extends UI5Element {
             valueStateText = this.valueStateDefaultText;
         }
         else {
-            valueStateText = this.valueStateMessageText.map(el => el.textContent).join(" ");
+            valueStateText = this.valueStateMessage.map(el => el.textContent).join(" ");
         }
         return `${this.valueStateTypeText} ${valueStateText}`;
     }
@@ -565,11 +570,8 @@ let Select = Select_1 = class Select extends UI5Element {
     get ariaLabelText() {
         return getEffectiveAriaLabelText(this);
     }
-    get valueStateMessageText() {
-        return this.getSlottedNodes("valueStateMessage").map(el => el.cloneNode(true));
-    }
     get shouldDisplayDefaultValueStateMessage() {
-        return !this.valueStateMessageText.length && this.hasValueStateText;
+        return !this.valueStateMessage.length && this.hasValueStateText;
     }
     get hasValueStateText() {
         return this.hasValueState && this.valueState !== ValueState.Positive;
@@ -617,9 +619,6 @@ let Select = Select_1 = class Select extends UI5Element {
     _getPopover() {
         return this.shadowRoot.querySelector("[ui5-popover]");
     }
-    static async onDefine() {
-        Select_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
-    }
 };
 __decorate([
     property({ type: Boolean })
@@ -664,8 +663,11 @@ __decorate([
     slot()
 ], Select.prototype, "label", void 0);
 __decorate([
-    property()
+    property({ noAttribute: true })
 ], Select.prototype, "value", null);
+__decorate([
+    i18n("@ui5/webcomponents")
+], Select, "i18nBundle", void 0);
 Select = Select_1 = __decorate([
     customElement({
         tag: "ui5-select",

@@ -218,7 +218,7 @@ declare class ComboBox extends UI5Element implements IFormInputElement {
      * **Note:** If not specified, a default text (in the respective language) will be displayed.
      *
      * **Note:** The `valueStateMessage` would be displayed,
-     * when the `ui5-combobox` is in `Information`, `Warning` or `Error` value state.
+     * when the `ui5-combobox` is in `Information`, `Critical` or `Negative` value state.
      * @since 1.0.0-rc.9
      * @public
      */
@@ -295,10 +295,11 @@ declare class ComboBox extends UI5Element implements IFormInputElement {
     _announceSelectedItem(indexOfItem: number): void;
     _clear(): void;
     _makeAllVisible(item: IComboBoxItem): void;
-    _scrollToItem(indexOfItem: number, forward: boolean): void;
+    _scrollToItem(indexOfItem: number): void;
     _announceValueStateText(): void;
     get _headerTitleText(): string;
     get _iconAccessibleNameText(): string;
+    get _popupLabel(): string;
     get inner(): HTMLInputElement;
     _getPicker(): ResponsivePopover;
     _getPickerInput(): HTMLInputElement;
@@ -307,7 +308,6 @@ declare class ComboBox extends UI5Element implements IFormInputElement {
     get hasValueStateText(): boolean;
     get ariaValueStateHiddenText(): string;
     get valueStateDefaultText(): string | undefined;
-    get valueStateMessageText(): Array<Node>;
     get valueStateTextMappings(): ValueStateAnnouncement;
     get valueStateTypeMappings(): ValueStateTypeAnnouncement;
     get shouldOpenValueStateMessagePopover(): boolean;
@@ -321,7 +321,7 @@ declare class ComboBox extends UI5Element implements IFormInputElement {
     get itemTabIndex(): undefined;
     get ariaLabelText(): string | undefined;
     get clearIconAccessibleName(): string;
-    static onDefine(): Promise<void>;
+    get responsivePopoverId(): string;
     get styles(): {
         popoverHeader: {
             width: string;

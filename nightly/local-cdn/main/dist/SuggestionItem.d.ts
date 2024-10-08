@@ -12,10 +12,10 @@ import ListItemBase from "./ListItemBase.js";
 declare class SuggestionItem extends ListItemBase implements IInputSuggestionItemSelectable {
     /**
      * Defines the text of the component.
-     * @default ""
+     * @default undefined
      * @public
      */
-    text: string;
+    text?: string;
     /**
      * Defines the `additionalText`, displayed in the end of the item.
      * @default undefined

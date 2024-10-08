@@ -11,7 +11,7 @@ import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import { isEnter } from "@ui5/webcomponents-base/dist/Keys.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import { getScopedVarName } from "@ui5/webcomponents-base/dist/CustomElementsScope.js";
 import { getRGBColor, HSLToRGB, HEXToRGB, RGBToHSL, } from "@ui5/webcomponents-base/dist/util/ColorConversion.js";
 import ColorPickerTemplate from "./generated/templates/ColorPickerTemplate.lit.js";
@@ -48,15 +48,11 @@ const PICKER_POINTER_WIDTH = 6.5;
  * @public
  */
 let ColorPicker = ColorPicker_1 = class ColorPicker extends UI5Element {
-    ;
     async formElementAnchor() {
         return this.getFocusDomRefAsync();
     }
     get formFormattedValue() {
         return this.value;
-    }
-    static async onDefine() {
-        ColorPicker_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
     }
     constructor() {
         super();
@@ -64,10 +60,10 @@ let ColorPicker = ColorPicker_1 = class ColorPicker extends UI5Element {
          * Defines the currently selected color of the component.
          *
          * **Note**: use HEX, RGB, RGBA, HSV formats or a CSS color name when modifying this property.
-         * @default "rgba(255, 255, 255, 1)"
+         * @default "rgba(255,255,255,1)"
          * @public
          */
-        this.value = "rgba(255, 255, 255, 1)";
+        this.value = "rgba(255,255,255,1)";
         /**
          * Defines the HEX code of the currently selected color
          *
@@ -118,7 +114,7 @@ let ColorPicker = ColorPicker_1 = class ColorPicker extends UI5Element {
     onBeforeRendering() {
         // we have the color & ._mainValue properties here
         this._value = getRGBColor(this.value);
-        const tempColor = `rgba(${this._value.r}, ${this._value.g}, ${this._value.b}, 1)`;
+        const tempColor = `rgba(${this._value.r},${this._value.g},${this._value.b},1)`;
         this._setHex();
         this._setValues();
         this.style.setProperty(getScopedVarName("--ui5_Color_Picker_Progress_Container_Color"), tempColor);
@@ -179,6 +175,7 @@ let ColorPicker = ColorPicker_1 = class ColorPicker extends UI5Element {
         if (Number.isNaN(this._alpha)) {
             this._alpha = 1;
         }
+        this._isHueValueChanged = true;
         this._setColor(this._value);
     }
     _handleHueInput(e) {
@@ -288,7 +285,7 @@ let ColorPicker = ColorPicker_1 = class ColorPicker extends UI5Element {
     }
     _changeSelectedColor(x, y) {
         this._selectedCoordinates = {
-            x: x - PICKER_POINTER_WIDTH,
+            x: x - PICKER_POINTER_WIDTH, // Center the coordinates, because of the width of the circle
             y: y - PICKER_POINTER_WIDTH, // Center the coordinates, because of the height of the circle
         };
         // Idication that changes to the color settings are triggered as a result of user pressing over the main color section.
@@ -347,7 +344,7 @@ let ColorPicker = ColorPicker_1 = class ColorPicker extends UI5Element {
     _setValues() {
         const hslColours = RGBToHSL(this._value);
         this._selectedCoordinates = {
-            x: ((Math.round(hslColours.l * 100) * 2.56)) - PICKER_POINTER_WIDTH,
+            x: ((Math.round(hslColours.l * 100) * 2.56)) - PICKER_POINTER_WIDTH, // Center the coordinates, because of the width of the circle
             y: (256 - (Math.round(hslColours.s * 100) * 2.56)) - PICKER_POINTER_WIDTH, // Center the coordinates, because of the height of the circle
         };
         if (this._isSelectedColorChanged) { // We shouldn't update the hue value when user presses over the main color section.
@@ -437,6 +434,9 @@ __decorate([
 __decorate([
     property({ type: Boolean })
 ], ColorPicker.prototype, "_wrongHEX", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], ColorPicker, "i18nBundle", void 0);
 ColorPicker = ColorPicker_1 = __decorate([
     customElement({
         tag: "ui5-color-picker",

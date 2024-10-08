@@ -44,7 +44,7 @@ declare class UploadCollectionItem extends ListItem {
      * @default false
      * @public
      */
-    disableDeleteButton: boolean | undefined;
+    disableDeleteButton: boolean;
     /**
      * Hides the delete button.
      * @default false
@@ -99,12 +99,12 @@ declare class UploadCollectionItem extends ListItem {
      */
     thumbnail: Array<HTMLElement>;
     static i18nFioriBundle: I18nBundle;
-    static onDefine(): Promise<void>;
     /**
      * @override
      */
     onDetailClick(): Promise<void>;
     _initInputField(): Promise<void>;
+    _onkeyup(e: KeyboardEvent): void;
     _onDetailKeyup(e: KeyboardEvent): void;
     _onInputFocusin(e: FocusEvent): void;
     _onInputKeyDown(e: KeyboardEvent): void;

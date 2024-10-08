@@ -23,12 +23,6 @@ let SuggestionItem = class SuggestionItem extends ListItemBase {
     constructor() {
         super(...arguments);
         /**
-         * Defines the text of the component.
-         * @default ""
-         * @public
-         */
-        this.text = "";
-        /**
          * Defines the markup text that will be displayed as suggestion.
          * Used for highlighting the matching parts of the text.
          *

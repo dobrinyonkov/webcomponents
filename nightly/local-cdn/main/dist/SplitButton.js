@@ -11,12 +11,13 @@ import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import { isEscape, isSpace, isEnter, isDown, isUp, isDownAlt, isUpAlt, isF4, isShift, isTabNext, isTabPrevious, } from "@ui5/webcomponents-base/dist/Keys.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import AriaHasPopup from "@ui5/webcomponents-base/dist/types/AriaHasPopup.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import { getEventMark } from "@ui5/webcomponents-base/dist/MarkedEvents.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import "@ui5/webcomponents-icons/dist/slim-arrow-down.js";
 import Button from "./Button.js";
-import { SPLIT_BUTTON_DESCRIPTION, SPLIT_BUTTON_KEYBOARD_HINT, } from "./generated/i18n/i18n-defaults.js";
+import { SPLIT_BUTTON_DESCRIPTION, SPLIT_BUTTON_KEYBOARD_HINT, SPLIT_BUTTON_ARROW_BUTTON_TOOLTIP, } from "./generated/i18n/i18n-defaults.js";
 // Template
 import SplitButtonTemplate from "./generated/templates/SplitButtonTemplate.lit.js";
 // Styles
@@ -66,9 +67,6 @@ import SplitButtonCss from "./generated/themes/SplitButton.css.js";
  * @since 1.1.0
  */
 let SplitButton = SplitButton_1 = class SplitButton extends UI5Element {
-    static async onDefine() {
-        SplitButton_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
-    }
     constructor() {
         super();
         /**
@@ -319,12 +317,22 @@ let SplitButton = SplitButton_1 = class SplitButton extends UI5Element {
     get arrowButton() {
         return this.getDomRef()?.querySelector(".ui5-split-arrow-button");
     }
-    get accessibilityInfo() {
+    get accInfo() {
         return {
-            // affects root element
-            description: SplitButton_1.i18nBundle.getText(SPLIT_BUTTON_DESCRIPTION),
-            keyboardHint: SplitButton_1.i18nBundle.getText(SPLIT_BUTTON_KEYBOARD_HINT),
+            root: {
+                "description": SplitButton_1.i18nBundle.getText(SPLIT_BUTTON_DESCRIPTION),
+                "keyboardHint": SplitButton_1.i18nBundle.getText(SPLIT_BUTTON_KEYBOARD_HINT),
+            },
+            arrowButton: {
+                "title": this.arrowButtonTooltip,
+                "accessibilityAttributes": {
+                    "hasPopup": AriaHasPopup.Menu.toLocaleLowerCase(),
+                },
+            },
         };
+    }
+    get arrowButtonTooltip() {
+        return SplitButton_1.i18nBundle.getText(SPLIT_BUTTON_ARROW_BUTTON_TOOLTIP);
     }
     get ariaLabelText() {
         return [SplitButton_1.i18nBundle.getText(SPLIT_BUTTON_DESCRIPTION), SplitButton_1.i18nBundle.getText(SPLIT_BUTTON_KEYBOARD_HINT)].join(" ");
@@ -363,6 +371,9 @@ __decorate([
 __decorate([
     slot({ type: Node, "default": true })
 ], SplitButton.prototype, "text", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], SplitButton, "i18nBundle", void 0);
 SplitButton = SplitButton_1 = __decorate([
     customElement({
         tag: "ui5-split-button",

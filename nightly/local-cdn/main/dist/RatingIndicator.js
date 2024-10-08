@@ -8,11 +8,12 @@ var RatingIndicator_1;
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
+import { getEnableDefaultTooltips } from "@ui5/webcomponents-base/dist/config/Tooltips.js";
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import { isDown, isUp, isLeft, isRight, isSpace, isEnter, isHome, isEnd, } from "@ui5/webcomponents-base/dist/Keys.js";
 import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import { RATING_INDICATOR_TEXT, RATING_INDICATOR_TOOLTIP_TEXT, RATING_INDICATOR_ARIA_DESCRIPTION, } from "./generated/i18n/i18n-defaults.js";
 import RatingIndicatorTemplate from "./generated/templates/RatingIndicatorTemplate.lit.js";
 import Icon from "./Icon.js";
@@ -55,9 +56,6 @@ import RatingIndicatorCss from "./generated/themes/RatingIndicator.css.js";
  * @since 1.0.0-rc.8
  */
 let RatingIndicator = RatingIndicator_1 = class RatingIndicator extends UI5Element {
-    static async onDefine() {
-        RatingIndicator_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
-    }
     constructor() {
         super();
         /**
@@ -155,6 +153,7 @@ let RatingIndicator = RatingIndicator_1 = class RatingIndicator extends UI5Eleme
     }
     _onkeydown(e) {
         if (this.disabled || this.readonly) {
+            e.preventDefault();
             return;
         }
         const isDecrease = isDown(e) || isLeft(e);
@@ -203,7 +202,10 @@ let RatingIndicator = RatingIndicator_1 = class RatingIndicator extends UI5Eleme
         return this.disabled ? "-1" : tabindex || "0";
     }
     get ratingTooltip() {
-        return this.tooltip || this.defaultTooltip;
+        if (this.tooltip) {
+            return this.tooltip;
+        }
+        return getEnableDefaultTooltips() ? this.defaultTooltip : undefined;
     }
     get defaultTooltip() {
         return RatingIndicator_1.i18nBundle.getText(RATING_INDICATOR_TOOLTIP_TEXT);
@@ -254,6 +256,9 @@ __decorate([
 __decorate([
     property({ type: Boolean })
 ], RatingIndicator.prototype, "_focused", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], RatingIndicator, "i18nBundle", void 0);
 RatingIndicator = RatingIndicator_1 = __decorate([
     customElement({
         tag: "ui5-rating-indicator",

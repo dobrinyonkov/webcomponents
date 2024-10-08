@@ -1,3 +1,7 @@
+import type { AccessibilityAttributes } from "@ui5/webcomponents-base/dist/types.js";
+import "@ui5/webcomponents-icons/dist/nav-back.js";
+import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import type { ListItemAccessibilityAttributes } from "./ListItem.js";
 import ListItem from "./ListItem.js";
 import ResponsivePopover from "./ResponsivePopover.js";
 import type PopoverPlacement from "./types/PopoverPlacement.js";
@@ -9,6 +13,7 @@ type MenuBeforeOpenEventDetail = {
 type MenuBeforeCloseEventDetail = {
     escPressed: boolean;
 };
+type MenuItemAccessibilityAttributes = Pick<AccessibilityAttributes, "ariaKeyShortcuts" | "role"> & ListItemAccessibilityAttributes;
 /**
  * @class
  *
@@ -33,13 +38,12 @@ type MenuBeforeCloseEventDetail = {
  * @public
  */
 declare class MenuItem extends ListItem implements IMenuItem {
-    static onDefine(): Promise<void>;
     /**
      * Defines the text of the tree item.
-     * @default ""
+     * @default undefined
      * @public
      */
-    text: string;
+    text?: string;
     /**
      * Defines the `additionalText`, displayed in the end of the menu item.
      *
@@ -103,6 +107,19 @@ declare class MenuItem extends ListItem implements IMenuItem {
      */
     tooltip?: string;
     /**
+     * Defines the additional accessibility attributes that will be applied to the component.
+     * The following fields are supported:
+     *
+     * - **ariaKeyShortcuts**: Indicated the availability of a keyboard shortcuts defined for the menu item.
+     *
+     * - **role**: Defines the role of the menu item. If not set, menu item will have default role="menuitem".
+     *
+     * @public
+     * @since 2.1.0
+     * @default {}
+     */
+    accessibilityAttributes: MenuItemAccessibilityAttributes;
+    /**
      * Indicates whether any of the element siblings have icon.
      */
     _siblingsWithIcon: boolean;
@@ -134,6 +151,7 @@ declare class MenuItem extends ListItem implements IMenuItem {
      * @since 2.0.0
      */
     endContent: Array<HTMLElement>;
+    static i18nBundle: I18nBundle;
     get placement(): `${PopoverPlacement}`;
     get isRtl(): boolean;
     get hasSubmenu(): boolean;
@@ -141,28 +159,31 @@ declare class MenuItem extends ListItem implements IMenuItem {
     get hasIcon(): boolean;
     get isSubMenuOpen(): boolean;
     get ariaLabelledByText(): string;
-    get menuHeaderTextPhone(): string;
+    get menuHeaderTextPhone(): string | undefined;
     get isPhone(): boolean;
     get labelBack(): string;
     get labelClose(): string;
+    get acessibleNameText(): string;
     get isSeparator(): boolean;
     onBeforeRendering(): void;
     get _focusable(): boolean;
     get _accInfo(): {
         role: string;
         ariaHaspopup: "dialog" | "grid" | "listbox" | "menu" | "tree" | undefined;
-        ariaExpanded?: boolean | undefined;
-        ariaLevel?: number | undefined;
+        ariaKeyShortcuts: string | undefined;
+        ariaHidden: boolean | undefined;
+        ariaExpanded?: boolean;
+        ariaLevel?: number;
         ariaLabel: string;
         ariaLabelRadioButton: string;
-        ariaSelectedText?: string | undefined;
-        posinset?: number | undefined;
-        setsize?: number | undefined;
-        ariaSelected?: boolean | undefined;
-        ariaChecked?: boolean | undefined;
-        listItemAriaLabel?: string | undefined;
-        ariaOwns?: string | undefined;
-        tooltip?: string | undefined;
+        ariaSelectedText?: string;
+        posinset?: number;
+        setsize?: number;
+        ariaSelected?: boolean;
+        ariaChecked?: boolean;
+        listItemAriaLabel?: string;
+        ariaOwns?: string;
+        tooltip?: string;
     };
     get _popover(): ResponsivePopover;
     get _menuItems(): MenuItem[];
@@ -174,4 +195,4 @@ declare class MenuItem extends ListItem implements IMenuItem {
     _afterPopoverClose(): void;
 }
 export default MenuItem;
-export type { MenuBeforeCloseEventDetail, MenuBeforeOpenEventDetail, };
+export type { MenuBeforeCloseEventDetail, MenuBeforeOpenEventDetail, MenuItemAccessibilityAttributes, };

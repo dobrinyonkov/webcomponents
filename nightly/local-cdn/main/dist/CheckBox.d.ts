@@ -129,10 +129,10 @@ declare class CheckBox extends UI5Element implements IFormInputElement {
     checked: boolean;
     /**
      * Defines the text of the component.
-     * @default ""
+     * @default undefined
      * @public
      */
-    text: string;
+    text?: string;
     /**
      * Defines the value state of the component.
      * @default "None"
@@ -199,6 +199,5 @@ declare class CheckBox extends UI5Element implements IFormInputElement {
     get isCompletelyChecked(): boolean;
     get isDisplayOnly(): boolean;
     get displayOnlyIcon(): "complete" | "tri-state" | "border";
-    static onDefine(): Promise<void>;
 }
 export default CheckBox;

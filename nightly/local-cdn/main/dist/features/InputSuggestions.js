@@ -1,5 +1,4 @@
-import { registerFeature } from "@ui5/webcomponents-base/dist/FeaturesRegistry.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import { ComponentFeature, registerComponentFeature } from "@ui5/webcomponents-base/dist/FeaturesRegistry.js";
 import generateHighlightedMarkup from "@ui5/webcomponents-base/dist/util/generateHighlightedMarkup.js";
 import List from "../List.js";
 import SuggestionItem from "../SuggestionItem.js";
@@ -12,8 +11,9 @@ import SuggestionItemGroup from "../SuggestionItemGroup.js";
  * @class
  * @private
  */
-class Suggestions {
+class Suggestions extends ComponentFeature {
     constructor(component, slotName, highlight, handleFocus) {
+        super();
         // The component, that the suggestion would plug into.
         this.component = component;
         // Defines the items` slot name.
@@ -142,7 +142,7 @@ class Suggestions {
             isGroup: item.hasAttribute("ui5-suggestion-item-group"),
             currentPos: nonGroupItems.indexOf(item) + 1,
             listSize: nonGroupItems.length,
-            itemText: item.text,
+            itemText: item.text || "",
             additionalText: item.additionalText,
         };
         this._getComponent().onItemSelected(item, keyboardUsed);
@@ -320,7 +320,12 @@ class Suggestions {
         const rectItem = item.getDomRef().getBoundingClientRect();
         const rectInput = this._getComponent().getDomRef().getBoundingClientRect();
         const windowHeight = (window.innerHeight || document.documentElement.clientHeight);
-        return (rectItem.top + Suggestions.SCROLL_STEP <= windowHeight) && (rectItem.top >= rectInput.top);
+        let headerHeight = 0;
+        if (this._hasValueState) {
+            const valueStateHeader = this._getPicker().querySelector("[slot=header]");
+            headerHeight = valueStateHeader.getBoundingClientRect().height;
+        }
+        return (rectItem.top + Suggestions.SCROLL_STEP <= windowHeight) && (rectItem.top >= rectInput.top + headerHeight);
     }
     _scrollItemIntoView(item) {
         item.scrollIntoView({
@@ -340,10 +345,13 @@ class Suggestions {
      *
      */
     _getItems() {
-        return Array.from(this._getComponent().querySelectorAll("[ui5-suggestion-item], [ui5-suggestion-item-group], [ui5-suggestion-item-custom]"));
+        const suggestionComponent = this._getComponent();
+        return suggestionComponent.getSlottedNodes("suggestionItems").flatMap(item => {
+            return item.hasAttribute("ui5-suggestion-item-group") ? [item, ...item.items] : [item];
+        });
     }
     _getNonGroupItems() {
-        return Array.from(this._getComponent().querySelectorAll("[ui5-suggestion-item], [ui5-suggestion-item-custom]"));
+        return this._getItems().filter(item => !item.hasAttribute("ui5-suggestion-item-group"));
     }
     _getComponent() {
         return this.component;
@@ -397,12 +405,9 @@ class Suggestions {
             Icon,
         ];
     }
-    static async init() {
-        Suggestions.i18nBundle = await getI18nBundle("@ui5/webcomponents");
-    }
 }
 Suggestions.SCROLL_STEP = 60;
 // Add suggestions support to the global features registry so that Input.js can use it
-registerFeature("InputSuggestions", Suggestions);
+registerComponentFeature("InputSuggestions", Suggestions);
 export default Suggestions;
 //# sourceMappingURL=InputSuggestions.js.map

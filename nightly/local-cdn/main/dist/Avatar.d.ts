@@ -111,10 +111,6 @@ declare class Avatar extends UI5Element implements ITabbable, IAvatarGroupItem {
      */
     size: `${AvatarSize}`;
     /**
-     * @private
-     */
-    _size: `${AvatarSize}`;
-    /**
      * Defines the background color of the desired image.
      * @default "Accent6"
      * @public
@@ -168,7 +164,6 @@ declare class Avatar extends UI5Element implements ITabbable, IAvatarGroupItem {
     static i18nBundle: I18nBundle;
     _handleResizeBound: ResizeObserverCallback;
     constructor();
-    static onDefine(): Promise<void>;
     get tabindex(): string;
     /**
      * Returns the effective avatar size.

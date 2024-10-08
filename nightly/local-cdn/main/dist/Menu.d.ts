@@ -107,12 +107,12 @@ declare class Menu extends UI5Element {
     items: Array<IMenuItem>;
     static i18nBundle: I18nBundle;
     _timeout?: Timeout;
-    static onDefine(): Promise<void>;
     get isRtl(): boolean;
     get labelClose(): string;
     get isPhone(): boolean;
     get _popover(): ResponsivePopover;
     get _menuItems(): MenuItem[];
+    get acessibleNameText(): string;
     onBeforeRendering(): void;
     _close(): void;
     _openItemSubMenu(item: MenuItem): void;

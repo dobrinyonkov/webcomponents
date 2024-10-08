@@ -32,7 +32,7 @@ declare class ShellBarItem extends UI5Element {
      * @default undefined
      * @public
      */
-    text: string;
+    text?: string;
     /**
      * Defines the count displayed in the top-right corner.
      * @default undefined

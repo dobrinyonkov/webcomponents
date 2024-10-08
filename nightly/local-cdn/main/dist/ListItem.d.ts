@@ -35,6 +35,7 @@ type AccInfo = {
     listItemAriaLabel?: string;
     ariaOwns?: string;
     tooltip?: string;
+    ariaKeyShortcuts?: string;
 };
 type ListItemAccessibilityAttributes = Pick<AccessibilityAttributes, "hasPopup" | "ariaSetsize" | "ariaPosinset">;
 /**
@@ -143,6 +144,7 @@ declare abstract class ListItem extends ListItemBase {
     _onfocusout(): void;
     _ondragstart(e: DragEvent): void;
     _ondragend(e: DragEvent): void;
+    _isTargetSelfFocusDomRef(e: KeyboardEvent): boolean;
     /**
      * Called when selection components in Single (ui5-radio-button)
      * and Multi (ui5-checkbox) selection modes are used.
@@ -179,7 +181,6 @@ declare abstract class ListItem extends ListItemBase {
     get _hasHighlightColor(): boolean;
     get hasConfigurableMode(): boolean;
     get _listItem(): HTMLLIElement | null;
-    static onDefine(): Promise<void>;
 }
 export default ListItem;
 export type { IAccessibleListItem, SelectionRequestEventDetail, ListItemAccessibilityAttributes, };

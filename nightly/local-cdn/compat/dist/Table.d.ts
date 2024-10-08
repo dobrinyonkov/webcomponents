@@ -1,4 +1,5 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
+import type { ChangeInfo } from "@ui5/webcomponents-base/dist/UI5Element.js";
 import type { ResizeObserverCallback } from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import ItemNavigation from "@ui5/webcomponents-base/dist/delegate/ItemNavigation.js";
 import type { ITabbable } from "@ui5/webcomponents-base/dist/delegate/ItemNavigation.js";
@@ -233,11 +234,6 @@ declare class Table extends UI5Element {
      */
     _columnHeader: TableColumnHeaderInfo;
     /**
-     * Defines if the entire table is in view port.
-     * @private
-     */
-    _inViewport: boolean;
-    /**
      * Defines whether all rows are selected or not when table is in MultiSelect mode.
      * @default false
      * @since 2.0.0
@@ -258,12 +254,10 @@ declare class Table extends UI5Element {
      * @public
      */
     columns: Array<TableColumn>;
-    static onDefine(): Promise<void>;
     static i18nBundle: I18nBundle;
     fnHandleF7: (e: CustomEvent) => void;
     fnOnRowFocused: (e: CustomEvent) => void;
     _handleResize: ResizeObserverCallback;
-    moreDataText?: string;
     tableEndObserved: boolean;
     visibleColumns: Array<TableColumn>;
     visibleColumnsCount?: number;
@@ -316,6 +310,7 @@ declare class Table extends UI5Element {
     _onColumnHeaderKeydown(e: KeyboardEvent): void;
     _onLoadMoreKeydown(e: KeyboardEvent): void;
     _onLoadMoreKeyup(e: KeyboardEvent): void;
+    onInvalidation(change: ChangeInfo): void;
     _onLoadMoreClick(): void;
     observeTableEnd(): void;
     onInteresection(entries: Array<IntersectionObserverEntry>): void;
@@ -328,18 +323,12 @@ declare class Table extends UI5Element {
     get columnHeader(): HTMLElement | null;
     get morеBtn(): HTMLElement | null;
     handleResize(): void;
-    checkTableInViewport(): void;
     popinContent(): void;
     /**
      * Gets settings to be propagated from columns to rows.
      */
     getColumnPropagationSettings(): Array<TableColumnInfo>;
     getIntersectionObserver(): IntersectionObserver;
-    get styles(): {
-        busy: {
-            position: string;
-        };
-    };
     get growsWithButton(): boolean;
     get growsOnScroll(): boolean;
     get _growingButtonText(): string;
@@ -348,7 +337,6 @@ declare class Table extends UI5Element {
     get ariaLabelSelectAllText(): string;
     get loadMoreAriaLabelledBy(): string;
     get tableEndDOM(): Element;
-    get busyIndPosition(): string;
     get isMultiSelect(): boolean;
     get isSingleSelect(): boolean;
     get selectedRows(): Array<ITableRow>;

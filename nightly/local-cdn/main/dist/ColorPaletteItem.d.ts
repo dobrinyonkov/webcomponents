@@ -18,10 +18,10 @@ declare class ColorPaletteItem extends UI5Element implements IColorPaletteItem {
      * Defines the colour of the component.
      *
      * **Note:** The value should be a valid CSS color.
-     * @default undefined
+     * @default ""
      * @public
      */
-    value?: string;
+    value: string;
     /**
      * Defines if the component is selected.
      *
@@ -54,13 +54,12 @@ declare class ColorPaletteItem extends UI5Element implements IColorPaletteItem {
      */
     _disabled: boolean;
     static i18nBundle: I18nBundle;
-    static onDefine(): Promise<void>;
     constructor();
     onBeforeRendering(): void;
     get colorLabel(): string;
     get styles(): {
         root: {
-            "background-color": string | undefined;
+            "background-color": string;
         };
     };
     get classes(): {

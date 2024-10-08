@@ -10,15 +10,16 @@ import customElement from "@ui5/webcomponents-base/dist/decorators/customElement
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import { isSpace, isEnter, isEscape, isShift, } from "@ui5/webcomponents-base/dist/Keys.js";
 import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import { markEvent } from "@ui5/webcomponents-base/dist/MarkedEvents.js";
 import { getIconAccessibleName } from "@ui5/webcomponents-base/dist/asset-registries/Icons.js";
 import { isDesktop, isSafari, } from "@ui5/webcomponents-base/dist/Device.js";
 import willShowContent from "@ui5/webcomponents-base/dist/util/willShowContent.js";
 import { submitForm, resetForm } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
+import { getEnableDefaultTooltips } from "@ui5/webcomponents-base/dist/config/Tooltips.js";
 import ButtonDesign from "./types/ButtonDesign.js";
 import ButtonType from "./types/ButtonType.js";
 import ButtonTemplate from "./generated/templates/ButtonTemplate.lit.js";
@@ -194,7 +195,7 @@ let Button = Button_1 = class Button extends UI5Element {
         this.hasIcon = !!this.icon;
         this.hasEndIcon = !!this.endIcon;
         this.iconOnly = this.isIconOnly;
-        this.buttonTitle = this.tooltip || await getIconAccessibleName(this.icon);
+        this.buttonTitle = this.tooltip || await this.getDefaultTooltip();
     }
     _onclick(e) {
         if (this.nonInteractive) {
@@ -306,6 +307,12 @@ let Button = Button_1 = class Button extends UI5Element {
             "Emphasized": BUTTON_ARIA_TYPE_EMPHASIZED,
         };
     }
+    getDefaultTooltip() {
+        if (!getEnableDefaultTooltips()) {
+            return;
+        }
+        return getIconAccessibleName(this.icon);
+    }
     get buttonTypeText() {
         return Button_1.i18nBundle.getText(Button_1.typeTextMappings()[this.design]);
     }
@@ -323,7 +330,7 @@ let Button = Button_1 = class Button extends UI5Element {
         return this.nonInteractive ? "-1" : this.forcedTabIndex;
     }
     get showIconTooltip() {
-        return this.iconOnly && !this.tooltip;
+        return getEnableDefaultTooltips() && this.iconOnly && !this.tooltip;
     }
     get ariaLabelText() {
         return getEffectiveAriaLabelText(this);
@@ -336,9 +343,6 @@ let Button = Button_1 = class Button extends UI5Element {
     }
     get _isReset() {
         return this.type === ButtonType.Reset;
-    }
-    static async onDefine() {
-        Button_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
     }
 };
 __decorate([
@@ -407,6 +411,9 @@ __decorate([
 __decorate([
     slot({ type: Node, "default": true })
 ], Button.prototype, "text", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], Button, "i18nBundle", void 0);
 Button = Button_1 = __decorate([
     customElement({
         tag: "ui5-button",

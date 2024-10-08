@@ -9,7 +9,7 @@ import customElement from "@ui5/webcomponents-base/dist/decorators/customElement
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 import ListItemType from "@ui5/webcomponents/dist/types/ListItemType.js";
 import Button from "@ui5/webcomponents/dist/Button.js";
@@ -20,7 +20,7 @@ import ProgressIndicator from "@ui5/webcomponents/dist/ProgressIndicator.js";
 import ListItem from "@ui5/webcomponents/dist/ListItem.js";
 import getFileExtension from "@ui5/webcomponents-base/dist/util/getFileExtension.js";
 import { renderFinished } from "@ui5/webcomponents-base/dist/Render.js";
-import { isEnter, isEscape, isSpace } from "@ui5/webcomponents-base/dist/Keys.js";
+import { isDelete, isEnter, isEscape, isSpace, } from "@ui5/webcomponents-base/dist/Keys.js";
 import UploadState from "./types/UploadState.js";
 import "@ui5/webcomponents-icons/dist/refresh.js";
 import "@ui5/webcomponents-icons/dist/stop.js";
@@ -113,12 +113,6 @@ let UploadCollectionItem = UploadCollectionItem_1 = class UploadCollectionItem e
          */
         this._editing = false;
     }
-    static async onDefine() {
-        [UploadCollectionItem_1.i18nFioriBundle] = await Promise.all([
-            getI18nBundle("@ui5/webcomponents-fiori"),
-            super.onDefine(),
-        ]);
-    }
     /**
      * @override
      */
@@ -136,6 +130,12 @@ let UploadCollectionItem = UploadCollectionItem_1 = class UploadCollectionItem e
         if (inpFocusDomRef) {
             inpFocusDomRef.focus();
             inpFocusDomRef.setSelectionRange(0, this._fileNameWithoutExtension.length);
+        }
+    }
+    _onkeyup(e) {
+        super._onkeyup(e);
+        if (isDelete(e) && !this.disableDeleteButton && !this.hideDeleteButton && !this.disabled) {
+            this._onDelete();
         }
     }
     _onDetailKeyup(e) {
@@ -318,6 +318,9 @@ __decorate([
 __decorate([
     slot({ type: HTMLElement })
 ], UploadCollectionItem.prototype, "thumbnail", void 0);
+__decorate([
+    i18n("@ui5/webcomponents-fiori")
+], UploadCollectionItem, "i18nFioriBundle", void 0);
 UploadCollectionItem = UploadCollectionItem_1 = __decorate([
     customElement({
         tag: "ui5-upload-collection-item",

@@ -29,7 +29,7 @@ interface IInputSuggestionItem extends UI5Element {
     items?: IInputSuggestionItem[];
 }
 interface IInputSuggestionItemSelectable extends IInputSuggestionItem {
-    text: string;
+    text?: string;
     selected: boolean;
 }
 type NativeInputAttributes = {
@@ -73,7 +73,7 @@ type InputSuggestionScrollEventDetail = {
  *
  * The text field can be editable or read-only (`readonly` property),
  * and it can be enabled or disabled (`disabled` property).
- * To visualize semantic states, such as "error" or "warning", the `valueState` property is provided.
+ * To visualize semantic states, such as "Negative" or "Critical", the `valueState` property is provided.
  * When the user makes changes to the text, the change event is fired,
  * which enables you to react on any text change.
  *
@@ -99,9 +99,13 @@ type InputSuggestionScrollEventDetail = {
  * `import "@ui5/webcomponents/dist/Input.js";`
  *
  * `import "@ui5/webcomponents/dist/features/InputSuggestions.js";` (optional - for input suggestions support)
+ *
  * @constructor
  * @extends UI5Element
  * @public
+ * @csspart root - Used to style the root DOM element of the Input component
+ * @csspart input - Used to style the native input element
+ * @csspart clear-icon - Used to style the clear icon, which can be pressed to clear user input text
  */
 declare class Input extends UI5Element implements SuggestionComponent, IFormInputElement {
     /**
@@ -305,7 +309,7 @@ declare class Input extends UI5Element implements SuggestionComponent, IFormInpu
      * **Note:** If not specified, a default text (in the respective language) will be displayed.
      *
      * **Note:** The `valueStateMessage` would be displayed,
-     * when the component is in `Information`, `Warning` or `Error` value state.
+     * when the component is in `Information`, `Critical` or `Negative` value state.
      *
      * **Note:** If the component has `suggestionItems`,
      * the `valueStateMessage` would be displayed as part of the same popover, if used on desktop, or dialog - on phone.
@@ -335,6 +339,7 @@ declare class Input extends UI5Element implements SuggestionComponent, IFormInpu
     _isLatestValueFromSuggestions: boolean;
     static i18nBundle: I18nBundle;
     get formValidityMessage(): string;
+    get _effectiveShowSuggestions(): boolean;
     get formValidity(): ValidityStateFlags;
     formElementAnchor(): Promise<HTMLElement | undefined>;
     get formFormattedValue(): FormData | string | null;
@@ -370,6 +375,7 @@ declare class Input extends UI5Element implements SuggestionComponent, IFormInpu
     _clear(): void;
     _iconMouseDown(): void;
     _scroll(e: CustomEvent<PopupScrollEventDetail>): void;
+    _handleSelect(): void;
     _handleInput(e: InputEvent | CustomEvent<InputEventDetail>): void;
     _startsWithMatchingItems(str: string): Array<IInputSuggestionItemSelectable>;
     _getFirstMatchingItem(current: string): IInputSuggestionItemSelectable | undefined;
@@ -433,6 +439,7 @@ declare class Input extends UI5Element implements SuggestionComponent, IFormInpu
     get _readonly(): boolean;
     get _headerTitleText(): string;
     get clearIconAccessibleName(): string;
+    get _popupLabel(): string;
     get inputType(): string;
     get isTypeNumber(): boolean;
     get suggestionsTextId(): "" | "suggestionsText";
@@ -516,7 +523,6 @@ declare class Input extends UI5Element implements SuggestionComponent, IFormInpu
      * @param value the numeric value of Input of type "Number"
      */
     removeFractionalPart(value: string): string;
-    static onDefine(): Promise<void>;
 }
 export default Input;
 export type { IInputSuggestionItem, IInputSuggestionItemSelectable, InputSuggestionScrollEventDetail, InputSelectionChangeEventDetail, InputEventDetail, };

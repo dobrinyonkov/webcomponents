@@ -16,7 +16,6 @@ import DateRangePickerTemplate from "./generated/templates/DateRangePickerTempla
 // Styles
 import DateRangePickerCss from "./generated/themes/DateRangePicker.css.js";
 import DatePicker from "./DatePicker.js";
-import CalendarPickersMode from "./types/CalendarPickersMode.js";
 import CalendarDateRange from "./CalendarDateRange.js";
 const DEFAULT_DELIMITER = "-";
 /**
@@ -71,7 +70,7 @@ let DateRangePicker = DateRangePicker_1 = class DateRangePicker extends DatePick
         * @default "-"
         * @public
         */
-        this.delimiter = DEFAULT_DELIMITER;
+        this.delimiter = "-";
         this._prevDelimiter = null;
     }
     /**
@@ -313,12 +312,6 @@ let DateRangePicker = DateRangePicker_1 = class DateRangePicker extends DatePick
             return `${firstDateString} ${this._effectiveDelimiter} ${lastDateString}`;
         }
         return "";
-    }
-    /**
-     * @override
-     */
-    get _calendarPickersMode() {
-        return CalendarPickersMode.DAY_MONTH_YEAR;
     }
 };
 __decorate([

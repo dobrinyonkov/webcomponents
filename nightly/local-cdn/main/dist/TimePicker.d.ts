@@ -1,4 +1,3 @@
-/// <reference types="openui5" />
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
@@ -80,12 +79,12 @@ type TimePickerInputEventDetail = TimePickerChangeInputEventDetail;
 declare class TimePicker extends UI5Element implements IFormInputElement {
     /**
      * Defines a formatted time value.
-     * @default undefined
+     * @default ""
      * @formEvents change input
      * @formProperty
      * @public
      */
-    value?: string;
+    value: string;
     /**
      * Determines the name by which the component will be identified upon submission in an HTML form.
      *
@@ -138,9 +137,30 @@ declare class TimePicker extends UI5Element implements IFormInputElement {
      * Defines the open or closed state of the popover.
      * @public
      * @default false
-     * @since 2.0
+     * @since 2.0.0
      */
     open: boolean;
+    /**
+     * Defines whether the component is required.
+     * @since 2.1.0
+     * @default false
+     * @public
+     */
+    required: boolean;
+    /**
+     * Defines the aria-label attribute for the component.
+     * @default undefined
+     * @public
+     * @since 2.1.0
+     */
+    accessibleName?: string;
+    /**
+     * Receives id (or many ids) of the elements that label the component.
+     * @default undefined
+     * @public
+     * @since 2.1.0
+     */
+    accessibleNameRef?: string;
     _isInputsPopoverOpen: boolean;
     /**
      * Defines the value state message that will be displayed as pop up under the `ui5-time-picker`.
@@ -148,14 +168,15 @@ declare class TimePicker extends UI5Element implements IFormInputElement {
      * **Note:** If not specified, a default text (in the respective language) will be displayed.
      *
      * **Note:** The `valueStateMessage` would be displayed,
-     * when the `ui5-time-picker` is in `Information`, `Warning` or `Error` value state.
+     * when the `ui5-time-picker` is in `Information`, `Critical` or `Negative` value state.
      * @since 1.0.0-rc.8
      * @public
      */
     valueStateMessage: Array<HTMLElement>;
     tempValue?: string;
     static i18nBundle: I18nBundle;
-    static onDefine(): Promise<void>;
+    get formValidityMessage(): string;
+    get formValidity(): ValidityStateFlags;
     formElementAnchor(): Promise<HTMLElement | undefined>;
     get formFormattedValue(): FormData | string | null;
     onBeforeRendering(): void;
@@ -164,13 +185,15 @@ declare class TimePicker extends UI5Element implements IFormInputElement {
     get accInfo(): {
         ariaRoledescription: string;
         ariaHasPopup: string;
+        ariaRequired: boolean;
+        ariaLabel: string | undefined;
     };
     /**
      * Currently selected time represented as JavaScript Date instance
      * @public
      * @default null
      */
-    get dateValue(): Date | Date[] | null;
+    get dateValue(): Date | null;
     /**
      * @protected
      */
@@ -180,9 +203,10 @@ declare class TimePicker extends UI5Element implements IFormInputElement {
      */
     get _formatPattern(): string | undefined;
     get _displayFormat(): string;
-    get _effectiveValue(): string | undefined;
+    get _effectiveValue(): string;
     get _timeSelectionValue(): string | undefined;
     get _isPhone(): boolean;
+    get _isMobileDevice(): boolean;
     onTimeSelectionChange(e: CustomEvent<TimeSelectionChangeEventDetail>): void;
     _togglePicker(): void;
     submitPickers(): void;

@@ -25,17 +25,6 @@ import customElement from "@ui5/webcomponents-base/dist/decorators/customElement
  * @public
  */
 let ShellBarItem = class ShellBarItem extends UI5Element {
-    constructor() {
-        super(...arguments);
-        /**
-         * Defines the item text.
-         *
-         * **Note:** The text is only displayed inside the overflow popover list view.
-         * @default undefined
-         * @public
-         */
-        this.text = "";
-    }
     get stableDomRef() {
         return this.getAttribute("stable-dom-ref") || `${this._id}-stable-dom-ref`;
     }

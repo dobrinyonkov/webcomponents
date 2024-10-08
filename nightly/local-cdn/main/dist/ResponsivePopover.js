@@ -8,13 +8,12 @@ var ResponsivePopover_1;
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import { isPhone } from "@ui5/webcomponents-base/dist/Device.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import { RESPONSIVE_POPOVER_CLOSE_DIALOG_BUTTON } from "./generated/i18n/i18n-defaults.js";
 import ResponsivePopoverTemplate from "./generated/templates/ResponsivePopoverTemplate.lit.js";
 import Popover from "./Popover.js";
 import Dialog from "./Dialog.js";
 import Button from "./Button.js";
-import Title from "./Title.js";
 import "@ui5/webcomponents-icons/dist/decline.js";
 // Styles
 import ResponsivePopoverCss from "./generated/themes/ResponsivePopover.css.js";
@@ -141,9 +140,6 @@ let ResponsivePopover = ResponsivePopover_1 = class ResponsivePopover extends Po
         }
         return this._dialog.isModal;
     }
-    static async onDefine() {
-        ResponsivePopover_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
-    }
 };
 __decorate([
     property({ type: Boolean })
@@ -154,6 +150,9 @@ __decorate([
 __decorate([
     property({ type: Boolean })
 ], ResponsivePopover.prototype, "_hideCloseButton", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], ResponsivePopover, "i18nBundle", void 0);
 ResponsivePopover = ResponsivePopover_1 = __decorate([
     customElement({
         tag: "ui5-responsive-popover",
@@ -163,7 +162,6 @@ ResponsivePopover = ResponsivePopover_1 = __decorate([
             ...Popover.dependencies,
             Button,
             Dialog,
-            Title,
         ],
     })
 ], ResponsivePopover);

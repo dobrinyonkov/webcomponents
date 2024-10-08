@@ -16,7 +16,7 @@ import TableHeaderCell from "./TableHeaderCell.js";
  *
  * @constructor
  * @extends TableRowBase
- * @since 2.0
+ * @since 2.0.0
  * @public
  * @experimental This web component is available since 2.0 with an experimental flag and its API and behavior are subject to change.
  */
@@ -31,6 +31,8 @@ declare class TableHeaderRow extends TableRowBase {
     cells: Array<TableHeaderCell>;
     /**
      * Sticks the `ui5-table-header-row` to the top of a table.
+     *
+     * Note: If used in combination with overflowMode "Scroll", the table needs a defined height for the sticky header to work as expected.
      *
      * @default false
      * @public

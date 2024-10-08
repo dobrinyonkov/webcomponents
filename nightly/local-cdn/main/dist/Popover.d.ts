@@ -1,3 +1,4 @@
+import type UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import Popup from "./Popup.js";
 import type { PopupBeforeCloseEventDetail as PopoverBeforeCloseEventDetail } from "./Popup.js";
 import PopoverPlacement from "./types/PopoverPlacement.js";
@@ -44,12 +45,6 @@ type CalculatedPlacement = {
  *
  * `import "@ui5/webcomponents/dist/Popover.js";`
  *
- * **Note: ** We recommend placing popup-like components (`ui5-dialog` and `ui5-popover`)
- * outside any other components. Preferably, the popup-like components should be placed
- * in an upper level HTML element. Otherwise, in some cases the parent HTML elements can break
- * the position and/or z-index management of the popup-like components.
- *
- * **Note:** We don't recommend nesting popup-like components (`ui5-dialog`, `ui5-popover`).
  * @constructor
  * @extends Popup
  * @since 1.0.0-rc.6
@@ -147,6 +142,7 @@ declare class Popover extends Popup {
     _left?: number;
     _oldPlacement?: CalculatedPlacement;
     _width?: string;
+    _height?: string;
     static get VIEWPORT_MARGIN(): number;
     constructor();
     /**
@@ -195,6 +191,7 @@ declare class Popover extends Popup {
     };
     getPopoverSize(): PopoverSize;
     _showOutsideViewport(): void;
+    _isUI5Element(el: HTMLElement): el is UI5Element;
     get arrowDOM(): Element;
     /**
      * @private

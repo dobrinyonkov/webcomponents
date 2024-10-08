@@ -37,5 +37,7 @@ type AccessibilityAttributes = {
     hasPopup?: ARIAHasPopup;
     name?: string;
     role?: ARIARoles;
+    ariaKeyShortcuts?: string;
+    current?: "page" | "step" | "location" | "date" | "time" | "true" | "false" | boolean;
 };
 export type { AccessibilityInfo, AccessibilityAttributes, PromiseResolve, Timeout, Interval, StyleData, StyleDataCSP, ComponentStylesData, ClassMap, ClassMapValue, PassiveEventListenerObject, };

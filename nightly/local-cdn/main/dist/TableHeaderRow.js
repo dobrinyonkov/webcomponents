@@ -28,7 +28,7 @@ import { TABLE_SELECTION, TABLE_ROW_POPIN, } from "./generated/i18n/i18n-default
  *
  * @constructor
  * @extends TableRowBase
- * @since 2.0
+ * @since 2.0.0
  * @public
  * @experimental This web component is available since 2.0 with an experimental flag and its API and behavior are subject to change.
  */
@@ -44,6 +44,8 @@ class TableHeaderRow extends TableRowBase {
         super(...arguments);
         /**
          * Sticks the `ui5-table-header-row` to the top of a table.
+         *
+         * Note: If used in combination with overflowMode "Scroll", the table needs a defined height for the sticky header to work as expected.
          *
          * @default false
          * @public
@@ -77,7 +79,7 @@ __decorate([
         type: HTMLElement,
         "default": true,
         invalidateOnChildChange: {
-            properties: ["width", "_popin"],
+            properties: ["width", "_popin", "horizontalAlign"],
             slots: false,
         },
         individualSlots: true,

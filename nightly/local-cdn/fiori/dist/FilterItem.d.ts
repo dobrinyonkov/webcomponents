@@ -20,10 +20,10 @@ import type FilterItemOption from "./FilterItemOption.js";
 declare class FilterItem extends UI5Element {
     /**
      * Defines the text of the component.
-     * @default ""
+     * @default undefined
      * @public
      */
-    text: string;
+    text?: string;
     /**
      * Defines the additional text of the component.
      * @default undefined

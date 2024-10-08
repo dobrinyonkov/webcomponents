@@ -8,7 +8,6 @@ import customElement from "@ui5/webcomponents-base/dist/decorators/customElement
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import { isEnter } from "@ui5/webcomponents-base/dist/Keys.js";
-import { isIOS, isSafari } from "@ui5/webcomponents-base/dist/Device.js";
 import getActiveElement from "@ui5/webcomponents-base/dist/util/getActiveElement.js";
 import TableRowTemplate from "./generated/templates/TableRowTemplate.lit.js";
 import TableRowBase from "./TableRowBase.js";
@@ -28,7 +27,7 @@ import RadioButton from "./RadioButton.js";
  *
  * @constructor
  * @extends TableRowBase
- * @since 2.0
+ * @since 2.0.0
  * @public
  * @experimental This web component is available since 2.0 with an experimental flag and its API and behavior are subject to change.
  */
@@ -36,12 +35,12 @@ let TableRow = class TableRow extends TableRowBase {
     constructor() {
         super(...arguments);
         /**
-         * Unique identifier of the component.
+         * Unique identifier of the row.
          *
          * @default ""
          * @public
          */
-        this.key = "";
+        this.rowKey = "";
         /**
          * Defines the interactive state of the row.
          *
@@ -57,13 +56,6 @@ let TableRow = class TableRow extends TableRowBase {
          */
         this.navigated = false;
         this._renderNavigated = false;
-    }
-    static async onDefine() {
-        await super.onDefine();
-        if (isSafari() && isIOS()) {
-            // Safari on iOS does not use the :active state unless there is a touchstart event handler on the <body> element
-            document.body.addEventListener("touchstart", () => { });
-        }
     }
     onBeforeRendering() {
         super.onBeforeRendering();
@@ -118,7 +110,7 @@ __decorate([
 ], TableRow.prototype, "cells", void 0);
 __decorate([
     property()
-], TableRow.prototype, "key", void 0);
+], TableRow.prototype, "rowKey", void 0);
 __decorate([
     property({ type: Boolean })
 ], TableRow.prototype, "interactive", void 0);

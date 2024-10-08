@@ -10,7 +10,7 @@ import { isEnter, isSpace } from "@ui5/webcomponents-base/dist/Keys.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import TableRowBaseCss from "./generated/themes/TableRowBase.css.js";
 import CheckBox from "./CheckBox.js";
 import { isInstanceOfTable } from "./TableUtils.js";
@@ -21,16 +21,13 @@ import { TABLE_ROW_SELECTOR, } from "./generated/i18n/i18n-defaults.js";
  * @constructor
  * @abstract
  * @extends UI5Element
- * @since 2.0
+ * @since 2.0.0
  * @public
  */
 let TableRowBase = TableRowBase_1 = class TableRowBase extends UI5Element {
     constructor() {
         super(...arguments);
         this._invalidate = 0;
-    }
-    static async onDefine() {
-        TableRowBase_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
     }
     onEnterDOM() {
         this.setAttribute("role", "row");
@@ -90,16 +87,21 @@ let TableRowBase = TableRowBase_1 = class TableRowBase extends UI5Element {
     get _popinCells() {
         return this.cells.filter(c => c._popin);
     }
+    get _stickyCells() {
+        const selectionCell = this.shadowRoot?.querySelector("#selection-cell"), navigatedCell = this.shadowRoot?.querySelector("#navigated-cell");
+        // filter out null/undefined
+        return [selectionCell, ...this.cells, navigatedCell].filter(cell => cell?.hasAttribute("fixed"));
+    }
     get _i18nRowSelector() {
         return TableRowBase_1.i18nBundle.getText(TABLE_ROW_SELECTOR);
-    }
-    get isTableRowBase() {
-        return true;
     }
 };
 __decorate([
     property({ type: Number, noAttribute: true })
 ], TableRowBase.prototype, "_invalidate", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], TableRowBase, "i18nBundle", void 0);
 TableRowBase = TableRowBase_1 = __decorate([
     customElement({
         renderer: litRender,

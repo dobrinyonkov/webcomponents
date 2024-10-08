@@ -5,21 +5,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var TimePicker_1;
-import { isPhone } from "@ui5/webcomponents-base/dist/Device.js";
+import { isDesktop, isPhone, isTablet } from "@ui5/webcomponents-base/dist/Device.js";
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import { submitForm } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import getLocale from "@ui5/webcomponents-base/dist/locale/getLocale.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
+import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
 import "@ui5/webcomponents-localization/dist/features/calendar/Gregorian.js"; // default calendar for bundling
 import DateFormat from "@ui5/webcomponents-localization/dist/DateFormat.js";
 import getCachedLocaleDataInstance from "@ui5/webcomponents-localization/dist/getCachedLocaleDataInstance.js";
-import { fetchCldr } from "@ui5/webcomponents-base/dist/asset-registries/LocaleData.js";
-import { isShow, isPageUp, isPageDown, isPageUpShift, isPageDownShift, isPageUpShiftCtrl, isPageDownShiftCtrl, isTabNext, isTabPrevious, isF6Next, isF6Previous, } from "@ui5/webcomponents-base/dist/Keys.js";
+import { isShow, isEnter, isPageUp, isPageDown, isPageUpShift, isPageDownShift, isPageUpShiftCtrl, isPageDownShiftCtrl, isTabNext, isTabPrevious, isF6Next, isF6Previous, } from "@ui5/webcomponents-base/dist/Keys.js";
 import "@ui5/webcomponents-icons/dist/time-entry-request.js";
 import UI5Date from "@ui5/webcomponents-localization/dist/dates/UI5Date.js";
 import Icon from "./Icon.js";
@@ -30,7 +31,7 @@ import Input from "./Input.js";
 import Button from "./Button.js";
 import TimeSelectionClocks from "./TimeSelectionClocks.js";
 import TimeSelectionInputs from "./TimeSelectionInputs.js";
-import { TIMEPICKER_SUBMIT_BUTTON, TIMEPICKER_CANCEL_BUTTON, TIMEPICKER_INPUT_DESCRIPTION, TIMEPICKER_POPOVER_ACCESSIBLE_NAME, } from "./generated/i18n/i18n-defaults.js";
+import { TIMEPICKER_SUBMIT_BUTTON, TIMEPICKER_CANCEL_BUTTON, TIMEPICKER_INPUT_DESCRIPTION, TIMEPICKER_POPOVER_ACCESSIBLE_NAME, FORM_TEXTFIELD_REQUIRED, } from "./generated/i18n/i18n-defaults.js";
 // Styles
 import TimePickerCss from "./generated/themes/TimePicker.css.js";
 import TimePickerPopoverCss from "./generated/themes/TimePickerPopover.css.js";
@@ -101,6 +102,14 @@ let TimePicker = TimePicker_1 = class TimePicker extends UI5Element {
     constructor() {
         super(...arguments);
         /**
+         * Defines a formatted time value.
+         * @default ""
+         * @formEvents change input
+         * @formProperty
+         * @public
+         */
+        this.value = "";
+        /**
          * Defines the value state of the component.
          * @default "None"
          * @public
@@ -122,19 +131,26 @@ let TimePicker = TimePicker_1 = class TimePicker extends UI5Element {
          * Defines the open or closed state of the popover.
          * @public
          * @default false
-         * @since 2.0
+         * @since 2.0.0
          */
         this.open = false;
+        /**
+         * Defines whether the component is required.
+         * @since 2.1.0
+         * @default false
+         * @public
+         */
+        this.required = false;
         this._isInputsPopoverOpen = false;
     }
-    static async onDefine() {
-        [TimePicker_1.i18nBundle] = await Promise.all([
-            getI18nBundle("@ui5/webcomponents"),
-            fetchCldr(getLocale().getLanguage(), getLocale().getRegion(), getLocale().getScript()),
-        ]);
+    get formValidityMessage() {
+        return TimePicker_1.i18nBundle.getText(FORM_TEXTFIELD_REQUIRED);
+    }
+    get formValidity() {
+        return { valueMissing: this.required && !this.value };
     }
     async formElementAnchor() {
-        return this.getFocusDomRefAsync();
+        return (await this.getFocusDomRefAsync())?.getFocusDomRefAsync();
     }
     get formFormattedValue() {
         return this.value || "";
@@ -155,6 +171,8 @@ let TimePicker = TimePicker_1 = class TimePicker extends UI5Element {
         return {
             "ariaRoledescription": this.dateAriaDescription,
             "ariaHasPopup": "dialog",
+            "ariaRequired": this.required,
+            "ariaLabel": getEffectiveAriaLabelText(this),
         };
     }
     /**
@@ -192,6 +210,9 @@ let TimePicker = TimePicker_1 = class TimePicker extends UI5Element {
     }
     get _isPhone() {
         return isPhone();
+    }
+    get _isMobileDevice() {
+        return !isDesktop() && (isPhone() || isTablet());
     }
     onTimeSelectionChange(e) {
         this.tempValue = e.detail.value; // every time the user changes the time selection -> update tempValue
@@ -262,7 +283,7 @@ let TimePicker = TimePicker_1 = class TimePicker extends UI5Element {
         if (this.open) {
             return;
         }
-        if (this._isPhone && target && !target.hasAttribute("ui5-icon")) {
+        if (this._isMobileDevice && target && !target.hasAttribute("ui5-icon")) {
             this.toggleInputsPopover();
         }
         const inputField = this._getInputField();
@@ -309,7 +330,7 @@ let TimePicker = TimePicker_1 = class TimePicker extends UI5Element {
         return !this.disabled && !this.readonly;
     }
     _canOpenInputsPopover() {
-        return !this.disabled && this._isPhone;
+        return !this.disabled && this._isMobileDevice;
     }
     _getPopover() {
         return this.shadowRoot.querySelector("[ui5-responsive-popover]");
@@ -325,7 +346,7 @@ let TimePicker = TimePicker_1 = class TimePicker extends UI5Element {
         return input && input.getInputDOMRef();
     }
     _onkeydown(e) {
-        if (this._isPhone && !this.isInputsPopoverOpen()) {
+        if (this._isMobileDevice && !this.isInputsPopoverOpen()) {
             e.preventDefault();
         }
         if (isShow(e)) {
@@ -339,7 +360,12 @@ let TimePicker = TimePicker_1 = class TimePicker extends UI5Element {
         if (this.open) {
             return;
         }
-        if (isPageUpShiftCtrl(e)) {
+        if (isEnter(e)) {
+            if (this._internals.form) {
+                submitForm(this);
+            }
+        }
+        else if (isPageUpShiftCtrl(e)) {
             e.preventDefault();
             this._modifyValueBy(1, "second");
         }
@@ -443,7 +469,7 @@ let TimePicker = TimePicker_1 = class TimePicker extends UI5Element {
         setTimeout(() => { this._getInput().readonly = false; }, 0);
     }
     _onfocusin(e) {
-        if (this._isPhone) {
+        if (this._isMobileDevice) {
             this._hideMobileKeyboard();
             if (this._isInputsPopoverOpen) {
                 const popover = this._getInputsPopover();
@@ -495,15 +521,28 @@ __decorate([
     property({ type: Boolean })
 ], TimePicker.prototype, "open", void 0);
 __decorate([
+    property({ type: Boolean })
+], TimePicker.prototype, "required", void 0);
+__decorate([
+    property()
+], TimePicker.prototype, "accessibleName", void 0);
+__decorate([
+    property()
+], TimePicker.prototype, "accessibleNameRef", void 0);
+__decorate([
     property({ type: Boolean, noAttribute: true })
 ], TimePicker.prototype, "_isInputsPopoverOpen", void 0);
 __decorate([
     slot()
 ], TimePicker.prototype, "valueStateMessage", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], TimePicker, "i18nBundle", void 0);
 TimePicker = TimePicker_1 = __decorate([
     customElement({
         tag: "ui5-time-picker",
         languageAware: true,
+        cldr: true,
         formAssociated: true,
         renderer: litRender,
         template: TimePickerTemplate,

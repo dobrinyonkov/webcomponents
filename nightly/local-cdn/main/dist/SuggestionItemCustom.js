@@ -26,16 +26,6 @@ import styles from "./generated/themes/SuggestionItemCustom.css.js";
  * @since 2.0.0
  */
 let SuggestionItemCustom = class SuggestionItemCustom extends ListItemBase {
-    constructor() {
-        super(...arguments);
-        /**
-         * Defines the text of the `ui5-suggestion-item-custom`.
-         * **Note:** The text property is considered only for autocomplete.
-         * @default ""
-         * @public
-         */
-        this.text = "";
-    }
 };
 __decorate([
     property()

@@ -12,7 +12,7 @@ type LinkClickEventDetail = {
     metaKey: boolean;
     shiftKey: boolean;
 };
-type LinkAccessibilityAttributes = Pick<AccessibilityAttributes, "expanded" | "hasPopup">;
+type LinkAccessibilityAttributes = Pick<AccessibilityAttributes, "expanded" | "hasPopup" | "current">;
 /**
  * @class
  *
@@ -195,7 +195,6 @@ declare class Link extends UI5Element implements ITabbable {
     get parsedRef(): string | undefined;
     get effectiveAccRole(): string;
     get _hasPopup(): ("dialog" | "grid" | "listbox" | "menu" | "tree") | undefined;
-    static onDefine(): Promise<void>;
     _onclick(e: MouseEvent | KeyboardEvent): void;
     _onfocusin(e: FocusEvent): void;
     _onfocusout(): void;

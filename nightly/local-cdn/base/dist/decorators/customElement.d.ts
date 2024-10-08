@@ -16,8 +16,10 @@ declare const customElement: (tagNameOrComponentSettings?: string | {
     dependencies?: Array<typeof UI5Element>;
     languageAware?: boolean;
     themeAware?: boolean;
+    cldr?: boolean;
     fastNavigation?: boolean;
     formAssociated?: boolean;
     shadowRootOptions?: Partial<ShadowRootInit>;
+    features?: Array<string>;
 }) => ClassDecorator;
 export default customElement;

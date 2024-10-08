@@ -27,10 +27,10 @@ type TokenDeleteEventDetail = {
 declare class Token extends UI5Element implements IToken {
     /**
      * Defines the text of the token.
-     * @default ""
+     * @default undefined
      * @public
      */
-    text: string;
+    text?: string;
     /**
      * Defines whether the component is selected or not.
      * @default false
@@ -94,7 +94,6 @@ declare class Token extends UI5Element implements IToken {
     get textDom(): Element | null | undefined;
     get isTruncatable(): boolean;
     get ariaDescription(): string;
-    static onDefine(): Promise<void>;
 }
 export default Token;
 export type { TokenDeleteEventDetail };

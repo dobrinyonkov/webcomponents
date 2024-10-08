@@ -102,10 +102,10 @@ declare class RadioButton extends UI5Element implements IFormInputElement {
      * Defines the form value of the component.
      * When a form with a radio button group is submitted, the group's value
      * will be the value of the currently selected radio button.
-     * @default undefined
+     * @default ""
      * @public
      */
-    value?: string;
+    value: string;
     /**
      * Defines whether the component text wraps when there is not enough space.
      *
@@ -151,7 +151,6 @@ declare class RadioButton extends UI5Element implements IFormInputElement {
     get formFormattedValue(): string | null;
     static i18nBundle: I18nBundle;
     constructor();
-    static onDefine(): Promise<void>;
     onAfterRendering(): void;
     onEnterDOM(): void;
     onExitDOM(): void;

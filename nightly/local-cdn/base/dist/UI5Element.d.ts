@@ -49,7 +49,7 @@ declare abstract class UI5Element extends HTMLElement {
     };
     _doNotSyncAttributes: Set<string>;
     _state: State;
-    _internals?: ElementInternals;
+    _internals: ElementInternals;
     _getRealDomRef?: () => HTMLElement;
     static template?: TemplateFunction;
     static _metadata: UI5ElementMetadata;
@@ -227,7 +227,7 @@ declare abstract class UI5Element extends HTMLElement {
      * @private
      */
     _waitForDomRef(): Promise<void> & {
-        _deferredResolve?: PromiseResolve | undefined;
+        _deferredResolve?: PromiseResolve;
     };
     /**
      * Returns the DOM Element inside the Shadow Root that corresponds to the opening tag in the UI5 Web Component's template
@@ -337,6 +337,7 @@ declare abstract class UI5Element extends HTMLElement {
      * @protected
      */
     static get dependencies(): Array<typeof UI5Element>;
+    static cacheUniqueDependencies(this: typeof UI5Element): void;
     /**
      * Returns a list of the unique dependencies for this UI5 Web Component
      *
@@ -344,30 +345,31 @@ declare abstract class UI5Element extends HTMLElement {
      */
     static getUniqueDependencies(this: typeof UI5Element): Array<typeof UI5Element>;
     /**
-     * Returns a promise that resolves whenever all dependencies for this UI5 Web Component have resolved
-     */
-    static whenDependenciesDefined(): Promise<Array<typeof UI5Element>>;
-    /**
      * Hook that will be called upon custom element definition
      *
      * @protected
+     * @deprecated use the "i18n" decorator for fetching message bundles and the "cldr" option in the "customElements" decorator for fetching CLDR
      */
     static onDefine(): Promise<void>;
+    static fetchI18nBundles(): Promise<import("./i18nBundle.js").default[]>;
+    static fetchCLDR(): Promise<void>;
+    static asyncFinished: boolean;
+    static definePromise: Promise<void> | undefined;
     /**
      * Registers a UI5 Web Component in the browser window object
      * @public
      */
-    static define(): Promise<typeof UI5Element>;
+    static define(): typeof UI5Element;
     /**
      * Returns an instance of UI5ElementMetadata.js representing this UI5 Web Component's full metadata (its and its parents')
      * Note: not to be confused with the "get metadata()" method, which returns an object for this class's metadata only
      * @public
      */
     static getMetadata(): UI5ElementMetadata;
-    get validity(): ValidityState | undefined;
-    get validationMessage(): string | undefined;
-    checkValidity(): boolean | undefined;
-    reportValidity(): boolean | undefined;
+    get validity(): ValidityState;
+    get validationMessage(): string;
+    checkValidity(): boolean;
+    reportValidity(): boolean;
 }
 /**
  * Always use duck-typing to cover all runtimes on the page.
@@ -375,4 +377,4 @@ declare abstract class UI5Element extends HTMLElement {
 declare const instanceOfUI5Element: (object: any) => object is UI5Element;
 export default UI5Element;
 export { instanceOfUI5Element, };
-export type { ChangeInfo, Renderer, RendererOptions, };
+export type { ChangeInfo, InvalidationInfo, Renderer, RendererOptions, };

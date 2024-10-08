@@ -8,6 +8,7 @@ var NotificationListItem_1;
 import { isSpace, isDelete, isF10Shift, isEnterShift, isUp, isDown, } from "@ui5/webcomponents-base/dist/Keys.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
+import query from "@ui5/webcomponents-base/dist/decorators/query.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
@@ -19,6 +20,7 @@ import Link from "@ui5/webcomponents/dist/Link.js";
 import Icon from "@ui5/webcomponents/dist/Icon.js";
 import WrappingType from "@ui5/webcomponents/dist/types/WrappingType.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
+import willShowContent from "@ui5/webcomponents-base/dist/util/willShowContent.js";
 import NotificationListItemImportance from "./types/NotificationListItemImportance.js";
 import NotificationListItemBase from "./NotificationListItemBase.js";
 // Icons
@@ -161,7 +163,7 @@ let NotificationListItem = NotificationListItem_1 = class NotificationListItem e
         return this.state !== ValueState.None;
     }
     get hasDesc() {
-        return !!this.description.length;
+        return willShowContent(this.description);
     }
     get hasImportance() {
         return this.importance !== NotificationListItemImportance.Standard;
@@ -193,12 +195,6 @@ let NotificationListItem = NotificationListItem_1 = class NotificationListItem e
         }
         return true;
     }
-    get descriptionDOM() {
-        return this.shadowRoot.querySelector(".ui5-nli-description");
-    }
-    get titleTextDOM() {
-        return this.shadowRoot.querySelector(".ui5-nli-title-text");
-    }
     get titleTextHeight() {
         return this.titleTextDOM.offsetHeight;
     }
@@ -229,15 +225,15 @@ let NotificationListItem = NotificationListItem_1 = class NotificationListItem e
     }
     get ariaLabelledBy() {
         const id = this._id;
+        if (this.loading) {
+            return `${id}-loading`;
+        }
         const ids = [];
         if (this.hasImportance) {
             ids.push(`${id}-importance`);
         }
         if (this.hasTitleText) {
             ids.push(`${id}-title-text`);
-        }
-        if (this.isLoading) {
-            ids.push(`${id}-loading`);
         }
         ids.push(`${id}-read`);
         if (this.hasDesc) {
@@ -305,9 +301,6 @@ let NotificationListItem = NotificationListItem_1 = class NotificationListItem e
                 expanded: this._showMorePressed,
             },
         };
-    }
-    get menuButtonDOM() {
-        return this.shadowRoot.querySelector(".ui5-nli-menu-btn");
     }
     get showMenu() {
         return !!this.getMenu();
@@ -452,6 +445,15 @@ __decorate([
 __decorate([
     slot({ type: Node, "default": true })
 ], NotificationListItem.prototype, "description", void 0);
+__decorate([
+    query(".ui5-nli-title-text")
+], NotificationListItem.prototype, "titleTextDOM", void 0);
+__decorate([
+    query(".ui5-nli-menu-btn")
+], NotificationListItem.prototype, "menuButtonDOM", void 0);
+__decorate([
+    query(".ui5-nli-description")
+], NotificationListItem.prototype, "descriptionDOM", void 0);
 NotificationListItem = NotificationListItem_1 = __decorate([
     customElement({
         tag: "ui5-li-notification",

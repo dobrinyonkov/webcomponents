@@ -136,9 +136,13 @@ declare class NotificationListItem extends NotificationListItemBase {
     * @public
     */
     description: Array<Node>;
+    titleTextDOM?: HTMLElement;
+    menuButtonDOM?: HTMLElement;
+    descriptionDOM?: HTMLElement;
     _titleTextOverflowHeight: number;
     _descOverflowHeight: number;
     _onResizeBound: ResizeObserverCallback;
+    _ariaLevel: string | undefined;
     constructor();
     onEnterDOM(): void;
     onExitDOM(): void;
@@ -152,8 +156,6 @@ declare class NotificationListItem extends NotificationListItemBase {
     get moreLinkAccessibleName(): string;
     get closeBtnAccessibleName(): string;
     get hideShowMore(): true | undefined;
-    get descriptionDOM(): HTMLElement | null;
-    get titleTextDOM(): HTMLElement | null;
     get titleTextHeight(): number;
     get descriptionHeight(): number;
     get titleTextOverflows(): boolean;
@@ -179,7 +181,6 @@ declare class NotificationListItem extends NotificationListItemBase {
             expanded: boolean;
         };
     };
-    get menuButtonDOM(): HTMLElement;
     get showMenu(): boolean;
     /**
      * Event handlers

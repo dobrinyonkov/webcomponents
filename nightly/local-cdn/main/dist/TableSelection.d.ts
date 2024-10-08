@@ -16,7 +16,7 @@ import type TableRowBase from "./TableRowBase.js";
  * * Multiple - select multiple rows.
  * * None - no selection active.
  *
- * As the selection is key-based, `ui5-table-row` components need to define a unique `key` property.
+ * As the selection is key-based, `ui5-table-row` components need to define a unique `row-key` property.
  *
  * ### Usage
  *
@@ -36,7 +36,7 @@ import type TableRowBase from "./TableRowBase.js";
  *
  * @constructor
  * @extends UI5Element
- * @since 2.0
+ * @since 2.0.0
  * @public
  * @experimental This web component is available since 2.0 with an experimental flag and its API and behavior are subject to change.
  */
@@ -55,6 +55,7 @@ declare class TableSelection extends UI5Element implements ITableFeature {
      * @public
      */
     selected: string;
+    readonly identifier = "TableSelection";
     _table?: Table;
     _rangeSelection?: {
         selected: boolean;

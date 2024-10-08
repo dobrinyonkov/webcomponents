@@ -10,7 +10,7 @@ import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import { isSpace, isEnter, } from "@ui5/webcomponents-base/dist/Keys.js";
 import TableGrowingMode from "./types/TableGrowingMode.js";
 import TableGrowingTemplate from "./generated/templates/TableGrowingTemplate.lit.js";
@@ -48,7 +48,7 @@ import { TABLE_MORE, TABLE_MORE_DESCRIPTION, } from "./generated/i18n/i18n-defau
  *
  * @constructor
  * @extends UI5Element
- * @since 2.0
+ * @since 2.0.0
  * @public
  * @experimental This web component is available since 2.0 with an experimental flag and its API and behavior are subject to change.
  */
@@ -77,9 +77,7 @@ let TableGrowing = TableGrowing_1 = class TableGrowing extends UI5Element {
          * @private
          */
         this._activeState = false;
-    }
-    static async onDefine() {
-        TableGrowing_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
+        this.identifier = "TableGrowing";
     }
     onTableActivate(table) {
         this._table = table;
@@ -120,7 +118,7 @@ let TableGrowing = TableGrowing_1 = class TableGrowing extends UI5Element {
     }
     hasGrowingComponent() {
         if (this._hasScrollToLoad()) {
-            return !(this._table && this._table._scrollContainer.scrollHeight > this._table._scrollContainer.clientHeight) ?? true;
+            return !(this._table && this._table._scrollContainer.scrollHeight > this._table._scrollContainer.clientHeight);
         }
         return this.type === TableGrowingMode.Button && !this.disabled;
     }
@@ -228,6 +226,9 @@ __decorate([
 __decorate([
     property({ type: Boolean })
 ], TableGrowing.prototype, "_activeState", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], TableGrowing, "i18nBundle", void 0);
 TableGrowing = TableGrowing_1 = __decorate([
     customElement({
         tag: "ui5-table-growing",

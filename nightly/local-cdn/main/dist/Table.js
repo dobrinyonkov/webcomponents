@@ -14,17 +14,18 @@ import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import { getScopedVarName } from "@ui5/webcomponents-base/dist/CustomElementsScope.js";
 import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import TableTemplate from "./generated/templates/TableTemplate.lit.js";
 import TableStyles from "./generated/themes/Table.css.js";
 import TableRow from "./TableRow.js";
+import TableHeaderRow from "./TableHeaderRow.js";
 import TableExtension from "./TableExtension.js";
-import TableSelection from "./TableSelection.js";
 import TableOverflowMode from "./types/TableOverflowMode.js";
 import TableNavigation from "./TableNavigation.js";
 import { TABLE_NO_DATA, } from "./generated/i18n/i18n-defaults.js";
 import BusyIndicator from "./BusyIndicator.js";
 import TableCell from "./TableCell.js";
+import { findVerticalScrollContainer, scrollElementIntoView, isFeature } from "./TableUtils.js";
 /**
  * @class
  *
@@ -37,6 +38,7 @@ import TableCell from "./TableCell.js";
  *
  * The `ui5-table` can be enhanced in its functionalities by applying different features.
  * Features can be slotted into the `features` slot, to enable them in the component.
+ * Features need to be imported separately, as they are not enabled by default.
  *
  * The following features are currently available:
  *
@@ -96,18 +98,16 @@ import TableCell from "./TableCell.js";
  *
  * @constructor
  * @extends UI5Element
- * @since 2.0
+ * @since 2.0.0
  * @public
  * @experimental This Table web component is available since 2.0 and has been newly implemented to provide better screen reader and keyboard handling support.
  * Currently, it's considered experimental as its API is subject to change.
  * This Table replaces the previous Table web component, that has been part of **@ui5/webcomponents** version 1.x.
- * For compatibility reasons, we moved the previous Tabple implementation to the **@ui5/webcomponents-compat** package
+ * For compatibility reasons, we moved the previous Table implementation to the **@ui5/webcomponents-compat** package
  * and will be maintained until the new Table is experimental.
+ * Keep in mind that you can use either the compat/Table, or the main/Table - you can't use them both as they both define the `ui5-table` tag name.
  */
 let Table = Table_1 = class Table extends UI5Element {
-    static async onDefine() {
-        Table_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
-    }
     constructor() {
         super();
         /**
@@ -178,11 +178,8 @@ let Table = Table_1 = class Table extends UI5Element {
     onAfterRendering() {
         this.features.forEach(feature => feature.onTableRendered?.());
     }
-    _getFeature(klass) {
-        return this.features.find(feature => feature instanceof klass);
-    }
     _getSelection() {
-        return this._getFeature(TableSelection);
+        return this.features.find(feature => isFeature(feature, "TableSelection"));
     }
     _onEvent(e) {
         const composedPath = e.composedPath();
@@ -231,31 +228,8 @@ let Table = Table_1 = class Table extends UI5Element {
         }
     }
     _onfocusin(e) {
-        // Handles focus that is below sticky element
-        const stickyElements = this._stickyElements;
-        if (stickyElements.length === 0) {
-            return;
-        }
-        // Find the sticky element that is closest to the focused element
-        const target = e.target;
-        const element = target.closest("ui5-table-cell, ui5-table-row") ?? target;
-        const elementRect = element.getBoundingClientRect();
-        const stickyBottom = stickyElements.reduce((min, stickyElement) => {
-            const stickyRect = stickyElement.getBoundingClientRect();
-            if (stickyRect.bottom > elementRect.top) {
-                return Math.max(min, stickyRect.bottom);
-            }
-            return min;
-        }, -Infinity);
-        // If the focused element is not behind any sticky element, do nothing
-        if (stickyBottom === -Infinity) {
-            return;
-        }
-        // Scroll the focused element into view
-        const scrollContainer = this._scrollContainer;
-        scrollContainer.scrollBy({
-            top: elementRect.top - stickyBottom,
-        });
+        // Handles focus in the table, when the focus is below a sticky element
+        scrollElementIntoView(this._scrollContainer, e.target, this._stickyElements, this.effectiveDir === "rtl");
     }
     /**
      * Refreshes the popin state of the columns.
@@ -264,7 +238,7 @@ let Table = Table_1 = class Table extends UI5Element {
      * @private
      */
     _refreshPopinState() {
-        this.headerRow[0].cells.forEach((header, index) => {
+        this.headerRow[0]?.cells.forEach((header, index) => {
             this.rows.forEach(row => {
                 const cell = row.cells[index];
                 if (cell && cell._popin !== header._popin) {
@@ -304,13 +278,23 @@ let Table = Table_1 = class Table extends UI5Element {
         this.fireEvent("row-click", { row });
     }
     get styles() {
+        const headerStyleMap = this.headerRow?.[0]?.cells?.reduce((headerStyles, headerCell) => {
+            if (headerCell.horizontalAlign !== undefined) {
+                headerStyles[`--horizontal-align-${headerCell._individualSlot}`] = headerCell.horizontalAlign;
+            }
+            return headerStyles;
+        }, {});
         return {
             table: {
                 "grid-template-columns": this._gridTemplateColumns,
+                ...headerStyleMap,
             },
         };
     }
     get _gridTemplateColumns() {
+        if (!this.headerRow[0]) {
+            return;
+        }
         const widths = [];
         const visibleHeaderCells = this.headerRow[0]._visibleCells;
         if (this._getSelection()?.hasRowSelector()) {
@@ -329,7 +313,7 @@ let Table = Table_1 = class Table extends UI5Element {
         return widths.join(" ");
     }
     get _tableOverflowX() {
-        return (this.overflowMode === TableOverflowMode.Popin) ? "hidden" : "auto";
+        return (this.overflowMode === TableOverflowMode.Popin) ? "clip" : "auto";
     }
     get _tableOverflowY() {
         return "auto";
@@ -365,20 +349,13 @@ let Table = Table_1 = class Table extends UI5Element {
     get _growing() {
         return this.features.find(feature => this._isGrowingFeature(feature));
     }
-    // TODO: Could be moved to UI5Element. TBD
-    get _scrollContainer() {
-        let element = this;
-        while (element) {
-            const { overflowY } = window.getComputedStyle(element);
-            if (overflowY === "auto" || overflowY === "scroll") {
-                return element;
-            }
-            element = element.parentElement;
-        }
-        return document.scrollingElement || document.documentElement;
-    }
     get _stickyElements() {
-        return [this.headerRow[0]].filter(row => row.sticky);
+        const stickyRows = this.headerRow.filter(row => row.sticky);
+        const stickyColumns = this.headerRow[0]._stickyCells;
+        return [...stickyRows, ...stickyColumns];
+    }
+    get _scrollContainer() {
+        return findVerticalScrollContainer(this._tableElement);
     }
     get isTable() {
         return true;
@@ -430,6 +407,9 @@ __decorate([
 __decorate([
     property({ type: Boolean, noAttribute: true })
 ], Table.prototype, "_renderNavigated", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], Table, "i18nBundle", void 0);
 Table = Table_1 = __decorate([
     customElement({
         tag: "ui5-table",
@@ -439,6 +419,7 @@ Table = Table_1 = __decorate([
         fastNavigation: true,
         dependencies: [
             BusyIndicator,
+            TableHeaderRow,
             TableCell,
             TableRow,
         ],

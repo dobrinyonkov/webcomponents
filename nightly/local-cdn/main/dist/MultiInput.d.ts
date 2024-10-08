@@ -7,7 +7,7 @@ import type { TokenizerTokenDeleteEventDetail } from "./Tokenizer.js";
 import "@ui5/webcomponents-icons/dist/value-help.js";
 import type { InputSelectionChangeEventDetail as MultiInputSelectionChangeEventDetail } from "./Input.js";
 interface IToken extends HTMLElement, ITabbable {
-    text: string;
+    text?: string;
     readonly: boolean;
     selected: boolean;
     isTruncatable: boolean;
@@ -111,6 +111,7 @@ declare class MultiInput extends Input implements IFormInputElement {
             ariaLabel: string | undefined;
         };
     };
+    get valueHelpLabel(): string;
     get ariaRoleDescription(): string;
     get morePopoverOpener(): HTMLElement;
     get shouldDisplayOnlyValueStateMessage(): boolean;

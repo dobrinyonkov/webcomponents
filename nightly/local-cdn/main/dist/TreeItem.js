@@ -30,15 +30,6 @@ import treeItemCss from "./generated/themes/TreeItem.css.js";
  * @since 1.0.0-rc.8
  */
 let TreeItem = class TreeItem extends TreeItemBase {
-    constructor() {
-        super(...arguments);
-        /**
-         * Defines the text of the tree item.
-         * @public
-         * @default undefined
-         */
-        this.text = "";
-    }
     get _showTitle() {
         return this.text?.length;
     }

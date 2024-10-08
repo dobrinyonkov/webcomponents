@@ -37,7 +37,7 @@ type NotificationItemCloseEventDetail = NotificationItemEventDetail;
  * `import "@ui5/webcomponents-fiori/dist/NotificationList.js";``
  * @constructor
  * @extends UI5Element
- * @since 2.0
+ * @since 2.0.0
  * @public
  */
 declare class NotificationList extends UI5Element {
@@ -61,7 +61,6 @@ declare class NotificationList extends UI5Element {
     _onItemClose(e: CustomEvent<ListItemCloseEventDetail>): void;
     _onItemToggle(e: CustomEvent<ListItemToggleEventDetail>): void;
     _onLoadMore(): void;
-    static onDefine(): Promise<void>;
 }
 export default NotificationList;
 export type { NotificationItemClickEventDetail, NotificationItemToggleEventDetail, NotificationItemCloseEventDetail, };

@@ -12,19 +12,18 @@ import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import { isLeft, isRight, isEnter, } from "@ui5/webcomponents-base/dist/Keys.js";
 import { isPhone, isDesktop, } from "@ui5/webcomponents-base/dist/Device.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import "@ui5/webcomponents-icons/dist/slim-arrow-right.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import DOMReferenceConverter from "@ui5/webcomponents-base/dist/converters/DOMReference.js";
 import ResponsivePopover from "./ResponsivePopover.js";
 import Button from "./Button.js";
 import List from "./List.js";
-import Icon from "./Icon.js";
 import BusyIndicator from "./BusyIndicator.js";
 import MenuItem from "./MenuItem.js";
 import MenuSeparator from "./MenuSeparator.js";
 import menuTemplate from "./generated/templates/MenuTemplate.lit.js";
-import { MENU_CLOSE_BUTTON_ARIA_LABEL, } from "./generated/i18n/i18n-defaults.js";
+import { MENU_CLOSE_BUTTON_ARIA_LABEL, MENU_POPOVER_ACCESSIBLE_NAME, } from "./generated/i18n/i18n-defaults.js";
 // Styles
 import menuCss from "./generated/themes/Menu.css.js";
 const MENU_OPEN_DELAY = 300;
@@ -89,9 +88,6 @@ let Menu = Menu_1 = class Menu extends UI5Element {
          */
         this.loadingDelay = 1000;
     }
-    static async onDefine() {
-        Menu_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
-    }
     get isRtl() {
         return this.effectiveDir === "rtl";
     }
@@ -106,6 +102,9 @@ let Menu = Menu_1 = class Menu extends UI5Element {
     }
     get _menuItems() {
         return this.items.filter((item) => !item.isSeparator);
+    }
+    get acessibleNameText() {
+        return Menu_1.i18nBundle.getText(MENU_POPOVER_ACCESSIBLE_NAME);
     }
     onBeforeRendering() {
         const siblingsWithIcon = this._menuItems.some(menuItem => !!menuItem.icon);
@@ -165,7 +164,7 @@ let Menu = Menu_1 = class Menu extends UI5Element {
         if (!item._popover) {
             const prevented = !this.fireEvent("item-click", {
                 "item": item,
-                "text": item.text,
+                "text": item.text || "",
             }, true, false);
             if (!prevented && this._popover) {
                 item.fireEvent("close-menu", {});
@@ -203,7 +202,6 @@ let Menu = Menu_1 = class Menu extends UI5Element {
         }
     }
     _afterPopoverOpen() {
-        this.open = true;
         this._menuItems[0]?.focus();
         this.fireEvent("open", {}, false, true);
     }
@@ -237,6 +235,9 @@ __decorate([
 __decorate([
     slot({ "default": true, type: HTMLElement, invalidateOnChildChange: true })
 ], Menu.prototype, "items", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], Menu, "i18nBundle", void 0);
 Menu = Menu_1 = __decorate([
     customElement({
         tag: "ui5-menu",
@@ -249,7 +250,6 @@ Menu = Menu_1 = __decorate([
             List,
             MenuItem,
             MenuSeparator,
-            Icon,
             BusyIndicator,
         ],
     })

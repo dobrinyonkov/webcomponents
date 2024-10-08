@@ -4,6 +4,13 @@ import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import Input from "./Input.js";
 import Popover from "./Popover.js";
+type FileData = {
+    fileName: string;
+    fileSize: number;
+};
+type FileUploaderFileSizeExceedEventDetail = {
+    filesData: Array<FileData>;
+};
 type FileUploaderChangeEventDetail = {
     files: FileList | null;
 };
@@ -36,7 +43,7 @@ declare class FileUploader extends UI5Element implements IFormInputElement {
      * Comma-separated list of file types that the component should accept.
      *
      * **Note:** Please make sure you are adding the `.` in front on the file type, e.g. `.png` in case you want to accept png's only.
-     * @default ""
+     * @default undefined
      * @public
      */
     accept?: string;
@@ -76,12 +83,19 @@ declare class FileUploader extends UI5Element implements IFormInputElement {
     placeholder?: string;
     /**
      * Defines the name/names of the file/files to upload.
-     * @default undefined
+     * @default ""
      * @formEvents change
      * @formProperty
      * @public
      */
-    value?: string;
+    value: string;
+    /**
+     * Defines the maximum file size in megabytes which prevents the upload if at least one file exceeds it.
+     * @default undefined
+     * @since 2.2.0
+     * @public
+     */
+    maxFileSize?: number;
     /**
      * Defines the value state of the component.
      * @default "None"
@@ -106,7 +120,7 @@ declare class FileUploader extends UI5Element implements IFormInputElement {
      * **Note:** If not specified, a default text (in the respective language) will be displayed.
      *
      * **Note:** The `valueStateMessage` would be displayed,
-     * when the component is in `Information`, `Warning` or `Error` value state.
+     * when the component is in `Information`, `Critical` or `Negative` value state.
      * @since 1.0.0-rc.9
      * @public
      */
@@ -137,6 +151,13 @@ declare class FileUploader extends UI5Element implements IFormInputElement {
     onAfterRendering(): void;
     _onChange(e: Event): void;
     _updateValue(files: FileList | null): void;
+    /**
+     * Checks whether all files are below `maxFileSize` (if set),
+     * and fires a `file-size-exceed` event if any file exceeds it.
+     * @private
+     */
+    _validateFiles(changedFiles: FileList): FileList;
+    _getExceededFiles(files: FileList): Array<FileData>;
     toggleValueStatePopover(open: boolean): void;
     openValueStatePopover(): void;
     closeValueStatePopover(): void;
@@ -153,7 +174,6 @@ declare class FileUploader extends UI5Element implements IFormInputElement {
     get valueStateText(): string;
     get hasValueState(): boolean;
     get hasValueStateText(): boolean;
-    get valueStateMessageText(): Node[];
     get shouldDisplayDefaultValueStateMessage(): boolean;
     get shouldOpenValueStateMessagePopover(): boolean;
     /**
@@ -175,7 +195,6 @@ declare class FileUploader extends UI5Element implements IFormInputElement {
         };
     };
     get ui5Input(): Input | null;
-    static onDefine(): Promise<void>;
 }
 export default FileUploader;
-export type { FileUploaderChangeEventDetail, };
+export type { FileData, FileUploaderChangeEventDetail, FileUploaderFileSizeExceedEventDetail, };

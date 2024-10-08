@@ -10,7 +10,6 @@
 	</script>
 
 
-	
 
 
 	<script data-id="sap-ui-config" type="application/json">
@@ -22,9 +21,8 @@
 		}
 	</script>
 
-	
-  <script type="module" crossorigin src="/ui5-webcomponents/nightly/assets/bundle.esm-fad18291.js"></script>
-  <link rel="stylesheet" href="/ui5-webcomponents/nightly/assets/StepInput-5c7e8966.css">
+  <script type="module" crossorigin src="/ui5-webcomponents/nightly/assets/bundle.esm-3VTnMENk.js"></script>
+  <link rel="stylesheet" crossorigin href="/ui5-webcomponents/nightly/assets/StepInput-D101vHm-.css">
 </head>
 <body class="stepinput1auto">
 
@@ -186,7 +184,7 @@
 
 		stepInputChange1.addEventListener('ui5-change', function(e) {
 			const val = Number.parseInt(e.target.value, 10);
-			stepInputChange2.value = `${val + 999}`;
+			stepInputChange2.value = val + 999;
 			displayChange(e);
 		});
 

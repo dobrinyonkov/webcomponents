@@ -6,6 +6,7 @@ import "@ui5/webcomponents-icons/dist/appointment-2.js";
 import "@ui5/webcomponents-icons/dist/decline.js";
 import DateComponentBase from "./DateComponentBase.js";
 import ResponsivePopover from "./ResponsivePopover.js";
+import Calendar from "./Calendar.js";
 import type { CalendarSelectionChangeEventDetail } from "./Calendar.js";
 import Input from "./Input.js";
 import InputType from "./types/InputType.js";
@@ -195,7 +196,7 @@ declare class DatePicker extends DateComponentBase implements IFormInputElement 
      * **Note:** If not specified, a default text (in the respective language) will be displayed.
      *
      * **Note:** The `valueStateMessage` would be displayed,
-     * when the component is in `Information`, `Warning` or `Error` value state.
+     * when the component is in `Information`, `Critical` or `Negative` value state.
      * @since 1.0.0-rc.7
      * @public
      */
@@ -212,6 +213,7 @@ declare class DatePicker extends DateComponentBase implements IFormInputElement 
     onResponsivePopoverAfterClose(): void;
     onResponsivePopoverBeforeOpen(): void;
     onBeforeRendering(): void;
+    get _calendar(): Calendar;
     /**
      * Override in derivatives to change calendar selection mode
      * @protected

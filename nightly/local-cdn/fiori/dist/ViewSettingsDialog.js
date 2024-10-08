@@ -9,7 +9,7 @@ import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import { isPhone } from "@ui5/webcomponents-base/dist/Device.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
@@ -131,9 +131,6 @@ let ViewSettingsDialog = ViewSettingsDialog_1 = class ViewSettingsDialog extends
             filter.additionalText = !selectedCount ? "" : `${selectedCount}`;
         });
     }
-    static async onDefine() {
-        ViewSettingsDialog_1.i18nBundle = await getI18nBundle("@ui5/webcomponents-fiori");
-    }
     get _selectedFilter() {
         for (let i = 0; i < this._currentSettings.filters.length; i++) {
             if (this._currentSettings.filters[i].selected) {
@@ -229,11 +226,11 @@ let ViewSettingsDialog = ViewSettingsDialog_1 = class ViewSettingsDialog extends
             sortBy: JSON.parse(JSON.stringify(this.initSortByItems)),
             filters: this.filterItems.map(item => {
                 return {
-                    text: item.text,
+                    text: item.text || "",
                     selected: false,
                     filterOptions: item.values.map(optionValue => {
                         return {
-                            text: optionValue.text,
+                            text: optionValue.text || "",
                             selected: optionValue.selected,
                         };
                     }),
@@ -366,7 +363,7 @@ let ViewSettingsDialog = ViewSettingsDialog_1 = class ViewSettingsDialog extends
         this.open = false;
     }
     get eventsParams() {
-        const _currentSortOrderSelected = this._currentSettings.sortOrder.filter(item => item.selected)[0], _currentSortBySelected = this._currentSettings.sortBy.filter(item => item.selected)[0], sortOrder = _currentSortOrderSelected && _currentSortOrderSelected.text, sortDescending = !this._currentSettings.sortOrder[0].selected, sortBy = _currentSortBySelected && _currentSortBySelected.text, sortByElementIndex = _currentSortBySelected && _currentSortBySelected.index, sortByItem = this.sortItems[sortByElementIndex];
+        const _currentSortOrderSelected = this._currentSettings.sortOrder.filter(item => item.selected)[0], _currentSortBySelected = this._currentSettings.sortBy.filter(item => item.selected)[0], sortOrder = _currentSortOrderSelected && (_currentSortOrderSelected.text || ""), sortDescending = !this._currentSettings.sortOrder[0].selected, sortBy = _currentSortBySelected && (_currentSortBySelected.text || ""), sortByElementIndex = _currentSortBySelected && _currentSortBySelected.index, sortByItem = this.sortItems[sortByElementIndex];
         return {
             sortOrder,
             sortDescending,
@@ -381,12 +378,12 @@ let ViewSettingsDialog = ViewSettingsDialog_1 = class ViewSettingsDialog extends
             const selectedOptions = [];
             filter.filterOptions.forEach(option => {
                 if (option.selected) {
-                    selectedOptions.push(option.text);
+                    selectedOptions.push(option.text || "");
                 }
             });
             if (selectedOptions.length) {
                 result.push({});
-                result[result.length - 1][filter.text] = selectedOptions;
+                result[result.length - 1][filter.text || ""] = selectedOptions;
             }
         });
         return result;
@@ -484,7 +481,7 @@ let ViewSettingsDialog = ViewSettingsDialog_1 = class ViewSettingsDialog extends
                 }
                 for (let i = 0; i < tempSettings.filters.length; i++) {
                     for (let j = 0; j < tempSettings.filters[i].filterOptions.length; j++) {
-                        if (inputFilters[tempSettings.filters[i].text] && inputFilters[tempSettings.filters[i].text].indexOf(tempSettings.filters[i].filterOptions[j].text) > -1) {
+                        if (inputFilters[tempSettings.filters[i].text || ""] && inputFilters[tempSettings.filters[i].text || ""].indexOf(tempSettings.filters[i].filterOptions[j].text || "") > -1) {
                             tempSettings.filters[i].filterOptions[j].selected = true;
                         }
                         else {
@@ -527,6 +524,9 @@ __decorate([
 __decorate([
     slot()
 ], ViewSettingsDialog.prototype, "filterItems", void 0);
+__decorate([
+    i18n("@ui5/webcomponents-fiori")
+], ViewSettingsDialog, "i18nBundle", void 0);
 ViewSettingsDialog = ViewSettingsDialog_1 = __decorate([
     customElement({
         tag: "ui5-view-settings-dialog",

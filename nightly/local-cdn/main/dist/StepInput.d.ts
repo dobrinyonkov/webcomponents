@@ -155,7 +155,7 @@ declare class StepInput extends UI5Element implements IFormInputElement {
      * **Note:** If not specified, a default text (in the respective language) will be displayed.
      *
      * **Note:** The `valueStateMessage` would be displayed,
-     * when the component is in `Information`, `Warning` or `Error` value state.
+     * when the component is in `Information`, `Critical` or `Negative` value state.
      * @public
      */
     valueStateMessage: Array<HTMLElement>;
@@ -163,7 +163,6 @@ declare class StepInput extends UI5Element implements IFormInputElement {
     static i18nBundle: I18nBundle;
     formElementAnchor(): Promise<HTMLElement | undefined>;
     get formFormattedValue(): FormData | string | null;
-    static onDefine(): Promise<void>;
     get type(): InputType;
     get decIconTitle(): string;
     get decIconName(): string;

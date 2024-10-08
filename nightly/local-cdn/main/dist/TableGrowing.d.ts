@@ -33,7 +33,7 @@ import TableGrowingMode from "./types/TableGrowingMode.js";
  *
  * @constructor
  * @extends UI5Element
- * @since 2.0
+ * @since 2.0.0
  * @public
  * @experimental This web component is available since 2.0 with an experimental flag and its API and behavior are subject to change.
  */
@@ -79,13 +79,13 @@ declare class TableGrowing extends UI5Element implements ITableGrowing {
      * @private
      */
     _activeState: boolean;
+    readonly identifier = "TableGrowing";
     _table?: Table;
     _observer?: IntersectionObserver;
     _individualSlot?: string;
     _currentLastRow?: HTMLElement;
     _shouldFocusRow?: boolean;
     static i18nBundle: I18nBundle;
-    static onDefine(): Promise<void>;
     onTableActivate(table: Table): void;
     onTableRendered(): void;
     onExitDOM(): void;

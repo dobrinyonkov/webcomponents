@@ -23,7 +23,7 @@ declare class TreeItem extends TreeItemBase {
      * @public
      * @default undefined
      */
-    text: string;
+    text?: string;
     /**
      * Defines the `additionalText`, displayed in the end of the tree item.
      * @default undefined
@@ -31,6 +31,6 @@ declare class TreeItem extends TreeItemBase {
      * @since 1.0.0-rc.15
      */
     additionalText?: string;
-    get _showTitle(): number;
+    get _showTitle(): number | undefined;
 }
 export default TreeItem;

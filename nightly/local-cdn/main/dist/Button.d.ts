@@ -3,7 +3,6 @@ import type { AccessibilityAttributes, PassiveEventListenerObject } from "@ui5/w
 import type { ITabbable } from "@ui5/webcomponents-base/dist/delegate/ItemNavigation.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import type { I18nText } from "@ui5/webcomponents-base/dist/i18nBundle.js";
-import type { IFormElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import ButtonDesign from "./types/ButtonDesign.js";
 import ButtonType from "./types/ButtonType.js";
 import type ButtonAccessibleRole from "./types/ButtonAccessibleRole.js";
@@ -47,7 +46,7 @@ type ButtonAccessibilityAttributes = Pick<AccessibilityAttributes, "expanded" | 
  * @implements { IButton }
  * @public
  */
-declare class Button extends UI5Element implements IButton, IFormElement {
+declare class Button extends UI5Element implements IButton {
     /**
      * Defines the component design.
      * @default "Default"
@@ -229,6 +228,7 @@ declare class Button extends UI5Element implements IButton, IFormElement {
     get endIconMode(): "" | IconMode.Decorative;
     get isIconOnly(): boolean;
     static typeTextMappings(): Record<string, I18nText>;
+    getDefaultTooltip(): Promise<string | undefined> | undefined;
     get buttonTypeText(): string;
     get effectiveAccRole(): string;
     get tabIndexValue(): string | undefined;
@@ -237,7 +237,6 @@ declare class Button extends UI5Element implements IButton, IFormElement {
     get ariaDescribedbyText(): "ui5-button-hiddenText-type" | undefined;
     get _isSubmit(): boolean;
     get _isReset(): boolean;
-    static onDefine(): Promise<void>;
 }
 export default Button;
 export type { ButtonAccessibilityAttributes, IButton, };

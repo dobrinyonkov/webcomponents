@@ -12,7 +12,7 @@ import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import { getEventMark } from "@ui5/webcomponents-base/dist/MarkedEvents.js";
 import { isEnter, isSpace } from "@ui5/webcomponents-base/dist/Keys.js";
 import { FILEUPLOAD_BROWSE, FILEUPLOADER_TITLE, VALUE_STATE_SUCCESS, VALUE_STATE_INFORMATION, VALUE_STATE_ERROR, VALUE_STATE_WARNING, } from "./generated/i18n/i18n-defaults.js";
@@ -25,6 +25,7 @@ import FileUploaderTemplate from "./generated/templates/FileUploaderTemplate.lit
 import FileUploaderCss from "./generated/themes/FileUploader.css.js";
 import ResponsivePopoverCommonCss from "./generated/themes/ResponsivePopoverCommon.css.js";
 import ValueStateMessageCss from "./generated/themes/ValueStateMessage.css.js";
+const convertBytesToMegabytes = (bytes) => (bytes / 1024) / 1024;
 /**
  * @class
  *
@@ -72,6 +73,14 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
          * @public
          */
         this.multiple = false;
+        /**
+         * Defines the name/names of the file/files to upload.
+         * @default ""
+         * @formEvents change
+         * @formProperty
+         * @public
+         */
+        this.value = "";
         /**
          * Defines the value state of the component.
          * @default "None"
@@ -137,13 +146,18 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
         e.preventDefault();
         e.stopPropagation();
         const files = e.dataTransfer?.files;
-        if (files) {
-            this._input.files = files;
-            this._updateValue(files);
-            this.fireEvent("change", {
-                files,
-            });
+        if (!files) {
+            return;
         }
+        const validatedFiles = this._validateFiles(files);
+        if (!this.value && !validatedFiles.length) {
+            return;
+        }
+        this._input.files = validatedFiles;
+        this._updateValue(validatedFiles);
+        this.fireEvent("change", {
+            files: validatedFiles,
+        });
     }
     _onfocusin() {
         this.focused = true;
@@ -169,7 +183,13 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
         this.toggleValueStatePopover(this.shouldOpenValueStateMessagePopover);
     }
     _onChange(e) {
-        const changedFiles = e.target.files;
+        let changedFiles = e.target.files;
+        if (changedFiles) {
+            changedFiles = this._validateFiles(changedFiles);
+        }
+        if (!this.value && !changedFiles?.length) {
+            return;
+        }
         this._updateValue(changedFiles);
         this.fireEvent("change", {
             files: changedFiles,
@@ -179,6 +199,35 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
         this.value = Array.from(files || []).reduce((acc, currFile) => {
             return `${acc}"${currFile.name}" `;
         }, "");
+    }
+    /**
+     * Checks whether all files are below `maxFileSize` (if set),
+     * and fires a `file-size-exceed` event if any file exceeds it.
+     * @private
+     */
+    _validateFiles(changedFiles) {
+        const exceededFilesData = this.maxFileSize ? this._getExceededFiles(changedFiles) : [];
+        if (exceededFilesData.length) {
+            this.fireEvent("file-size-exceed", {
+                filesData: exceededFilesData,
+            });
+            changedFiles = new DataTransfer().files;
+        }
+        return changedFiles;
+    }
+    _getExceededFiles(files) {
+        const filesArray = Array.from(files);
+        const exceededFiles = [];
+        for (let i = 0; i < filesArray.length; i++) {
+            const fileSize = convertBytesToMegabytes(filesArray[i].size);
+            if (fileSize > this.maxFileSize) {
+                exceededFiles.push({
+                    fileName: filesArray[i].name,
+                    fileSize,
+                });
+            }
+        }
+        return exceededFiles;
     }
     toggleValueStatePopover(open) {
         if (open) {
@@ -241,9 +290,6 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
     get hasValueStateText() {
         return this.hasValueState && this.valueState !== ValueState.Positive;
     }
-    get valueStateMessageText() {
-        return this.getSlottedNodes("valueStateMessage").map(el => el.cloneNode(true));
-    }
     get shouldDisplayDefaultValueStateMessage() {
         return !this.valueStateMessage.length && this.hasValueStateText;
     }
@@ -283,9 +329,6 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
     get ui5Input() {
         return this.shadowRoot.querySelector(".ui5-file-uploader-input");
     }
-    static async onDefine() {
-        FileUploader_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
-    }
 };
 __decorate([
     property()
@@ -309,6 +352,9 @@ __decorate([
     property()
 ], FileUploader.prototype, "value", void 0);
 __decorate([
+    property({ type: Number })
+], FileUploader.prototype, "maxFileSize", void 0);
+__decorate([
     property()
 ], FileUploader.prototype, "valueState", void 0);
 __decorate([
@@ -320,6 +366,9 @@ __decorate([
 __decorate([
     slot()
 ], FileUploader.prototype, "valueStateMessage", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], FileUploader, "i18nBundle", void 0);
 FileUploader = FileUploader_1 = __decorate([
     customElement({
         tag: "ui5-file-uploader",
@@ -352,6 +401,21 @@ FileUploader = FileUploader_1 = __decorate([
              * @public
              */
             files: { type: FileList },
+        },
+    })
+    /**
+     * Event is fired when the size of a file is above the `maxFileSize` property value.
+     * @param {Array<FileData>} filesData An array of `FileData` objects containing the`fileName` and `fileSize` in MB of each file that exceeds the upload limit.
+     * @since 2.2.0
+     * @public
+     */
+    ,
+    event("file-size-exceed", {
+        detail: {
+            /**
+             * @public
+             */
+            filesData: { type: (Array) },
         },
     })
 ], FileUploader);

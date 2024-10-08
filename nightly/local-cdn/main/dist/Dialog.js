@@ -9,9 +9,10 @@ import customElement from "@ui5/webcomponents-base/dist/decorators/customElement
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import clamp from "@ui5/webcomponents-base/dist/util/clamp.js";
+import getEffectiveScrollbarStyle from "@ui5/webcomponents-base/dist/util/getEffectiveScrollbarStyle.js";
 import { isUp, isDown, isLeft, isRight, isUpShift, isDownShift, isLeftShift, isRightShift, } from "@ui5/webcomponents-base/dist/Keys.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import Popup from "./Popup.js";
 import Icon from "./Icon.js";
 import "@ui5/webcomponents-icons/dist/resize-corner.js";
@@ -23,7 +24,6 @@ import { DIALOG_HEADER_ARIA_ROLE_DESCRIPTION, DIALOG_HEADER_ARIA_DESCRIBEDBY_RES
 // Template
 import DialogTemplate from "./generated/templates/DialogTemplate.lit.js";
 // Styles
-import browserScrollbarCSS from "./generated/themes/BrowserScrollbar.css.js";
 import PopupsCommonCss from "./generated/themes/PopupsCommon.css.js";
 import dialogCSS from "./generated/themes/Dialog.css.js";
 import PopupAccessibleRole from "./types/PopupAccessibleRole.js";
@@ -51,7 +51,7 @@ const ICON_PER_STATE = {
  * The dialog combines concepts known from other technologies where the windows have
  * names such as dialog box, dialog window, pop-up, pop-up window, alert box, or message box.
  *
- * The `ui5-dialog` is modal, which means that an user action is required before it is possible to return to the parent window.
+ * The `ui5-dialog` is modal, which means that a user action is required before it is possible to return to the parent window.
  * To open multiple dialogs, each dialog element should be separate in the markup. This will ensure the correct modal behavior. Avoid nesting dialogs within each other.
  * The content of the `ui5-dialog` is fully customizable.
  *
@@ -89,12 +89,6 @@ const ICON_PER_STATE = {
  *
  * `import "@ui5/webcomponents/dist/Dialog";`
  *
- * **Note:** We recommend placing popup-like components (`ui5-dialog` and `ui5-popover`)
- * outside any other components. Preferably, the popup-like components should be placed
- * in an upper level HTML element. Otherwise, in some cases the parent HTML elements can break
- * the position and/or z-index management of the popup-like components.
- *
- * **Note:** We don't recommend nesting popup-like components (`ui5-dialog`, `ui5-popover`).
  * @constructor
  * @extends Popup
  * @public
@@ -166,9 +160,6 @@ let Dialog = Dialog_1 = class Dialog extends Popup {
         this._resizeMouseMoveHandler = this._onResizeMouseMove.bind(this);
         this._resizeMouseUpHandler = this._onResizeMouseUp.bind(this);
         this._dragStartHandler = this._handleDragStart.bind(this);
-    }
-    static async onDefine() {
-        Dialog_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
     }
     static _isHeader(element) {
         return element.classList.contains("ui5-popup-header-root") || element.getAttribute("slot") === "header";
@@ -297,7 +288,6 @@ let Dialog = Dialog_1 = class Dialog extends Popup {
         if (!this._movable || !this.draggable || !Dialog_1._isHeader(e.target)) {
             return;
         }
-        e.preventDefault();
         const { top, left, } = this.getBoundingClientRect();
         const { width, height, } = window.getComputedStyle(this);
         Object.assign(this.style, {
@@ -486,18 +476,22 @@ __decorate([
 __decorate([
     slot()
 ], Dialog.prototype, "footer", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], Dialog, "i18nBundle", void 0);
 Dialog = Dialog_1 = __decorate([
     customElement({
         tag: "ui5-dialog",
         template: DialogTemplate,
         styles: [
             Popup.styles,
-            browserScrollbarCSS,
             PopupsCommonCss,
             dialogCSS,
+            getEffectiveScrollbarStyle(),
         ],
         dependencies: [
             Icon,
+            ...Popup.dependencies,
         ],
     })
 ], Dialog);

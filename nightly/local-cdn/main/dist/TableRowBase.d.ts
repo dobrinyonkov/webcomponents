@@ -8,14 +8,13 @@ import type Table from "./Table.js";
  * @constructor
  * @abstract
  * @extends UI5Element
- * @since 2.0
+ * @since 2.0.0
  * @public
  */
 declare abstract class TableRowBase extends UI5Element {
     cells: Array<TableCellBase>;
     _invalidate: number;
     static i18nBundle: I18nBundle;
-    static onDefine(): Promise<void>;
     onEnterDOM(): void;
     onBeforeRendering(): void;
     getFocusDomRef(): this;
@@ -32,7 +31,7 @@ declare abstract class TableRowBase extends UI5Element {
     get _selectionCell(): HTMLElement | null;
     get _visibleCells(): TableCellBase[];
     get _popinCells(): TableCellBase[];
+    get _stickyCells(): (Element | null | undefined)[];
     get _i18nRowSelector(): string;
-    get isTableRowBase(): boolean;
 }
 export default TableRowBase;

@@ -167,7 +167,7 @@ declare class Select extends UI5Element implements IFormInputElement {
      * **Note:** If not specified, a default text (in the respective language) will be displayed.
      *
      * **Note:** The `valueStateMessage` would be displayed,
-     * when the component is in `Information`, `Warning` or `Error` value state.
+     * when the component is in `Information`, `Critical` or `Negative` value state.
      *
      * **Note:** If the component has `suggestionItems`,
      * the `valueStateMessage` would be displayed as part of the same popover, if used on desktop, or dialog - on phone.
@@ -307,7 +307,6 @@ declare class Select extends UI5Element implements IFormInputElement {
         };
     };
     get ariaLabelText(): string | undefined;
-    get valueStateMessageText(): Node[];
     get shouldDisplayDefaultValueStateMessage(): boolean;
     get hasValueStateText(): boolean;
     get shouldOpenValueStateMessagePopover(): boolean;
@@ -319,7 +318,6 @@ declare class Select extends UI5Element implements IFormInputElement {
     toggleValueStatePopover(open: boolean): void;
     get selectedOptionIcon(): string | undefined;
     _getPopover(): Popover | null;
-    static onDefine(): Promise<void>;
 }
 export default Select;
 export type { IOption, SelectChangeEventDetail, SelectLiveChangeEventDetail, };

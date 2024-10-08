@@ -14,7 +14,7 @@ import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import { isBackSpace, isSpace, isDelete, isSpaceCtrl, } from "@ui5/webcomponents-base/dist/Keys.js";
 import "@ui5/webcomponents-icons/dist/decline.js";
 import "@ui5/webcomponents-icons/dist/sys-cancel.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import { TOKEN_ARIA_DELETABLE, TOKEN_ARIA_LABEL } from "./generated/i18n/i18n-defaults.js";
 import Icon from "./Icon.js";
 import TokenTemplate from "./generated/templates/TokenTemplate.lit.js";
@@ -39,12 +39,6 @@ import tokenStyles from "./generated/themes/Token.css.js";
 let Token = Token_1 = class Token extends UI5Element {
     constructor() {
         super(...arguments);
-        /**
-         * Defines the text of the token.
-         * @default ""
-         * @public
-         */
-        this.text = "";
         /**
          * Defines whether the component is selected or not.
          * @default false
@@ -144,9 +138,6 @@ let Token = Token_1 = class Token extends UI5Element {
         }
         return description;
     }
-    static async onDefine() {
-        Token_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
-    }
 };
 __decorate([
     property()
@@ -178,6 +169,9 @@ __decorate([
 __decorate([
     slot()
 ], Token.prototype, "closeIcon", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], Token, "i18nBundle", void 0);
 Token = Token_1 = __decorate([
     customElement({
         tag: "ui5-token",

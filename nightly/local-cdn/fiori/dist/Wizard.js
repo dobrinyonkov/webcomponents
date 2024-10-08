@@ -10,8 +10,8 @@ import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import getEffectiveScrollbarStyle from "@ui5/webcomponents-base/dist/util/getEffectiveScrollbarStyle.js";
 import ItemNavigation from "@ui5/webcomponents-base/dist/delegate/ItemNavigation.js";
 import NavigationMode from "@ui5/webcomponents-base/dist/types/NavigationMode.js";
@@ -22,7 +22,6 @@ import debounce from "@ui5/webcomponents-base/dist/util/debounce.js";
 import { getFirstFocusableElement } from "@ui5/webcomponents-base/dist/util/FocusableElements.js";
 import Button from "@ui5/webcomponents/dist/Button.js";
 import ResponsivePopover from "@ui5/webcomponents/dist/ResponsivePopover.js";
-import browserScrollbarCSS from "@ui5/webcomponents/dist/generated/themes/BrowserScrollbar.css.js";
 // Texts
 import { WIZARD_NAV_STEP_DEFAULT_HEADING, WIZARD_NAV_ARIA_ROLE_DESCRIPTION, WIZARD_NAV_ARIA_LABEL, WIZARD_LIST_ARIA_LABEL, WIZARD_LIST_ARIA_DESCRIBEDBY, WIZARD_ACTIONSHEET_STEPS_ARIA_LABEL, WIZARD_OPTIONAL_STEP_ARIA_LABEL, WIZARD_STEP_ARIA_LABEL, WIZARD_STEP_ACTIVE, WIZARD_STEP_INACTIVE, } from "./generated/i18n/i18n-defaults.js";
 // Step in header and content
@@ -191,7 +190,6 @@ let Wizard = Wizard_1 = class Wizard extends UI5Element {
         return {
             root: {
                 "ui5-wiz-root": true,
-                "ui5-content-native-scrollbars": getEffectiveScrollbarStyle(),
             },
             popover: {
                 "ui5-wizard-responsive-popover": true,
@@ -199,9 +197,6 @@ let Wizard = Wizard_1 = class Wizard extends UI5Element {
                 "ui5-wizard-dialog": isPhone(),
             },
         };
-    }
-    static async onDefine() {
-        Wizard_1.i18nBundle = await getI18nBundle("@ui5/webcomponents-fiori");
     }
     static get SCROLL_DEBOUNCE_RATE() {
         return 25;
@@ -247,6 +242,14 @@ let Wizard = Wizard_1 = class Wizard extends UI5Element {
         }
         // Place for improvement: If the selected step is not the first, enable all the prior steps
         this.selectedStepIndex = this.getSelectedStepIndex();
+        if (this.selectedStep && this.stepsInHeaderDOM.length) {
+            if (this._itemNavigation._getItems().includes(this.stepsInHeaderDOM[this.selectedStepIndex])) {
+                this._itemNavigation.setCurrentItem(this.stepsInHeaderDOM[this.selectedStepIndex]);
+            }
+            else {
+                this._itemNavigation.setCurrentItem(this.stepsInHeaderDOM.find(el => el.selected));
+            }
+        }
     }
     /**
      * Selects the first step.
@@ -310,7 +313,9 @@ let Wizard = Wizard_1 = class Wizard extends UI5Element {
             this.selectionRequestedByClick = false;
             return;
         }
-        debounce(this.changeSelectionByScroll.bind(this, e.target.scrollTop), Wizard_1.SCROLL_DEBOUNCE_RATE);
+        if (this.contentLayout !== "SingleStep") {
+            debounce(this.changeSelectionByScroll.bind(this, e.target.scrollTop), Wizard_1.SCROLL_DEBOUNCE_RATE);
+        }
     }
     /**
      * Handles when a step in the header is focused in order to update the `ItemNavigation`.
@@ -584,7 +589,7 @@ let Wizard = Wizard_1 = class Wizard extends UI5Element {
         return Array.from(this.shadowRoot.querySelectorAll("[ui5-wizard-tab]"));
     }
     get enabledStepsInHeaderDOM() {
-        return this.stepsInHeaderDOM;
+        return this.stepsInHeaderDOM.filter(step => !step.disabled);
     }
     get navAriaRoleDescription() {
         return Wizard_1.i18nBundle.getText(WIZARD_NAV_ARIA_ROLE_DESCRIPTION);
@@ -657,7 +662,6 @@ let Wizard = Wizard_1 = class Wizard extends UI5Element {
                 pos,
                 accInfo,
                 refStepId: step._id,
-                tabIndex: this.selectedStepIndex === idx ? "0" : "-1",
                 styles: {
                     zIndex: isAfterCurrent ? --inintialZIndex : 1,
                 },
@@ -817,6 +821,9 @@ __decorate([
         invalidateOnChildChange: true,
     })
 ], Wizard.prototype, "steps", void 0);
+__decorate([
+    i18n("@ui5/webcomponents-fiori")
+], Wizard, "i18nBundle", void 0);
 Wizard = Wizard_1 = __decorate([
     customElement({
         tag: "ui5-wizard",
@@ -824,9 +831,9 @@ Wizard = Wizard_1 = __decorate([
         fastNavigation: true,
         renderer: litRender,
         styles: [
-            browserScrollbarCSS,
             WizardCss,
             WizardPopoverCss,
+            getEffectiveScrollbarStyle(),
         ],
         template: WizardTemplate,
         dependencies: [

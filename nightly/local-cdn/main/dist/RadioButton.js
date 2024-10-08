@@ -11,7 +11,7 @@ import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
 import { isSpace, isEnter, isDown, isLeft, isUp, isRight, } from "@ui5/webcomponents-base/dist/Keys.js";
@@ -115,6 +115,14 @@ let RadioButton = RadioButton_1 = class RadioButton extends UI5Element {
          */
         this.valueState = "None";
         /**
+         * Defines the form value of the component.
+         * When a form with a radio button group is submitted, the group's value
+         * will be the value of the currently selected radio button.
+         * @default ""
+         * @public
+         */
+        this.value = "";
+        /**
          * Defines whether the component text wraps when there is not enough space.
          *
          * **Note:** for option "Normal" the text will wrap and the words will not be broken based on hyphenation.
@@ -147,9 +155,6 @@ let RadioButton = RadioButton_1 = class RadioButton extends UI5Element {
             isGlobalHandlerAttached = true;
         }
     }
-    static async onDefine() {
-        RadioButton_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
-    }
     onAfterRendering() {
         this.syncGroup();
     }
@@ -179,7 +184,7 @@ let RadioButton = RadioButton_1 = class RadioButton extends UI5Element {
                 RadioButtonGroup.addToGroup(this, currentGroup);
             }
         }
-        else if (currentGroup) {
+        else if (currentGroup && this.isConnected) {
             RadioButtonGroup.enforceSingleSelection(this, currentGroup);
         }
         if (this.name && currentChecked !== oldChecked) {
@@ -344,6 +349,9 @@ __decorate([
 __decorate([
     property({ type: Boolean, noAttribute: true })
 ], RadioButton.prototype, "_groupRequired", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], RadioButton, "i18nBundle", void 0);
 RadioButton = RadioButton_1 = __decorate([
     customElement({
         tag: "ui5-radio-button",

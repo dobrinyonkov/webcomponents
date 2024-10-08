@@ -15,7 +15,7 @@ import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import { getEffectiveAriaLabelText, getAssociatedLabelForTexts } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
 import getEffectiveScrollbarStyle from "@ui5/webcomponents-base/dist/util/getEffectiveScrollbarStyle.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import { isEscape } from "@ui5/webcomponents-base/dist/Keys.js";
 import Popover from "./Popover.js";
 import Icon from "./Icon.js";
@@ -26,9 +26,8 @@ import "@ui5/webcomponents-icons/dist/information.js";
 import TextAreaTemplate from "./generated/templates/TextAreaTemplate.lit.js";
 import { VALUE_STATE_SUCCESS, VALUE_STATE_INFORMATION, VALUE_STATE_ERROR, VALUE_STATE_WARNING, VALUE_STATE_TYPE_SUCCESS, VALUE_STATE_TYPE_INFORMATION, VALUE_STATE_TYPE_ERROR, VALUE_STATE_TYPE_WARNING, TEXTAREA_CHARACTERS_LEFT, TEXTAREA_CHARACTERS_EXCEEDED, FORM_TEXTFIELD_REQUIRED, } from "./generated/i18n/i18n-defaults.js";
 // Styles
-import styles from "./generated/themes/TextArea.css.js";
+import textareaStyles from "./generated/themes/TextArea.css.js";
 import valueStateMessageStyles from "./generated/themes/ValueStateMessage.css.js";
-import browserScrollbarCSS from "./generated/themes/BrowserScrollbar.css.js";
 /**
  * @class
  *
@@ -59,9 +58,6 @@ let TextArea = TextArea_1 = class TextArea extends UI5Element {
     }
     get formFormattedValue() {
         return this.value;
-    }
-    static async onDefine() {
-        TextArea_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
     }
     constructor() {
         super();
@@ -101,8 +97,8 @@ let TextArea = TextArea_1 = class TextArea extends UI5Element {
          * Defines the value state of the component.
          *
          * **Note:** If `maxlength` property is set,
-         * the component turns into "Warning" state once the characters exceeds the limit.
-         * In this case, only the "Error" state is considered and can be applied.
+         * the component turns into "Critical" state once the characters exceeds the limit.
+         * In this case, only the "Negative" state is considered and can be applied.
          * @default "None"
          * @since 1.0.0-rc.7
          * @public
@@ -210,7 +206,7 @@ let TextArea = TextArea_1 = class TextArea extends UI5Element {
     }
     _onfocusout(e) {
         const eTarget = e.relatedTarget;
-        const focusedOutToValueStateMessage = eTarget?.shadowRoot?.querySelector(".ui5-valuestatemessage-root");
+        const focusedOutToValueStateMessage = eTarget && this.contains(eTarget);
         this.focused = false;
         if (!focusedOutToValueStateMessage) {
             this._openValueStateMsgPopover = false;
@@ -315,7 +311,7 @@ let TextArea = TextArea_1 = class TextArea extends UI5Element {
         return {
             root: {
                 "ui5-textarea-root": true,
-                "ui5-content-native-scrollbars": getEffectiveScrollbarStyle(),
+                "ui5-content-custom-scrollbars": !!getEffectiveScrollbarStyle(),
             },
             valueStateMsg: {
                 "ui5-valuestatemessage-header": true,
@@ -356,7 +352,7 @@ let TextArea = TextArea_1 = class TextArea extends UI5Element {
             return;
         }
         if (this.hasCustomValueState) {
-            return `${this.valueStateTypeMappings[this.valueState]}`.concat(" ", this.valueStateMessageText.map(el => el.textContent).join(" "));
+            return `${this.valueStateTypeMappings[this.valueState]}`.concat(" ", this.valueStateMessage.map(el => el.textContent).join(" "));
         }
         return `${this.valueStateTypeMappings[this.valueState]} ${this.valueStateDefaultText}`;
     }
@@ -380,9 +376,6 @@ let TextArea = TextArea_1 = class TextArea extends UI5Element {
     }
     get hasValueState() {
         return this.valueState === ValueState.Negative || this.valueState === ValueState.Critical || this.valueState === ValueState.Information;
-    }
-    get valueStateMessageText() {
-        return this.valueStateMessage.map(x => x.cloneNode(true));
     }
     get _valueStatePopoverHorizontalAlign() {
         return this.effectiveDir !== "rtl" ? "Start" : "End";
@@ -476,12 +469,19 @@ __decorate([
 __decorate([
     slot()
 ], TextArea.prototype, "valueStateMessage", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], TextArea, "i18nBundle", void 0);
 TextArea = TextArea_1 = __decorate([
     customElement({
         tag: "ui5-textarea",
         formAssociated: true,
         languageAware: true,
-        styles: [browserScrollbarCSS, styles, valueStateMessageStyles],
+        styles: [
+            textareaStyles,
+            valueStateMessageStyles,
+            getEffectiveScrollbarStyle(),
+        ],
         renderer: litRender,
         template: TextAreaTemplate,
         dependencies: [Popover, Icon],

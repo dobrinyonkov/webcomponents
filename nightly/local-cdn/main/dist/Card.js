@@ -9,11 +9,12 @@ import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
 import CardTemplate from "./generated/templates/CardTemplate.lit.js";
 import Icon from "./Icon.js";
+import BusyIndicator from "./BusyIndicator.js";
 import { ARIA_ROLEDESCRIPTION_CARD, ARIA_LABEL_CARD_CONTENT, } from "./generated/i18n/i18n-defaults.js";
 // Styles
 import cardCss from "./generated/themes/Card.css.js";
@@ -40,6 +41,23 @@ import cardCss from "./generated/themes/Card.css.js";
  * @csspart content - Used to style the content of the card
  */
 let Card = Card_1 = class Card extends UI5Element {
+    constructor() {
+        super(...arguments);
+        /**
+         * Defines if a loading indicator would be displayed over the card.
+         * @default false
+         * @public
+         * @since 2.1.0
+         */
+        this.loading = false;
+        /**
+         * Defines the delay in milliseconds, after which the loading indicator will show up for this card.
+         * @default 1000
+         * @public
+         * @since 2.1.0
+         */
+        this.loadingDelay = 1000;
+    }
     get classes() {
         return {
             root: {
@@ -59,9 +77,6 @@ let Card = Card_1 = class Card extends UI5Element {
     get _ariaCardContentLabel() {
         return Card_1.i18nBundle.getText(ARIA_LABEL_CARD_CONTENT);
     }
-    static async onDefine() {
-        Card_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
-    }
 };
 __decorate([
     property()
@@ -75,6 +90,15 @@ __decorate([
 __decorate([
     slot({ type: HTMLElement, invalidateOnChildChange: true })
 ], Card.prototype, "header", void 0);
+__decorate([
+    property({ type: Boolean })
+], Card.prototype, "loading", void 0);
+__decorate([
+    property({ type: Number })
+], Card.prototype, "loadingDelay", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], Card, "i18nBundle", void 0);
 Card = Card_1 = __decorate([
     customElement({
         tag: "ui5-card",
@@ -82,7 +106,7 @@ Card = Card_1 = __decorate([
         renderer: litRender,
         template: CardTemplate,
         styles: cardCss,
-        dependencies: [Icon],
+        dependencies: [Icon, BusyIndicator],
     })
 ], Card);
 Card.define();

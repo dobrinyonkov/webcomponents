@@ -1,5 +1,6 @@
 import type UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import type { ChangeInfo } from "@ui5/webcomponents-base/dist/UI5Element.js";
+import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import "@ui5/webcomponents-icons/dist/slim-arrow-left.js";
 import "@ui5/webcomponents-icons/dist/slim-arrow-right.js";
 import CalendarPart from "./CalendarPart.js";
@@ -137,6 +138,15 @@ type SpecialCalendarDateT = {
  * @constructor
  * @extends CalendarPart
  * @public
+ * @csspart day-cell - Used to style the day cells.
+ * @csspart day-cell-selected - Used to style the day cells when selected.
+ * @csspart day-cell-selected-between - Used to style the day cells in between of selected dates in range.
+ * @csspart month-cell - Used to style the month cells.
+ * @csspart month-cell-selected - Used to style the month cells when selected.
+ * @csspart month-cell-selected-between - Used to style the day cells in between of selected months in range.
+ * @csspart year-cell - Used to style the year cells.
+ * @csspart year-cell-selected - Used to style the year cells when selected.
+ * @csspart year-cell-selected-between - Used to style the day cells in between of selected years in range.
  * @since 1.0.0-rc.11
  */
 declare class Calendar extends CalendarPart {
@@ -196,8 +206,8 @@ declare class Calendar extends CalendarPart {
      * @private
      */
     _selectedItemType: `${CalendarLegendItemType}`;
+    static i18nBundle: I18nBundle;
     constructor();
-    static onDefine(): Promise<void>;
     /**
      * @private
      */
@@ -275,8 +285,8 @@ declare class Calendar extends CalendarPart {
     get accInfo(): {
         ariaLabelMonthButton: string;
     };
-    get headerPreviousButtonText(): string | undefined;
-    get headerNextButtonText(): string | undefined;
+    get headerPreviousButtonText(): string;
+    get headerNextButtonText(): string;
     get secondMonthButtonText(): string;
     onMonthButtonKeyDown(e: KeyboardEvent): void;
     onMonthButtonKeyUp(e: KeyboardEvent): void;

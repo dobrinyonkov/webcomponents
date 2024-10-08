@@ -4,13 +4,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var DateComponentBase_1;
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
-import { fetchCldr } from "@ui5/webcomponents-base/dist/asset-registries/LocaleData.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import { getCalendarType, getSecondaryCalendarType } from "@ui5/webcomponents-base/dist/config/CalendarType.js";
 import DateFormat from "@ui5/webcomponents-localization/dist/DateFormat.js";
 import getCachedLocaleDataInstance from "@ui5/webcomponents-localization/dist/getCachedLocaleDataInstance.js";
@@ -31,20 +29,14 @@ import UI5Date from "@ui5/webcomponents-localization/dist/dates/UI5Date.js";
  * @extends UI5Element
  * @public
  */
-let DateComponentBase = DateComponentBase_1 = class DateComponentBase extends UI5Element {
+let DateComponentBase = class DateComponentBase extends UI5Element {
     constructor() {
         super();
-        /**
-         * Determines the format, displayed in the input field.
-         * @default ""
-         * @public
-         */
-        this.formatPattern = "";
         /**
          * Determines the minimum date available for selection.
          *
          * **Note:** If the formatPattern property is not set, the minDate value must be provided in the ISO date format (YYYY-MM-dd).
-         * @default undefined
+         * @default ""
          * @since 1.0.0-rc.6
          * @public
          */
@@ -58,6 +50,14 @@ let DateComponentBase = DateComponentBase_1 = class DateComponentBase extends UI
          * @public
          */
         this.maxDate = "";
+        /**
+         * Defines how to calculate calendar weeks and first day of the week.
+         * If not set, the calendar will be displayed according to the currently set global configuration.
+         * @default "Default"
+         * @since 2.2.0
+         * @public
+         */
+        this.calendarWeekNumbering = "Default";
     }
     get _primaryCalendarType() {
         const localeData = getCachedLocaleDataInstance(getLocale());
@@ -137,12 +137,6 @@ let DateComponentBase = DateComponentBase_1 = class DateComponentBase extends UI
         }
         return this._isoFormatInstance;
     }
-    static async onDefine() {
-        [DateComponentBase_1.i18nBundle] = await Promise.all([
-            getI18nBundle("@ui5/webcomponents"),
-            fetchCldr(getLocale().getLanguage(), getLocale().getRegion(), getLocale().getScript()),
-        ]);
-    }
 };
 __decorate([
     property()
@@ -159,9 +153,16 @@ __decorate([
 __decorate([
     property()
 ], DateComponentBase.prototype, "maxDate", void 0);
-DateComponentBase = DateComponentBase_1 = __decorate([
+__decorate([
+    property()
+], DateComponentBase.prototype, "calendarWeekNumbering", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], DateComponentBase, "i18nBundle", void 0);
+DateComponentBase = __decorate([
     customElement({
         languageAware: true,
+        cldr: true,
         renderer: litRender,
     })
 ], DateComponentBase);

@@ -1,11 +1,10 @@
-/// <reference types="openui5" />
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import type { ResizeObserverCallback } from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import TableRow from "./TableRow.js";
-import type TableHeaderRow from "./TableHeaderRow.js";
+import TableHeaderRow from "./TableHeaderRow.js";
 import type TableHeaderCell from "./TableHeaderCell.js";
-import TableSelection from "./TableSelection.js";
+import type TableSelection from "./TableSelection.js";
 import TableOverflowMode from "./types/TableOverflowMode.js";
 import TableNavigation from "./TableNavigation.js";
 /**
@@ -15,6 +14,7 @@ import TableNavigation from "./TableNavigation.js";
  * @experimental
  */
 interface ITableFeature extends UI5Element {
+    readonly identifier: string;
     /**
      * Called when the table is activated.
      * @param table table instance
@@ -62,6 +62,7 @@ type TableRowClickEventDetail = {
  *
  * The `ui5-table` can be enhanced in its functionalities by applying different features.
  * Features can be slotted into the `features` slot, to enable them in the component.
+ * Features need to be imported separately, as they are not enabled by default.
  *
  * The following features are currently available:
  *
@@ -121,13 +122,14 @@ type TableRowClickEventDetail = {
  *
  * @constructor
  * @extends UI5Element
- * @since 2.0
+ * @since 2.0.0
  * @public
  * @experimental This Table web component is available since 2.0 and has been newly implemented to provide better screen reader and keyboard handling support.
  * Currently, it's considered experimental as its API is subject to change.
  * This Table replaces the previous Table web component, that has been part of **@ui5/webcomponents** version 1.x.
- * For compatibility reasons, we moved the previous Tabple implementation to the **@ui5/webcomponents-compat** package
+ * For compatibility reasons, we moved the previous Table implementation to the **@ui5/webcomponents-compat** package
  * and will be maintained until the new Table is experimental.
+ * Keep in mind that you can use either the compat/Table, or the main/Table - you can't use them both as they both define the `ui5-table` tag name.
  */
 declare class Table extends UI5Element {
     /**
@@ -212,7 +214,6 @@ declare class Table extends UI5Element {
     _invalidate: number;
     _renderNavigated: boolean;
     static i18nBundle: I18nBundle;
-    static onDefine(): Promise<void>;
     _events: string[];
     _onEventBound: (e: Event) => void;
     _onResizeBound: ResizeObserverCallback;
@@ -227,7 +228,6 @@ declare class Table extends UI5Element {
     onExitDOM(): void;
     onBeforeRendering(): void;
     onAfterRendering(): void;
-    _getFeature<Klass>(klass: any): Klass | undefined;
     _getSelection(): TableSelection | undefined;
     _onEvent(e: Event): void;
     _onResize(): void;
@@ -247,11 +247,11 @@ declare class Table extends UI5Element {
     _onRowPress(row: TableRow): void;
     get styles(): {
         table: {
-            "grid-template-columns": string;
+            "grid-template-columns": string | undefined;
         };
     };
-    get _gridTemplateColumns(): string;
-    get _tableOverflowX(): "auto" | "hidden";
+    get _gridTemplateColumns(): string | undefined;
+    get _tableOverflowX(): "auto" | "clip";
     get _tableOverflowY(): string;
     get _nodataRow(): TableRow;
     get _beforeElement(): HTMLElement;
@@ -263,8 +263,8 @@ declare class Table extends UI5Element {
     get _ariaMultiSelectable(): boolean | undefined;
     get _shouldRenderGrowing(): boolean | 0;
     get _growing(): ITableGrowing;
+    get _stickyElements(): (TableHeaderCell | TableHeaderRow)[];
     get _scrollContainer(): HTMLElement;
-    get _stickyElements(): TableHeaderRow[];
     get isTable(): boolean;
 }
 export default Table;

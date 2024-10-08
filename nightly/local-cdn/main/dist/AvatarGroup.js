@@ -9,11 +9,11 @@ import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import ItemNavigation from "@ui5/webcomponents-base/dist/delegate/ItemNavigation.js";
-import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
+import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import { isEnter, isSpace, } from "@ui5/webcomponents-base/dist/Keys.js";
 import { isDesktop } from "@ui5/webcomponents-base/dist/Device.js";
 import Button from "./Button.js";
@@ -31,7 +31,7 @@ const AVATAR_GROUP_OVERFLOW_BTN_SELECTOR = `.${OVERFLOW_BTN_CLASS}`;
 const offsets = {
     [AvatarSize.XS]: {
         [AvatarGroupType.Individual]: "0.0625rem",
-        [AvatarGroupType.Group]: "-0.75rem",
+        [AvatarGroupType.Group]: "-0.5rem",
     },
     [AvatarSize.S]: {
         [AvatarGroupType.Individual]: "0.125rem",
@@ -141,9 +141,6 @@ let AvatarGroup = AvatarGroup_1 = class AvatarGroup extends UI5Element {
         });
         this._onResizeHandler = this._onResize.bind(this);
     }
-    static async onDefine() {
-        AvatarGroup_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
-    }
     /**
      * Returns an array containing the `ui5-avatar` instances that are currently not displayed due to lack of space.
      * @default []
@@ -238,7 +235,7 @@ let AvatarGroup = AvatarGroup_1 = class AvatarGroup extends UI5Element {
         return button.offsetWidth;
     }
     get firstAvatarSize() {
-        return this.items[0].size;
+        return this.items[0]?.size ?? AvatarSize.S;
     }
     get classes() {
         return {
@@ -427,6 +424,9 @@ __decorate([
 __decorate([
     slot()
 ], AvatarGroup.prototype, "overflowButton", void 0);
+__decorate([
+    i18n("@ui5/webcomponents")
+], AvatarGroup, "i18nBundle", void 0);
 AvatarGroup = AvatarGroup_1 = __decorate([
     customElement({
         tag: "ui5-avatar-group",
