@@ -10,11 +10,13 @@ import "@ui5/webcomponents-icons/dist/information.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import type { IIcon } from "./Icon.js";
-import ComboBoxItem from "./ComboBoxItem.js";
-import Popover from "./Popover.js";
-import ResponsivePopover from "./ResponsivePopover.js";
-import List from "./List.js";
+import "./ComboBoxItem.js";
+import type ComboBoxItem from "./ComboBoxItem.js";
+import type Popover from "./Popover.js";
+import type ResponsivePopover from "./ResponsivePopover.js";
+import type List from "./List.js";
 import type { ListItemClickEventDetail } from "./List.js";
+import "./ComboBoxItemGroup.js";
 import type ComboBoxFilter from "./types/ComboBoxFilter.js";
 import PopoverHorizontalAlign from "./types/PopoverHorizontalAlign.js";
 import type { InputEventDetail } from "./Input.js";
@@ -29,7 +31,6 @@ interface IComboBoxItem extends UI5Element {
     isGroupItem?: boolean;
     selected?: boolean;
     additionalText?: string;
-    stableDomRef: string;
     _isVisible?: boolean;
     items?: Array<IComboBoxItem>;
 }
@@ -77,6 +78,11 @@ type ComboBoxSelectionChangeEventDetail = {
  * @since 1.0.0-rc.6
  */
 declare class ComboBox extends UI5Element implements IFormInputElement {
+    eventDetails: {
+        "change": void;
+        "input": void;
+        "selection-change": ComboBoxSelectionChangeEventDetail;
+    };
     /**
      * Defines the value of the component.
      * @default ""

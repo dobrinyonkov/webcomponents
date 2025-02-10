@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var YearPicker_1;
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
-import event from "@ui5/webcomponents-base/dist/decorators/event.js";
+import event from "@ui5/webcomponents-base/dist/decorators/event-strict.js";
 import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import DateFormat from "@ui5/webcomponents-localization/dist/DateFormat.js";
 import { isEnter, isSpace, isDown, isUp, isLeft, isRight, isHome, isEnd, isHomeCtrl, isEndCtrl, isPageUp, isPageDown, } from "@ui5/webcomponents-base/dist/Keys.js";
@@ -18,7 +18,7 @@ import { getMaxCalendarDate } from "@ui5/webcomponents-localization/dist/dates/E
 import CalendarPart from "./CalendarPart.js";
 import { YEAR_PICKER_DESCRIPTION } from "./generated/i18n/i18n-defaults.js";
 // Template
-import YearPickerTemplate from "./generated/templates/YearPickerTemplate.lit.js";
+import YearPickerTemplate from "./YearPickerTemplate.js";
 // Styles
 import yearPickerStyles from "./generated/themes/YearPicker.css.js";
 import CalendarSelectionMode from "./types/CalendarSelectionMode.js";
@@ -52,7 +52,7 @@ let YearPicker = YearPicker_1 = class YearPicker extends CalendarPart {
          * @since 2.2.0
          */
         this.selectionMode = "Single";
-        this._years = [];
+        this._yearsInterval = [];
         this._hidden = false;
     }
     get roleDescription() {
@@ -101,19 +101,19 @@ let YearPicker = YearPicker_1 = class YearPicker extends CalendarPart {
             if (this.hasSecondaryCalendarType) {
                 tempDateInSecType = transformDateToSecondaryType(this._primaryCalendarType, this.secondaryCalendarType, timestamp, true);
                 textInSecType = tempDateInSecType.firstDate.getYear() === tempDateInSecType.lastDate.getYear()
-                    ? `${oYearFormatInSecType.format(tempDateInSecType.firstDate.toLocalJSDate(), true)}`
-                    : `${oYearFormatInSecType.format(tempDateInSecType.firstDate.toLocalJSDate(), true)} - ${oYearFormatInSecType.format(tempDateInSecType.lastDate.toLocalJSDate(), true)}`;
+                    ? `${oYearFormatInSecType.format(tempDateInSecType.firstDate.toLocalJSDate())}`
+                    : `${oYearFormatInSecType.format(tempDateInSecType.firstDate.toLocalJSDate())} - ${oYearFormatInSecType.format(tempDateInSecType.lastDate.toLocalJSDate())}`;
             }
             const year = {
                 timestamp: timestamp.toString(),
-                _tabIndex: isFocused ? "0" : "-1",
+                _tabIndex: isFocused ? 0 : -1,
                 focusRef: isFocused,
                 selected: isSelected || isSelectedBetween,
-                ariaSelected: String(isSelected || isSelectedBetween),
+                ariaSelected: isSelected || isSelectedBetween,
                 year: oYearFormat.format(tempDate.toLocalJSDate()),
                 yearInSecType: textInSecType,
                 disabled: isDisabled,
-                ariaDisabled: isDisabled ? "true" : undefined,
+                ariaDisabled: isDisabled,
                 classes: "ui5-yp-item",
                 parts: "year-cell",
             };
@@ -140,7 +140,7 @@ let YearPicker = YearPicker_1 = class YearPicker extends CalendarPart {
             }
             tempDate.setYear(tempDate.getYear() + 1);
         }
-        this._years = intervals;
+        this._yearsInterval = intervals;
     }
     _calculateFirstYear() {
         const pageSize = this._getPageSize();
@@ -220,10 +220,10 @@ let YearPicker = YearPicker_1 = class YearPicker extends CalendarPart {
             this._onHomeOrEnd(isHome(e));
         }
         else if (isHomeCtrl(e)) {
-            this._setTimestamp(parseInt(this._years[0][0].timestamp)); // first year of first row
+            this._setTimestamp(parseInt(this._yearsInterval[0][0].timestamp)); // first year of first row
         }
         else if (isEndCtrl(e)) {
-            this._setTimestamp(parseInt(this._years[pageSize / rowSize - 1][rowSize - 1].timestamp)); // last year of last row
+            this._setTimestamp(parseInt(this._yearsInterval[pageSize / rowSize - 1][rowSize - 1].timestamp)); // last year of last row
         }
         else {
             preventDefault = false;
@@ -233,7 +233,7 @@ let YearPicker = YearPicker_1 = class YearPicker extends CalendarPart {
         }
     }
     _onHomeOrEnd(homePressed) {
-        this._years.forEach(row => {
+        this._yearsInterval.forEach(row => {
             const indexInRow = row.findIndex(item => CalendarDate.fromTimestamp(parseInt(item.timestamp) * 1000).getYear() === this._calendarDate.getYear());
             if (indexInRow !== -1) { // The current year is on this row
                 const index = homePressed ? 0 : this._getRowSize() - 1; // select the first (if Home) or last (if End) year on the row
@@ -270,7 +270,7 @@ let YearPicker = YearPicker_1 = class YearPicker extends CalendarPart {
      */
     _setTimestamp(value) {
         this._safelySetTimestamp(value);
-        this.fireEvent("navigate", { timestamp: this.timestamp });
+        this.fireDecoratorEvent("navigate", { timestamp: this.timestamp });
     }
     /**
      * Modifies timestamp by a given amount of years and, if necessary, loads the prev/next page.
@@ -282,7 +282,7 @@ let YearPicker = YearPicker_1 = class YearPicker extends CalendarPart {
         this._safelyModifyTimestampBy(amount, "year");
         this._updateSecondTimestamp();
         // Notify the calendar to update its timestamp
-        this.fireEvent("navigate", { timestamp: this.timestamp });
+        this.fireDecoratorEvent("navigate", { timestamp: this.timestamp });
     }
     _onkeyup(e) {
         if (isSpace(e)) {
@@ -304,7 +304,7 @@ let YearPicker = YearPicker_1 = class YearPicker extends CalendarPart {
         this._safelySetTimestamp(timestamp);
         this._updateSecondTimestamp();
         this._updateSelectedDates(timestamp);
-        this.fireEvent("change", {
+        this.fireDecoratorEvent("change", {
             timestamp: this.timestamp,
             dates: this.selectedDates,
         });
@@ -356,7 +356,7 @@ __decorate([
 ], YearPicker.prototype, "selectionMode", void 0);
 __decorate([
     property({ type: Array })
-], YearPicker.prototype, "_years", void 0);
+], YearPicker.prototype, "_yearsInterval", void 0);
 __decorate([
     property({ type: Boolean, noAttribute: true })
 ], YearPicker.prototype, "_hidden", void 0);
@@ -376,13 +376,17 @@ YearPicker = YearPicker_1 = __decorate([
      * Fired when the user selects a year via "Space", "Enter" or click.
      */
     ,
-    event("change")
+    event("change", {
+        bubbles: true,
+    })
     /**
      * Fired when the timestamp changes - the user navigates with the keyboard or clicks with the mouse.
      * @since 1.0.0-rc.9
      */
     ,
-    event("navigate")
+    event("navigate", {
+        bubbles: true,
+    })
 ], YearPicker);
 YearPicker.define();
 export default YearPicker;

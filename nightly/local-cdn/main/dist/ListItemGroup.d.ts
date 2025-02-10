@@ -1,8 +1,8 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import MovePlacement from "@ui5/webcomponents-base/dist/types/MovePlacement.js";
-import DropIndicator from "./DropIndicator.js";
+import type DropIndicator from "./DropIndicator.js";
 import type ListItemBase from "./ListItemBase.js";
-import ListItemGroupHeader from "./ListItemGroupHeader.js";
+import type ListItemGroupHeader from "./ListItemGroupHeader.js";
 type ListItemGroupMoveEventDetail = {
     source: {
         element: HTMLElement;
@@ -28,6 +28,10 @@ type ListItemGroupMoveEventDetail = {
  * @since 2.0.0
  */
 declare class ListItemGroup extends UI5Element {
+    eventDetails: {
+        "move-over": ListItemGroupMoveEventDetail;
+        "move": ListItemGroupMoveEventDetail;
+    };
     /**
      * Defines the header text of the <code>ui5-li-group</code>.
      * @public

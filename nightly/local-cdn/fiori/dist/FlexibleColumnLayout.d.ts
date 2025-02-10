@@ -1,8 +1,7 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
-import type AriaLandmarkRole from "@ui5/webcomponents-base/dist/types/AriaLandmarkRole.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import "@ui5/webcomponents-icons/dist/vertical-grip.js";
-import type { PassiveEventListenerObject } from "@ui5/webcomponents-base/dist/types.js";
+import type { PassiveEventListenerObject, AriaLandmarkRole } from "@ui5/webcomponents-base";
 import FCLLayout from "./types/FCLLayout.js";
 import type { LayoutConfiguration } from "./fcl-utils/FCLLayout.js";
 declare enum MEDIA {
@@ -30,7 +29,7 @@ type FlexibleColumnLayoutLayoutChangeEventDetail = {
     separatorsUsed: boolean;
     resized: boolean;
 };
-type FCLAccessibilityRoles = Extract<Lowercase<AriaLandmarkRole>, "none" | "complementary" | "contentinfo" | "main" | "region">;
+type FCLAccessibilityRoles = Extract<AriaLandmarkRole, "none" | "complementary" | "contentinfo" | "main" | "region">;
 type FCLAccessibilityAttributes = {
     startColumn?: {
         role: FCLAccessibilityRoles;
@@ -111,6 +110,9 @@ type UserDefinedColumnLayouts = {
  * @since 1.0.0-rc.8
  */
 declare class FlexibleColumnLayout extends UI5Element {
+    eventDetails: {
+        "layout-change": FlexibleColumnLayoutLayoutChangeEventDetail;
+    };
     /**
     * Defines the columns layout and their proportion.
     *
@@ -239,8 +241,9 @@ declare class FlexibleColumnLayout extends UI5Element {
     calculateNewColumnWidth(columnToResize: typeof COLUMN.START | typeof COLUMN.END, widthDelta: number): number;
     moveSeparator(separator: HTMLElement, offsetX: number, fclLayoutBeforeMove: FCLLayout): FCLLayout;
     adjustColumnLayout(columnToResize: typeof COLUMN.START | typeof COLUMN.END, newSize: number, createNewArray?: boolean): FlexibleColumnLayoutColumnLayout | undefined;
-    _onkeydown(e: KeyboardEvent): Promise<void>;
-    _onkeyup(): void;
+    _onArrowKeydown(e: KeyboardEvent): void;
+    _onSeparatorKeydown(e: KeyboardEvent): Promise<void>;
+    _onSeparatorKeyUp(): void;
     private attachMoveListeners;
     private detachMoveListeners;
     private toggleSideAnimations;
@@ -248,6 +251,7 @@ declare class FlexibleColumnLayout extends UI5Element {
     convertColumnWidthToPixels(width: string | number): number;
     convertToRelativeColumnWidth(pxWidth: string | number): string;
     getNextLayoutOnSeparatorMovement(separator: HTMLElement, isStartToEndDirection: boolean, fclLayoutBeforeMove: FCLLayout, columnLayoutAfterMove: FlexibleColumnLayoutColumnLayout): FCLLayout;
+    switchLayoutOnArrowPress(): void;
     get _availableWidthForColumns(): number;
     /**
      * Checks if a column is hidden based on its width.
@@ -286,64 +290,30 @@ declare class FlexibleColumnLayout extends UI5Element {
     * @public
     */
     get visibleColumns(): number;
-    get classes(): {
-        root: {
-            "ui5-fcl-root": boolean;
-        };
-        columns: {
-            start: {
-                "ui5-fcl-column": boolean;
-                "ui5-fcl-column-animation": boolean;
-                "ui5-fcl-column--start": boolean;
-            };
-            middle: {
-                "ui5-fcl-column": boolean;
-                "ui5-fcl-column-animation": boolean;
-                "ui5-fcl-column--middle": boolean;
-            };
-            end: {
-                "ui5-fcl-column": boolean;
-                "ui5-fcl-column-animation": boolean;
-                "ui5-fcl-column--end": boolean;
-            };
-        };
-    };
-    get styles(): {
-        separator: {
-            start: {
-                display: string;
-            };
-            end: {
-                display: string;
-            };
-        };
-        grip: {
-            start: {
-                display: string;
-            };
-            end: {
-                display: string;
-            };
-        };
-    };
     get startColumnWidth(): string | number;
     get midColumnWidth(): string | number;
     get endColumnWidth(): string | number;
     get showStartSeparator(): boolean;
     get showEndSeparator(): boolean;
     get showStartSeparatorGrip(): boolean | undefined;
+    get showStartSeparatorArrow(): boolean | undefined;
     get showEndSeparatorGrip(): boolean | undefined;
     get startSeparatorGripVisibility(): boolean | undefined;
     get endSeparatorGripVisibility(): boolean | undefined;
+    get startSeparatorArrowVisibility(): boolean | undefined;
+    get startArrowDirection(): "forward" | "backward" | undefined;
+    get startArrowDOM(): HTMLElement;
     get effectiveSeparatorsInfo(): {
         visible: boolean;
         gripVisible?: boolean;
+        arrowVisible?: boolean;
+        arrowDirection?: "forward" | "backward";
     }[];
-    get effectiveLayout(): "OneColumn" | "TwoColumnsStartExpanded" | "TwoColumnsMidExpanded" | "ThreeColumnsMidExpanded" | "ThreeColumnsEndExpanded" | "ThreeColumnsStartExpandedEndHidden" | "ThreeColumnsMidExpandedEndHidden" | "MidColumnFullScreen" | "EndColumnFullScreen" | FCLLayout;
+    get effectiveLayout(): "OneColumn" | "TwoColumnsStartExpanded" | "TwoColumnsMidExpanded" | "ThreeColumnsMidExpanded" | "ThreeColumnsEndExpanded" | "ThreeColumnsStartExpandedEndHidden" | "ThreeColumnsMidExpandedEndHidden" | "ThreeColumnsStartHiddenMidExpanded" | "ThreeColumnsStartHiddenEndExpanded" | "MidColumnFullScreen" | "EndColumnFullScreen" | FCLLayout;
     get startSeparatorDOM(): HTMLElement;
     get endSeparatorDOM(): HTMLElement;
     get startSeparatorTabIndex(): 0 | undefined;
-    get endSeparatorTabIndex(): -1 | 0;
+    get endSeparatorTabIndex(): 0 | -1;
     get media(): MEDIA;
     get widthDOM(): number;
     get startColumnDOM(): HTMLElement;
@@ -357,8 +327,8 @@ declare class FlexibleColumnLayout extends UI5Element {
     get accStartColumnRole(): FCLAccessibilityRoles | undefined;
     get accMiddleColumnRole(): FCLAccessibilityRoles | undefined;
     get accEndColumnRole(): FCLAccessibilityRoles | undefined;
-    get accStartSeparatorRole(): FCLAccessibilityRoles | "separator";
-    get accEndSeparatorRole(): FCLAccessibilityRoles | "separator";
+    get accStartSeparatorRole(): "separator" | FCLAccessibilityRoles;
+    get accEndSeparatorRole(): "separator" | FCLAccessibilityRoles;
     get _effectiveLayoutsByMedia(): LayoutConfiguration;
     get _accAttributes(): {
         columns: {

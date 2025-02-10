@@ -2,8 +2,8 @@ import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
-import Input from "./Input.js";
-import Popover from "./Popover.js";
+import type Input from "./Input.js";
+import type Popover from "./Popover.js";
 type FileData = {
     fileName: string;
     fileSize: number;
@@ -39,6 +39,10 @@ type FileUploaderChangeEventDetail = {
  * @public
  */
 declare class FileUploader extends UI5Element implements IFormInputElement {
+    eventDetails: {
+        "change": FileUploaderChangeEventDetail;
+        "file-size-exceed": FileUploaderFileSizeExceedEventDetail;
+    };
     /**
      * Comma-separated list of file types that the component should accept.
      *
@@ -135,7 +139,7 @@ declare class FileUploader extends UI5Element implements IFormInputElement {
     get formFormattedValue(): FormData | null;
     _onmouseover(): void;
     _onmouseout(): void;
-    _onclick(e: MouseEvent): void;
+    _onclick(): void;
     _onkeydown(e: KeyboardEvent): void;
     _onkeyup(e: KeyboardEvent): void;
     _ondrag(e: DragEvent): void;
@@ -180,20 +184,6 @@ declare class FileUploader extends UI5Element implements IFormInputElement {
      * This method is relevant for sap_horizon theme only
      */
     get _valueStateMessageInputIcon(): string;
-    get classes(): {
-        popoverValueState: {
-            "ui5-valuestatemessage-root": boolean;
-            "ui5-valuestatemessage--success": boolean;
-            "ui5-valuestatemessage--error": boolean;
-            "ui5-valuestatemessage--warning": boolean;
-            "ui5-valuestatemessage--information": boolean;
-        };
-    };
-    get styles(): {
-        popoverHeader: {
-            width: string;
-        };
-    };
     get ui5Input(): Input | null;
 }
 export default FileUploader;

@@ -8,19 +8,15 @@ var FileUploader_1;
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
-import event from "@ui5/webcomponents-base/dist/decorators/event.js";
+import event from "@ui5/webcomponents-base/dist/decorators/event-strict.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
-import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
+import jsxRenderer from "@ui5/webcomponents-base/dist/renderer/JsxRenderer.js";
 import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
-import { getEventMark } from "@ui5/webcomponents-base/dist/MarkedEvents.js";
 import { isEnter, isSpace } from "@ui5/webcomponents-base/dist/Keys.js";
 import { FILEUPLOAD_BROWSE, FILEUPLOADER_TITLE, VALUE_STATE_SUCCESS, VALUE_STATE_INFORMATION, VALUE_STATE_ERROR, VALUE_STATE_WARNING, } from "./generated/i18n/i18n-defaults.js";
-import Input from "./Input.js";
-import Popover from "./Popover.js";
-import Icon from "./Icon.js";
 // Template
-import FileUploaderTemplate from "./generated/templates/FileUploaderTemplate.lit.js";
+import FileUploaderTemplate from "./FileUploaderTemplate.js";
 // Styles
 import FileUploaderCss from "./generated/themes/FileUploader.css.js";
 import ResponsivePopoverCommonCss from "./generated/themes/ResponsivePopoverCommon.css.js";
@@ -121,8 +117,8 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
             item.classList.remove("ui5_hovered");
         });
     }
-    _onclick(e) {
-        if (getEventMark(e) === "button") {
+    _onclick() {
+        if (this.getFocusDomRef()?.matches(":focus-within")) {
             this._input.click();
         }
     }
@@ -155,7 +151,7 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
         }
         this._input.files = validatedFiles;
         this._updateValue(validatedFiles);
-        this.fireEvent("change", {
+        this.fireDecoratorEvent("change", {
             files: validatedFiles,
         });
     }
@@ -191,7 +187,7 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
             return;
         }
         this._updateValue(changedFiles);
-        this.fireEvent("change", {
+        this.fireDecoratorEvent("change", {
             files: changedFiles,
         });
     }
@@ -208,7 +204,7 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
     _validateFiles(changedFiles) {
         const exceededFilesData = this.maxFileSize ? this._getExceededFiles(changedFiles) : [];
         if (exceededFilesData.length) {
-            this.fireEvent("file-size-exceed", {
+            this.fireDecoratorEvent("file-size-exceed", {
                 filesData: exceededFilesData,
             });
             changedFiles = new DataTransfer().files;
@@ -308,24 +304,6 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
         };
         return this.valueState !== ValueState.None ? iconPerValueState[this.valueState] : "";
     }
-    get classes() {
-        return {
-            popoverValueState: {
-                "ui5-valuestatemessage-root": true,
-                "ui5-valuestatemessage--success": this.valueState === ValueState.Positive,
-                "ui5-valuestatemessage--error": this.valueState === ValueState.Negative,
-                "ui5-valuestatemessage--warning": this.valueState === ValueState.Critical,
-                "ui5-valuestatemessage--information": this.valueState === ValueState.Information,
-            },
-        };
-    }
-    get styles() {
-        return {
-            popoverHeader: {
-                "width": `${this.ui5Input ? this.ui5Input.offsetWidth : 0}px`,
-            },
-        };
-    }
     get ui5Input() {
         return this.shadowRoot.querySelector(".ui5-file-uploader-input");
     }
@@ -374,18 +352,13 @@ FileUploader = FileUploader_1 = __decorate([
         tag: "ui5-file-uploader",
         languageAware: true,
         formAssociated: true,
-        renderer: litRender,
+        renderer: jsxRenderer,
         styles: [
             FileUploaderCss,
             ResponsivePopoverCommonCss,
             ValueStateMessageCss,
         ],
         template: FileUploaderTemplate,
-        dependencies: [
-            Input,
-            Popover,
-            Icon,
-        ],
     })
     /**
      * Event is fired when the value of the file path has been changed.
@@ -396,12 +369,7 @@ FileUploader = FileUploader_1 = __decorate([
      */
     ,
     event("change", {
-        detail: {
-            /**
-             * @public
-             */
-            files: { type: FileList },
-        },
+        bubbles: true,
     })
     /**
      * Event is fired when the size of a file is above the `maxFileSize` property value.
@@ -411,12 +379,7 @@ FileUploader = FileUploader_1 = __decorate([
      */
     ,
     event("file-size-exceed", {
-        detail: {
-            /**
-             * @public
-             */
-            filesData: { type: (Array) },
-        },
+        bubbles: true,
     })
 ], FileUploader);
 FileUploader.define();

@@ -3,15 +3,16 @@ import type { ChangeInfo } from "@ui5/webcomponents-base/dist/UI5Element.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import "@ui5/webcomponents-icons/dist/slim-arrow-left.js";
 import "@ui5/webcomponents-icons/dist/slim-arrow-right.js";
+import "./SpecialCalendarDate.js";
 import CalendarPart from "./CalendarPart.js";
 import type { DayPickerChangeEventDetail } from "./DayPicker.js";
 import type { MonthPickerChangeEventDetail } from "./MonthPicker.js";
 import type { YearPickerChangeEventDetail } from "./YearPicker.js";
 import CalendarSelectionMode from "./types/CalendarSelectionMode.js";
 import CalendarPickersMode from "./types/CalendarPickersMode.js";
-import CalendarLegend from "./CalendarLegend.js";
+import type CalendarLegend from "./CalendarLegend.js";
 import type { CalendarLegendItemSelectionChangeEventDetail } from "./CalendarLegend.js";
-import SpecialCalendarDate from "./SpecialCalendarDate.js";
+import type SpecialCalendarDate from "./SpecialCalendarDate.js";
 import type CalendarLegendItemType from "./types/CalendarLegendItemType.js";
 import "@ui5/webcomponents-localization/dist/features/calendar/Gregorian.js";
 interface ICalendarPicker {
@@ -42,6 +43,7 @@ type CalendarSelectionChangeEventDetail = {
 type SpecialCalendarDateT = {
     specialDateTimestamp: number;
     type: `${CalendarLegendItemType}`;
+    tooltip?: string;
 };
 /**
  * @class
@@ -150,6 +152,11 @@ type SpecialCalendarDateT = {
  * @since 1.0.0-rc.11
  */
 declare class Calendar extends CalendarPart {
+    eventDetails: CalendarPart["eventDetails"] & {
+        "selection-change": CalendarSelectionChangeEventDetail;
+        "show-month-view": void;
+        "show-year-view": void;
+    };
     /**
      * Defines the type of selection used in the calendar component.
      * Accepted property values are:
@@ -229,12 +236,12 @@ declare class Calendar extends CalendarPart {
     /**
      * The user clicked the "month" button in the header
      */
-    onHeaderShowMonthPress(e: CustomEvent): void;
+    onHeaderShowMonthPress(): void;
     showMonth(): void;
     /**
      * The user clicked the "year" button in the header
      */
-    onHeaderShowYearPress(e: CustomEvent): void;
+    onHeaderShowYearPress(): void;
     showYear(): void;
     get _currentPickerDOM(): ICalendarPicker;
     /**

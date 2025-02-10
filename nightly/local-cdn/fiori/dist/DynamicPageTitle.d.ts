@@ -3,7 +3,7 @@ import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import type { ResizeObserverCallback } from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import type Toolbar from "@ui5/webcomponents/dist/Toolbar.js";
 import type { ToolbarMinWidthChangeEventDetail } from "@ui5/webcomponents/dist/Toolbar.js";
-import Title from "@ui5/webcomponents/dist/Title.js";
+import type Title from "@ui5/webcomponents/dist/Title.js";
 /**
  * @class
  *
@@ -37,6 +37,9 @@ import Title from "@ui5/webcomponents/dist/Title.js";
  * @since 2.0.0
  */
 declare class DynamicPageTitle extends UI5Element {
+    eventDetails: {
+        "toggle-title": void;
+    };
     /**
      * Defines if the title is snapped.
      *
@@ -148,22 +151,14 @@ declare class DynamicPageTitle extends UI5Element {
     onEnterDOM(): void;
     onExitDOM(): void;
     onBeforeRendering(): void;
-    get styles(): {
-        content: {
-            "min-width": string | undefined;
-        };
-        actions: {
-            "min-width": string | undefined;
-        };
-    };
     get hasContent(): boolean;
     get headingSlotName(): "heading" | "snappedHeading";
     get subheadingSlotName(): "subheading" | "snappedSubheading";
-    get _tabIndex(): "0" | undefined;
+    get _tabIndex(): 0 | undefined;
     get _headerExpanded(): boolean;
     get _ariaDescribedbyText(): string;
     get _ariaLabelledBy(): string | undefined;
-    get _needsSeparator(): number;
+    get _needsSeparator(): boolean;
     prepareLayoutActions(): void;
     handleResize(): void;
     onMinContentWidthChange(e: CustomEvent<ToolbarMinWidthChangeEventDetail>): void;

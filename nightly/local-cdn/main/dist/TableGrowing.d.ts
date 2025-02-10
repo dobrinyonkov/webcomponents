@@ -27,6 +27,10 @@ import TableGrowingMode from "./types/TableGrowingMode.js";
  * </ui5-table>
  * ```
  *
+ * **Notes**:
+ * * When the `ui5-table-growing` component is used with the `Scroll` type and the table is currently not scrollable,
+ * the component will render a growing button instead to ensure growing capabilities until the table becomes scrollable.
+ *
  * ### ES6 Module Import
  *
  * `import "@ui5/webcomponents/dist/TableGrowing.js";`
@@ -38,6 +42,9 @@ import TableGrowingMode from "./types/TableGrowingMode.js";
  * @experimental This web component is available since 2.0 with an experimental flag and its API and behavior are subject to change.
  */
 declare class TableGrowing extends UI5Element implements ITableGrowing {
+    eventDetails: {
+        "load-more": void;
+    };
     /**
      * Defines the mode of the <code>ui5-table</code> growing.
      *
@@ -45,7 +52,8 @@ declare class TableGrowing extends UI5Element implements ITableGrowing {
      *
      * Button - Shows a More button at the bottom of the table, pressing it will load more rows.
      *
-     * Scroll - The rows are loaded automatically by scrolling to the bottom of the table. If the table is not scrollable, this option is the same as the Button.
+     * Scroll - The rows are loaded automatically by scrolling to the bottom of the table. If the table is not scrollable,
+     * a growing button will be rendered instead to ensure growing functionality.
      * @default "Button"
      * @public
      */
@@ -70,24 +78,21 @@ declare class TableGrowing extends UI5Element implements ITableGrowing {
      */
     growingSubText?: string;
     /**
-     * Disables the growing feature.
-     */
-    disabled: boolean;
-    /**
      * Defines the active state of the growing button.
      * Used for keyboard interaction.
      * @private
      */
     _activeState: boolean;
+    _invalidate: number;
     readonly identifier = "TableGrowing";
     _table?: Table;
     _observer?: IntersectionObserver;
-    _individualSlot?: string;
     _currentLastRow?: HTMLElement;
     _shouldFocusRow?: boolean;
+    _renderContent: boolean;
     static i18nBundle: I18nBundle;
     onTableActivate(table: Table): void;
-    onTableRendered(): void;
+    onTableAfterRendering(): void;
     onExitDOM(): void;
     onBeforeRendering(): void;
     hasGrowingComponent(): boolean;

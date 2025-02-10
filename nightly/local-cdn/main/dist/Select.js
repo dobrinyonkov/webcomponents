@@ -8,21 +8,19 @@ var Select_1;
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
-import event from "@ui5/webcomponents-base/dist/decorators/event.js";
+import event from "@ui5/webcomponents-base/dist/decorators/event-strict.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
-import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
+import jsxRenderer from "@ui5/webcomponents-base/dist/renderer/JsxRenderer.js";
 import { isSpace, isUp, isDown, isEnter, isEscape, isHome, isEnd, isShow, isTabNext, isTabPrevious, } from "@ui5/webcomponents-base/dist/Keys.js";
 import announce from "@ui5/webcomponents-base/dist/util/InvisibleMessage.js";
-import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
+import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AccessibilityTextsHelper.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
-import "@ui5/webcomponents-icons/dist/slim-arrow-down.js";
 import "@ui5/webcomponents-icons/dist/error.js";
 import "@ui5/webcomponents-icons/dist/alert.js";
 import "@ui5/webcomponents-icons/dist/sys-enter-2.js";
 import "@ui5/webcomponents-icons/dist/information.js";
 import { isPhone } from "@ui5/webcomponents-base/dist/Device.js";
 import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
-import "@ui5/webcomponents-icons/dist/decline.js";
 import InvisibleMessageMode from "@ui5/webcomponents-base/dist/types/InvisibleMessageMode.js";
 import { getScopedVarName } from "@ui5/webcomponents-base/dist/CustomElementsScope.js";
 import List from "./List.js";
@@ -33,7 +31,7 @@ import Popover from "./Popover.js";
 import Icon from "./Icon.js";
 import Button from "./Button.js";
 // Templates
-import SelectTemplate from "./generated/templates/SelectTemplate.lit.js";
+import SelectTemplate from "./SelectTemplate.js";
 // Styles
 import selectCss from "./generated/themes/Select.css.js";
 import ResponsivePopoverCommonCss from "./generated/themes/ResponsivePopoverCommon.css.js";
@@ -150,7 +148,10 @@ let Select = Select_1 = class Select extends UI5Element {
     get formFormattedValue() {
         const selectedOption = this.selectedOption;
         if (selectedOption) {
-            return selectedOption.hasAttribute("value") ? selectedOption.value : selectedOption.textContent;
+            if ("value" in selectedOption && selectedOption.value) {
+                return selectedOption.value;
+            }
+            return selectedOption.hasAttribute("value") ? selectedOption.getAttribute("value") : selectedOption.textContent;
         }
         return "";
     }
@@ -177,6 +178,9 @@ let Select = Select_1 = class Select extends UI5Element {
                 break;
             }
         }
+    }
+    _applyFocus() {
+        this.focus();
     }
     _onfocusin() {
         this.focused = true;
@@ -343,7 +347,7 @@ let Select = Select_1 = class Select extends UI5Element {
             this.options[selectedIndex].selected = false;
         }
         if (selectedIndex !== index) {
-            this.fireEvent("live-change", { selectedOption: this.options[index] });
+            this.fireDecoratorEvent("live-change", { selectedOption: this.options[index] });
         }
         this.options[index].selected = true;
     }
@@ -419,7 +423,7 @@ let Select = Select_1 = class Select extends UI5Element {
         previousOption.focused = false;
         nextOption.selected = true;
         nextOption.focused = true;
-        this.fireEvent("live-change", { selectedOption: nextOption });
+        this.fireDecoratorEvent("live-change", { selectedOption: nextOption });
         if (!this._isPickerOpen) {
             // arrow pressed on closed picker - do selection change
             this._fireChangeEvent(nextOption);
@@ -437,7 +441,7 @@ let Select = Select_1 = class Select extends UI5Element {
     }
     _afterOpen() {
         this.opened = true;
-        this.fireEvent("open");
+        this.fireDecoratorEvent("open");
         this.itemSelectionAnnounce();
         this._scrollSelectedItem();
         this._applyFocusToSelectedItem();
@@ -459,15 +463,17 @@ let Select = Select_1 = class Select extends UI5Element {
             this._fireChangeEvent(this.options[this._selectedIndex]);
             this._lastSelectedOption = this.options[this._selectedIndex];
         }
-        this.fireEvent("close");
+        this.fireDecoratorEvent("close");
     }
     get hasCustomLabel() {
         return !!this.label.length;
     }
     _fireChangeEvent(selectedOption) {
-        const changePrevented = !this.fireEvent("change", { selectedOption }, true);
+        const changePrevented = !this.fireDecoratorEvent("change", { selectedOption });
         //  Angular two way data binding
-        this.fireEvent("selected-item-changed");
+        this.fireDecoratorEvent("selected-item-changed");
+        // Fire input event for Vue.js two-way binding
+        this.fireDecoratorEvent("input");
         if (changePrevented) {
             this._select(this._selectedIndexBeforeOpen);
         }
@@ -522,7 +528,7 @@ let Select = Select_1 = class Select extends UI5Element {
     get _effectiveTabIndex() {
         return this.disabled
             || (this.responsivePopover // Handles focus on Tab/Shift + Tab when the popover is opened
-                && this.responsivePopover.open) ? "-1" : "0";
+                && this.responsivePopover.open) ? -1 : 0;
     }
     /**
     * This method is relevant for sap_horizon theme only
@@ -673,7 +679,7 @@ Select = Select_1 = __decorate([
         tag: "ui5-select",
         languageAware: true,
         formAssociated: true,
-        renderer: litRender,
+        renderer: jsxRenderer,
         template: SelectTemplate,
         styles: [
             selectCss,
@@ -692,18 +698,13 @@ Select = Select_1 = __decorate([
     })
     /**
      * Fired when the selected option changes.
-     * @allowPreventDefault
      * @param {IOption} selectedOption the selected option.
      * @public
      */
     ,
     event("change", {
-        detail: {
-            /**
-            * @public
-            */
-            selectedOption: { type: HTMLElement },
-        },
+        bubbles: true,
+        cancelable: true,
     })
     /**
      * Fired when the user navigates through the options, but the selection is not finalized,
@@ -714,25 +715,38 @@ Select = Select_1 = __decorate([
      */
     ,
     event("live-change", {
-        detail: {
-            /**
-            * @public
-            */
-            selectedOption: { type: HTMLElement },
-        },
+        bubbles: true,
     })
     /**
      * Fired after the component's dropdown menu opens.
      * @public
      */
     ,
-    event("open")
+    event("open", {
+        bubbles: true,
+    })
     /**
      * Fired after the component's dropdown menu closes.
      * @public
      */
     ,
     event("close")
+    /**
+     * Fired to make Angular two way data binding work properly.
+     * @private
+     */
+    ,
+    event("selected-item-changed", {
+        bubbles: true,
+    })
+    /**
+     * Fired to make Vue.js two way data binding work properly.
+     * @private
+     */
+    ,
+    event("input", {
+        bubbles: true,
+    })
 ], Select);
 Select.define();
 export default Select;

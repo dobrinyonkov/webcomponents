@@ -7,21 +7,21 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var Link_1;
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
-import event from "@ui5/webcomponents-base/dist/decorators/event.js";
+import event from "@ui5/webcomponents-base/dist/decorators/event-strict.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
-import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
+import jsxRenderer from "@ui5/webcomponents-base/dist/renderer/JsxRenderer.js";
 import { isSpace, isEnter } from "@ui5/webcomponents-base/dist/Keys.js";
-import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
+import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AccessibilityTextsHelper.js";
 import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
-import { markEvent } from "@ui5/webcomponents-base/dist/MarkedEvents.js";
+import { isDesktop } from "@ui5/webcomponents-base/dist/Device.js";
+import toLowercaseEnumValue from "@ui5/webcomponents-base/dist/util/toLowercaseEnumValue.js";
 import { getLocationHostname, getLocationPort, getLocationProtocol } from "@ui5/webcomponents-base/dist/Location.js";
 import LinkDesign from "./types/LinkDesign.js";
 // Template
-import LinkTemplate from "./generated/templates/LinkTemplate.lit.js";
+import LinkTemplate from "./LinkTemplate.js";
 import { LINK_SUBTLE, LINK_EMPHASIZED } from "./generated/i18n/i18n-defaults.js";
 // Styles
 import linkCss from "./generated/themes/Link.css.js";
-import Icon from "./Icon.js";
 /**
  * @class
  *
@@ -113,12 +113,12 @@ let Link = Link_1 = class Link extends UI5Element {
          * @default {}
          */
         this.accessibilityAttributes = {};
-        /**
-         * Indicates if the element is on focus.
-         * @private
-         */
-        this.focused = false;
         this._dummyAnchor = document.createElement("a");
+    }
+    onEnterDOM() {
+        if (isDesktop()) {
+            this.setAttribute("desktop", "");
+        }
     }
     onBeforeRendering() {
         const needsNoReferrer = this.target !== "_self"
@@ -134,9 +134,9 @@ let Link = Link_1 = class Link extends UI5Element {
     }
     get effectiveTabIndex() {
         if (this.forcedTabIndex) {
-            return this.forcedTabIndex;
+            return Number.parseInt(this.forcedTabIndex);
         }
-        return (this.disabled || !this.textContent?.length) ? "-1" : "0";
+        return (this.disabled || !this.textContent?.length) ? -1 : 0;
     }
     get ariaLabelText() {
         return getEffectiveAriaLabelText(this);
@@ -157,7 +157,10 @@ let Link = Link_1 = class Link extends UI5Element {
         return (this.href && this.href.length > 0) ? this.href : undefined;
     }
     get effectiveAccRole() {
-        return this.accessibleRole.toLowerCase();
+        return toLowercaseEnumValue(this.accessibleRole);
+    }
+    get ariaDescriptionText() {
+        return this.accessibleDescription === "" ? undefined : this.accessibleDescription;
     }
     get _hasPopup() {
         return this.accessibilityAttributes.hasPopup;
@@ -165,23 +168,15 @@ let Link = Link_1 = class Link extends UI5Element {
     _onclick(e) {
         const { altKey, ctrlKey, metaKey, shiftKey, } = e;
         e.stopImmediatePropagation();
-        markEvent(e, "link");
-        const executeEvent = this.fireEvent("click", {
+        const executeEvent = this.fireDecoratorEvent("click", {
             altKey,
             ctrlKey,
             metaKey,
             shiftKey,
-        }, true);
+        });
         if (!executeEvent) {
             e.preventDefault();
         }
-    }
-    _onfocusin(e) {
-        markEvent(e, "link");
-        this.focused = true;
-    }
-    _onfocusout() {
-        this.focused = false;
     }
     _onkeydown(e) {
         if (isEnter(e) && !this.href) {
@@ -190,11 +185,9 @@ let Link = Link_1 = class Link extends UI5Element {
         else if (isSpace(e)) {
             e.preventDefault();
         }
-        markEvent(e, "link");
     }
     _onkeyup(e) {
         if (!isSpace(e)) {
-            markEvent(e, "link");
             return;
         }
         this._onclick(e);
@@ -237,6 +230,9 @@ __decorate([
 ], Link.prototype, "accessibilityAttributes", void 0);
 __decorate([
     property()
+], Link.prototype, "accessibleDescription", void 0);
+__decorate([
+    property()
 ], Link.prototype, "icon", void 0);
 __decorate([
     property()
@@ -248,25 +244,20 @@ __decorate([
     property({ noAttribute: true })
 ], Link.prototype, "forcedTabIndex", void 0);
 __decorate([
-    property({ type: Boolean })
-], Link.prototype, "focused", void 0);
-__decorate([
     i18n("@ui5/webcomponents")
 ], Link, "i18nBundle", void 0);
 Link = Link_1 = __decorate([
     customElement({
         tag: "ui5-link",
         languageAware: true,
-        renderer: litRender,
+        renderer: jsxRenderer,
         template: LinkTemplate,
         styles: linkCss,
-        dependencies: [Icon],
     })
     /**
      * Fired when the component is triggered either with a mouse/tap
      * or by using the Enter key.
      * @public
-     * @allowPreventDefault
      * @param {boolean} altKey Returns whether the "ALT" key was pressed when the event was triggered.
      * @param {boolean} ctrlKey Returns whether the "CTRL" key was pressed when the event was triggered.
      * @param {boolean} metaKey Returns whether the "META" key was pressed when the event was triggered.
@@ -274,24 +265,8 @@ Link = Link_1 = __decorate([
      */
     ,
     event("click", {
-        detail: {
-            /**
-             * @public
-             */
-            altKey: { type: Boolean },
-            /**
-             * @public
-             */
-            ctrlKey: { type: Boolean },
-            /**
-             * @public
-             */
-            metaKey: { type: Boolean },
-            /**
-             * @public
-             */
-            shiftKey: { type: Boolean },
-        },
+        bubbles: true,
+        cancelable: true,
     })
 ], Link);
 Link.define();

@@ -1,7 +1,15 @@
-commit 7e0eda8b5c06d46a7cf36bab49921438313e3ec4
-Author: Nikola Anachkov <87311182+NakataCode@users.noreply.github.com>
-Date:   Mon Oct 7 16:19:06 2024 +0300
+commit 60fca15cac836a74671a8d1b9fedcca006c71d8d
+Author: ilhan orhan <ilhan.orhan007@gmail.com>
+Date:   Fri Feb 7 10:26:46 2025 +0200
 
-    fix(ui5-list): handle spacebar in inputs and textareas to avoid list activation (#9775)
+    chore: add ElementInternals shim (#10782)
     
-    fix(Listitem): handle space in inputs and textareas to prevent list activation
+    With the introduce of the ButtonBadge, some users of jsdom complained of test failures because of the code below, caused by missing ElementInternals API in the jsdom env. As it's likely to need this for the SSR topic,  we now provide a shim for `attachInternals` method, returning a shim for the ElementInternals class.
+    
+    ```ts
+    if (needsOverflowVisible) {
+            this._internals.states.add("has-overlay-badge"); // fails in jsdom
+    } else {
+            this._internals.states.delete("has-overlay-badge"); // fails in jsdom
+    }
+    ```

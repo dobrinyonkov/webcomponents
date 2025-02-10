@@ -11,9 +11,9 @@
 
 
 
-  <script type="module" crossorigin src="/ui5-webcomponents/nightly/assets/test/pages/Button.html-aE3sqqEc.js"></script>
-  <link rel="modulepreload" crossorigin href="/ui5-webcomponents/nightly/assets/bundle.esm-Fr_NVLLO.js">
-  <link rel="stylesheet" crossorigin href="/ui5-webcomponents/nightly/assets/Button--T27UjSZ.css">
+  <script type="module" crossorigin src="/ui5-webcomponents/nightly/assets/test/pages/Button.html-C_viURTt.js"></script>
+  <link rel="modulepreload" crossorigin href="/ui5-webcomponents/nightly/assets/bundle.esm-PcKZ0fnc.js">
+  <link rel="stylesheet" crossorigin href="/ui5-webcomponents/nightly/assets/Button-Bf7nPyKK.css">
 </head>
 
 <body>
@@ -22,8 +22,19 @@
 
 	<ui5-ai-button id="myAiButton" state="generate">
 		<ui5-ai-button-state name="generate" text="Generate" icon="ai"></ui5-ai-button-state>
-		<ui5-ai-button-state name="generating" text="Stop Generation" icon="stop"></ui5-ai-button-state>
+		<ui5-ai-button-state name="generating" text="Stop Generating" icon="stop"></ui5-ai-button-state>
 		<ui5-ai-button-state name="revise" text="Revise" icon="ai" end-icon="navigation-down-arrow"></ui5-ai-button-state>
+	</ui5-ai-button>
+	<br/>
+	<br/>
+
+	<ui5-title level="H3">AI Button with split mode state</ui5-title>
+	<br/>
+
+	<ui5-ai-button id="myAiButtonSplit" state="generate">
+		<ui5-ai-button-state name="generate" text="Regenerate" icon="ai"></ui5-ai-button-state>
+		<ui5-ai-button-state name="generating" text="Stop Generating" icon="stop"></ui5-ai-button-state>
+		<ui5-ai-button-state name="revise" text="Regenerate" icon="ai" show-arrow-button></ui5-ai-button-state>
 	</ui5-ai-button>
 	<br/>
 	<br/>
@@ -31,7 +42,7 @@
 	<ui5-title level="H3">Icon-only AI Button with Menu</ui5-title>
 	<br/>
 
-	<ui5-ai-button id="myAiButtonIconOnly" state="revise">
+	<ui5-ai-button id="myAiButtonIconOnly" state="generate">
 		<ui5-ai-button-state name="generate" icon="ai"></ui5-ai-button-state>
 		<ui5-ai-button-state name="generating" icon="stop"></ui5-ai-button-state>
 		<ui5-ai-button-state name="revise" icon="ai" end-icon="navigation-down-arrow"></ui5-ai-button-state>
@@ -45,10 +56,9 @@
 			<ui5-menu-item text="Option 2"></ui5-menu-item>
 			<ui5-menu-item text="Option 3"></ui5-menu-item>
 		</ui5-menu-item>
-		<ui5-menu-item text="Text Length">
-			<ui5-menu-item text="Short"></ui5-menu-item>
-			<ui5-menu-item text="Medium"></ui5-menu-item>
-			<ui5-menu-item text="Long"></ui5-menu-item>
+		<ui5-menu-item text="Adjust Length">
+			<ui5-menu-item text="Shorten text"></ui5-menu-item>
+			<ui5-menu-item text="Lengthen text"></ui5-menu-item>
 		</ui5-menu-item>
 		<ui5-menu-item text="Bulleted List"></ui5-menu-item>
 		<ui5-menu-item text="Translate">
@@ -56,6 +66,11 @@
 			<ui5-menu-item text="German"></ui5-menu-item>
 			<ui5-menu-item text="Spanish"></ui5-menu-item>
 		</ui5-menu-item>
+	</ui5-menu>
+
+	<ui5-menu id="menuReg">
+		<ui5-menu-item text="Edit Prompt"></ui5-menu-item>
+		<ui5-menu-item text="Change Tone"></ui5-menu-item>
 	</ui5-menu>
 
 	<br/>
@@ -80,8 +95,8 @@
 				<ui5-label style="align-self: flex-end;" required>Offer: </ui5-label>
 				<ui5-ai-button id="quickPromptAiButton" class="quickPromptAiButton" state="generate">
 					<ui5-ai-button-state name="generate" text="Generate" icon="ai"></ui5-ai-button-state>
-					<ui5-ai-button-state name="generating" text="Stop Generation" icon="stop"></ui5-ai-button-state>
-					<ui5-ai-button-state name="reviseGenerating" text="Stop Generation" icon="stop"></ui5-ai-button-state>
+					<ui5-ai-button-state name="generating" text="Stop Generating" icon="stop"></ui5-ai-button-state>
+					<ui5-ai-button-state name="reviseGenerating" text="Stop Generating" icon="stop"></ui5-ai-button-state>
 					<ui5-ai-button-state name="revise" text="Revise" icon="ai" end-icon="navigation-down-arrow"></ui5-ai-button-state>
 				</ui5-ai-button>
 			</div>
@@ -102,7 +117,7 @@
 			<ui5-menu-item text="Simplify"></ui5-menu-item>
 			<ui5-menu-item text="Expand"></ui5-menu-item>
 			<ui5-menu-item text="Rephrase"></ui5-menu-item>
-			<ui5-menu-item text="Summarise"></ui5-menu-item>
+			<ui5-menu-item text="Summarize"></ui5-menu-item>
 		</ui5-menu-item>
 		<ui5-menu-item text="Make Bulleted List"></ui5-menu-item>
 		<ui5-menu-item text="Translate">

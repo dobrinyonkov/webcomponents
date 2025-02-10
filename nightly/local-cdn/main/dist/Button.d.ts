@@ -1,12 +1,12 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
-import type { AccessibilityAttributes, PassiveEventListenerObject } from "@ui5/webcomponents-base/dist/types.js";
+import type { AccessibilityAttributes, AriaRole } from "@ui5/webcomponents-base";
 import type { ITabbable } from "@ui5/webcomponents-base/dist/delegate/ItemNavigation.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import type { I18nText } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import ButtonDesign from "./types/ButtonDesign.js";
 import ButtonType from "./types/ButtonType.js";
 import type ButtonAccessibleRole from "./types/ButtonAccessibleRole.js";
-import IconMode from "./types/IconMode.js";
+import type ButtonBadge from "./ButtonBadge.js";
 /**
  * Interface for components that may be used as a button inside numerous higher-order components
  * @public
@@ -41,12 +41,17 @@ type ButtonAccessibilityAttributes = Pick<AccessibilityAttributes, "expanded" | 
  *
  * `import "@ui5/webcomponents/dist/Button.js";`
  * @csspart button - Used to style the native button element
+ * @csspart icon - Used to style the icon in the native button element
+ * @csspart endIcon - Used to style the end icon in the native button element
  * @constructor
  * @extends UI5Element
  * @implements { IButton }
  * @public
  */
 declare class Button extends UI5Element implements IButton {
+    eventDetails: {
+        "active-state-change": void;
+    };
     /**
      * Defines the component design.
      * @default "Default"
@@ -137,6 +142,13 @@ declare class Button extends UI5Element implements IButton {
      */
     accessibilityAttributes: ButtonAccessibilityAttributes;
     /**
+     * Defines the accessible description of the component.
+     * @default undefined
+     * @public
+     * @since 2.5.0
+     */
+    accessibleDescription?: string;
+    /**
      * Defines whether the button has special form-related functionality.
      *
      * **Note:** This property is only applicable within the context of an HTML Form element.
@@ -207,36 +219,41 @@ declare class Button extends UI5Element implements IButton {
      * @public
      */
     text: Array<Node>;
+    /**
+     * Adds a badge to the button.
+     * @since 2.7.0
+     * @public
+     */
+    badge: Array<ButtonBadge>;
     _deactivate: () => void;
-    _ontouchstart: PassiveEventListenerObject;
     static i18nBundle: I18nBundle;
     constructor();
+    _ontouchstart(): void;
     onEnterDOM(): void;
     onBeforeRendering(): Promise<void>;
-    _onclick(e: MouseEvent): void;
-    _onmousedown(e: MouseEvent): void;
+    _setBadgeOverlayStyle(): void;
+    _onclick(): void;
+    _onmousedown(): void;
     _ontouchend(e: TouchEvent): void;
-    _onmouseup(e: MouseEvent): void;
     _onkeydown(e: KeyboardEvent): void;
     _onkeyup(e: KeyboardEvent): void;
     _onfocusout(): void;
-    _onfocusin(e: FocusEvent): void;
     _setActiveState(active: boolean): void;
-    get _hasPopup(): ("dialog" | "grid" | "listbox" | "menu" | "tree") | undefined;
+    get _hasPopup(): import("@ui5/webcomponents-base").AriaHasPopup | undefined;
     get hasButtonType(): boolean;
-    get iconMode(): "" | IconMode.Decorative;
-    get endIconMode(): "" | IconMode.Decorative;
     get isIconOnly(): boolean;
     static typeTextMappings(): Record<string, I18nText>;
     getDefaultTooltip(): Promise<string | undefined> | undefined;
     get buttonTypeText(): string;
-    get effectiveAccRole(): string;
-    get tabIndexValue(): string | undefined;
+    get effectiveAccRole(): AriaRole;
+    get tabIndexValue(): number | undefined;
     get showIconTooltip(): boolean;
     get ariaLabelText(): string | undefined;
     get ariaDescribedbyText(): "ui5-button-hiddenText-type" | undefined;
+    get ariaDescriptionText(): string | undefined;
     get _isSubmit(): boolean;
     get _isReset(): boolean;
+    get shouldRenderBadge(): boolean;
 }
 export default Button;
 export type { ButtonAccessibilityAttributes, IButton, };

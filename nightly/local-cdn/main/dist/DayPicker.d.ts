@@ -13,13 +13,14 @@ type Day = {
     timestamp: string;
     day: number;
     focusRef: boolean;
-    _tabIndex: string;
+    _tabIndex: number;
     selected: boolean;
     _isSecondaryCalendarType: boolean;
     classes: string;
+    tooltip?: string;
     ariaLabel: string;
-    ariaSelected: string;
-    ariaDisabled: string | undefined;
+    ariaSelected: boolean;
+    ariaDisabled: boolean | undefined;
     disabled: boolean;
     secondDay?: number;
     weekNum?: number;
@@ -48,6 +49,10 @@ type DayPickerNavigateEventDetail = {
  * @private
  */
 declare class DayPicker extends CalendarPart implements ICalendarPicker {
+    eventDetails: CalendarPart["eventDetails"] & {
+        "change": DayPickerChangeEventDetail;
+        "navigate": DayPickerNavigateEventDetail;
+    };
     /**
      * An array of UTC timestamps representing the selected date or dates depending on the capabilities of the picker component.
      * @default []
@@ -214,14 +219,9 @@ declare class DayPicker extends CalendarPart implements ICalendarPicker {
     _updateSecondTimestamp(): void;
     get _specialCalendarDates(): SpecialCalendarDateT[];
     get shouldHideWeekNumbers(): boolean;
-    get classes(): {
-        root: {
-            "ui5-dp-root": boolean;
-            "ui5-dp-twocalendartypes": boolean;
-        };
-    };
     _isWeekend(oDate: CalendarDate): boolean;
     _isDayPressed(target: HTMLElement): boolean;
+    _isDefaultCalendarLegendType(type: string): boolean;
     _getSecondaryDay(tempDate: CalendarDate): CalendarDate;
     _getFirstDay(): CalendarDate;
     _getFirstDayOfWeek(): number;

@@ -8,10 +8,10 @@ var Table_1;
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
-import event from "@ui5/webcomponents-base/dist/decorators/event.js";
+import event from "@ui5/webcomponents-base/dist/decorators/event-strict.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
-import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
+import jsxRenderer from "@ui5/webcomponents-base/dist/renderer/JsxRenderer.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import ItemNavigation from "@ui5/webcomponents-base/dist/delegate/ItemNavigation.js";
 import NavigationMode from "@ui5/webcomponents-base/dist/types/NavigationMode.js";
@@ -19,16 +19,14 @@ import { isTabNext, isTabPrevious, isSpace, isEnter, isCtrlA, isUpAlt, isDownAlt
 import getNormalizedTarget from "@ui5/webcomponents-base/dist/util/getNormalizedTarget.js";
 import getActiveElement from "@ui5/webcomponents-base/dist/util/getActiveElement.js";
 import { getLastTabbableElement, getTabbableElements } from "@ui5/webcomponents-base/dist/util/TabbableElements.js";
-import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
+import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AccessibilityTextsHelper.js";
 import debounce from "@ui5/webcomponents-base/dist/util/debounce.js";
-import BusyIndicator from "@ui5/webcomponents/dist/BusyIndicator.js";
-import CheckBox from "@ui5/webcomponents/dist/CheckBox.js";
 import TableGrowingMode from "./types/TableGrowingMode.js";
 import TableMode from "./types/TableMode.js";
 // Texts
 import { LOAD_MORE_TEXT, ARIA_LABEL_SELECT_ALL_CHECKBOX, TABLE_HEADER_ROW_INFORMATION, TABLE_ROW_POSITION, } from "./generated/i18n/i18n-defaults.js";
 // Template
-import TableTemplate from "./generated/templates/TableTemplate.lit.js";
+import TableTemplate from "./TableTemplate.js";
 // Styles
 import tableStyles from "./generated/themes/Table.css.js";
 const GROWING_WITH_SCROLL_DEBOUNCE_RATE = 250; // ms
@@ -354,7 +352,7 @@ let Table = Table_1 = class Table extends UI5Element {
             nextItem.focus();
         }
         const selectedRows = this.selectedRows;
-        this.fireEvent("selection-change", {
+        this.fireDecoratorEvent("selection-change", {
             selectedRows,
             previouslySelectedRows,
         });
@@ -380,7 +378,7 @@ let Table = Table_1 = class Table extends UI5Element {
             rows[rows.length - 1].focus();
         }
         const selectedRows = this.selectedRows;
-        this.fireEvent("selection-change", {
+        this.fireDecoratorEvent("selection-change", {
             selectedRows,
             previouslySelectedRows,
         });
@@ -569,7 +567,7 @@ let Table = Table_1 = class Table extends UI5Element {
         }
     }
     _onLoadMoreClick() {
-        this.fireEvent("load-more");
+        this.fireDecoratorEvent("load-more");
     }
     observeTableEnd() {
         if (!this.tableEndObserved) {
@@ -587,7 +585,7 @@ let Table = Table_1 = class Table extends UI5Element {
         }
     }
     loadMore() {
-        this.fireEvent("load-more");
+        this.fireDecoratorEvent("load-more");
     }
     _handleSingleSelect(e) {
         const row = this.getRowParent(e.target);
@@ -602,7 +600,7 @@ let Table = Table_1 = class Table extends UI5Element {
                 }
             });
             row.selected = true;
-            this.fireEvent("selection-change", {
+            this.fireDecoratorEvent("selection-change", {
                 selectedRows: [row],
                 previouslySelectedRows,
             });
@@ -622,7 +620,7 @@ let Table = Table_1 = class Table extends UI5Element {
         else {
             this._allRowsSelected = false;
         }
-        this.fireEvent("selection-change", {
+        this.fireDecoratorEvent("selection-change", {
             selectedRows,
             previouslySelectedRows,
         });
@@ -644,7 +642,7 @@ let Table = Table_1 = class Table extends UI5Element {
             row.selected = bAllSelected;
         });
         const selectedRows = bAllSelected ? this.rows : [];
-        this.fireEvent("selection-change", {
+        this.fireDecoratorEvent("selection-change", {
             selectedRows,
             previouslySelectedRows,
         });
@@ -705,7 +703,7 @@ let Table = Table_1 = class Table extends UI5Element {
         // invalidate if hidden columns count has changed or columns are shown
         if (hiddenColumnsChange || shownColumnsChange) {
             this._hiddenColumns = hiddenColumns;
-            this.fireEvent("popin-change", {
+            this.fireDecoratorEvent("popin-change", {
                 poppedColumns: this._hiddenColumns,
             });
         }
@@ -867,9 +865,8 @@ Table = Table_1 = __decorate([
         tag: "ui5-table",
         fastNavigation: true,
         styles: tableStyles,
-        renderer: litRender,
+        renderer: jsxRenderer,
         template: TableTemplate,
-        dependencies: [BusyIndicator, CheckBox],
     })
     /** Fired when a row in `Active` mode is clicked or `Enter` key is pressed.
      * @param {HTMLElement} row the activated row.
@@ -877,12 +874,7 @@ Table = Table_1 = __decorate([
      */
     ,
     event("row-click", {
-        detail: {
-            /**
-            * @public
-            */
-            row: { type: HTMLElement },
-        },
+        bubbles: true,
     })
     /**
      * Fired when `ui5-table-column` is shown as a pop-in instead of hiding it.
@@ -892,14 +884,7 @@ Table = Table_1 = __decorate([
      */
     ,
     event("popin-change", {
-        detail: {
-            /**
-            * @public
-            */
-            poppedColumns: {
-                type: Array,
-            },
-        },
+        bubbles: true,
     })
     /**
      * Fired when the user presses the `More` button or scrolls to the table's end.
@@ -909,7 +894,9 @@ Table = Table_1 = __decorate([
      * @since 2.0.0
      */
     ,
-    event("load-more")
+    event("load-more", {
+        bubbles: true,
+    })
     /**
      * Fired when selection is changed by user interaction
      * in `SingleSelect` and `MultiSelect` modes.
@@ -920,16 +907,7 @@ Table = Table_1 = __decorate([
      */
     ,
     event("selection-change", {
-        detail: {
-            /**
-             * @public
-             */
-            selectedRows: { type: Array },
-            /**
-             * @public
-             */
-            previouslySelectedRows: { type: Array },
-        },
+        bubbles: true,
     })
 ], Table);
 Table.define();

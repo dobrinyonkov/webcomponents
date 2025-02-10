@@ -10,11 +10,8 @@ import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import { isPhone } from "@ui5/webcomponents-base/dist/Device.js";
 import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import { RESPONSIVE_POPOVER_CLOSE_DIALOG_BUTTON } from "./generated/i18n/i18n-defaults.js";
-import ResponsivePopoverTemplate from "./generated/templates/ResponsivePopoverTemplate.lit.js";
+import ResponsivePopoverTemplate from "./ResponsivePopoverTemplate.js";
 import Popover from "./Popover.js";
-import Dialog from "./Dialog.js";
-import Button from "./Button.js";
-import "@ui5/webcomponents-icons/dist/decline.js";
 // Styles
 import ResponsivePopoverCss from "./generated/themes/ResponsivePopover.css.js";
 /**
@@ -74,6 +71,9 @@ let ResponsivePopover = ResponsivePopover_1 = class ResponsivePopover extends Po
             return super._show();
         }
     }
+    _dialogCloseButtonClick() {
+        this.closePopup();
+    }
     /**
      * Closes the popover/dialog.
      * @override
@@ -120,19 +120,21 @@ let ResponsivePopover = ResponsivePopover_1 = class ResponsivePopover extends Po
     get _closeDialogAriaLabel() {
         return ResponsivePopover_1.i18nBundle.getText(RESPONSIVE_POPOVER_CLOSE_DIALOG_BUTTON);
     }
-    _beforeDialogOpen(e) {
+    _beforeDialogOpen() {
         this._opened = true;
         this.open = true;
-        this._propagateDialogEvent(e);
+        this.fireDecoratorEvent("before-open");
     }
-    _afterDialogClose(e) {
+    _afterDialogOpen() {
+        this.fireDecoratorEvent("open");
+    }
+    _beforeDialogClose(e) {
+        this.fireDecoratorEvent("before-close", e.detail);
+    }
+    _afterDialogClose() {
         this._opened = false;
         this.open = false;
-        this._propagateDialogEvent(e);
-    }
-    _propagateDialogEvent(e) {
-        const type = e.type.replace("ui5-", "");
-        this.fireEvent(type, e.detail);
+        this.fireDecoratorEvent("close");
     }
     get isModal() {
         if (!isPhone()) {
@@ -158,11 +160,6 @@ ResponsivePopover = ResponsivePopover_1 = __decorate([
         tag: "ui5-responsive-popover",
         styles: [Popover.styles, ResponsivePopoverCss],
         template: ResponsivePopoverTemplate,
-        dependencies: [
-            ...Popover.dependencies,
-            Button,
-            Dialog,
-        ],
     })
 ], ResponsivePopover);
 ResponsivePopover.define();

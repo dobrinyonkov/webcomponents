@@ -6,11 +6,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
-import event from "@ui5/webcomponents-base/dist/decorators/event.js";
-import Button from "./Button.js";
+import event from "@ui5/webcomponents-base/dist/decorators/event-strict.js";
 import ToolbarItem from "./ToolbarItem.js";
-import ToolbarButtonTemplate from "./generated/templates/ToolbarButtonTemplate.lit.js";
-import ToolbarPopoverButtonTemplate from "./generated/templates/ToolbarPopoverButtonTemplate.lit.js";
+import ToolbarButtonTemplate from "./ToolbarButtonTemplate.js";
+import ToolbarPopoverButtonTemplate from "./ToolbarPopoverButtonTemplate.js";
 import ToolbarButtonPopoverCss from "./generated/themes/ToolbarButtonPopover.css.js";
 import { registerToolbarItem } from "./ToolbarRegistry.js";
 /**
@@ -79,10 +78,12 @@ let ToolbarButton = class ToolbarButton extends ToolbarItem {
     static get toolbarPopoverTemplate() {
         return ToolbarPopoverButtonTemplate;
     }
-    get subscribedEvents() {
-        const map = new Map();
-        map.set("click", { preventClosing: false });
-        return map;
+    onClick(e) {
+        e.stopImmediatePropagation();
+        const prevented = !this.fireDecoratorEvent("click", { targetRef: e.target });
+        if (!prevented && !this.preventOverflowClosing) {
+            this.fireDecoratorEvent("close-overflow");
+        }
     }
 };
 __decorate([
@@ -118,7 +119,6 @@ __decorate([
 ToolbarButton = __decorate([
     customElement({
         tag: "ui5-toolbar-button",
-        dependencies: [Button],
         styles: ToolbarButtonPopoverCss,
     })
     /**
@@ -130,7 +130,10 @@ ToolbarButton = __decorate([
      * @public
      */
     ,
-    event("click")
+    event("click", {
+        bubbles: true,
+        cancelable: true,
+    })
 ], ToolbarButton);
 registerToolbarItem(ToolbarButton);
 ToolbarButton.define();

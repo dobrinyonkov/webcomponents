@@ -1,12 +1,10 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
-import "@ui5/webcomponents-icons/dist/slim-arrow-down.js";
 import "@ui5/webcomponents-icons/dist/error.js";
 import "@ui5/webcomponents-icons/dist/alert.js";
 import "@ui5/webcomponents-icons/dist/sys-enter-2.js";
 import "@ui5/webcomponents-icons/dist/information.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
-import "@ui5/webcomponents-icons/dist/decline.js";
 import type { Timeout } from "@ui5/webcomponents-base/dist/types.js";
 import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import type { ListItemClickEventDetail } from "./List.js";
@@ -17,14 +15,14 @@ import type ListItemBase from "./ListItemBase.js";
  * Interface for components that may be slotted inside `ui5-select` as options
  * @public
  */
-type IOption = ListItemBase & {
+interface IOption extends ListItemBase {
     tooltip?: string;
     icon?: string;
     value?: string;
     additionalText?: string;
-    focused?: boolean;
+    focused: boolean;
     effectiveDisplayText: string;
-};
+}
 type SelectChangeEventDetail = {
     selectedOption: IOption;
 };
@@ -74,6 +72,14 @@ type SelectLiveChangeEventDetail = {
  * @since 0.8.0
  */
 declare class Select extends UI5Element implements IFormInputElement {
+    eventDetails: {
+        "change": SelectChangeEventDetail;
+        "live-change": SelectLiveChangeEventDetail;
+        "open": void;
+        "close": void;
+        "selected-item-changed": void;
+        "input": void;
+    };
     static i18nBundle: I18nBundle;
     /**
      * Defines whether the component is in disabled state.
@@ -194,6 +200,7 @@ declare class Select extends UI5Element implements IFormInputElement {
     onBeforeRendering(): void;
     onAfterRendering(): void;
     _ensureSingleSelection(): void;
+    _applyFocus(): void;
     _onfocusin(): void;
     _onfocusout(): void;
     get _isPickerOpen(): boolean;
@@ -276,7 +283,7 @@ declare class Select extends UI5Element implements IFormInputElement {
     get isDisabled(): true | undefined;
     get _headerTitleText(): string;
     get _currentlySelectedOption(): IOption;
-    get _effectiveTabIndex(): "-1" | "0";
+    get _effectiveTabIndex(): 0 | -1;
     /**
     * This method is relevant for sap_horizon theme only
     */

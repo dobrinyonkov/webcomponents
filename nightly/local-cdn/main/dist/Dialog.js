@@ -13,16 +13,15 @@ import getEffectiveScrollbarStyle from "@ui5/webcomponents-base/dist/util/getEff
 import { isUp, isDown, isLeft, isRight, isUpShift, isDownShift, isLeftShift, isRightShift, } from "@ui5/webcomponents-base/dist/Keys.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
+import toLowercaseEnumValue from "@ui5/webcomponents-base/dist/util/toLowercaseEnumValue.js";
 import Popup from "./Popup.js";
-import Icon from "./Icon.js";
-import "@ui5/webcomponents-icons/dist/resize-corner.js";
 import "@ui5/webcomponents-icons/dist/error.js";
 import "@ui5/webcomponents-icons/dist/alert.js";
 import "@ui5/webcomponents-icons/dist/sys-enter-2.js";
 import "@ui5/webcomponents-icons/dist/information.js";
 import { DIALOG_HEADER_ARIA_ROLE_DESCRIPTION, DIALOG_HEADER_ARIA_DESCRIBEDBY_RESIZABLE, DIALOG_HEADER_ARIA_DESCRIBEDBY_DRAGGABLE, DIALOG_HEADER_ARIA_DESCRIBEDBY_DRAGGABLE_RESIZABLE, } from "./generated/i18n/i18n-defaults.js";
 // Template
-import DialogTemplate from "./generated/templates/DialogTemplate.lit.js";
+import DialogTemplate from "./DialogTemplate.js";
 // Styles
 import PopupsCommonCss from "./generated/themes/PopupsCommon.css.js";
 import dialogCSS from "./generated/themes/Dialog.css.js";
@@ -62,8 +61,7 @@ const ICON_PER_STATE = {
 
  *
  * ### Responsive Behavior
- * The `stretch` property can be used to stretch the
- * `ui5-dialog` on full screen.
+ * The `stretch` property can be used to stretch the `ui5-dialog` to full screen. For better usability, it's recommended to stretch the dialog to full screen on phone devices.
  *
  * **Note:** When a `ui5-bar` is used in the header or in the footer, you should remove the default dialog's paddings.
  *
@@ -100,10 +98,10 @@ let Dialog = Dialog_1 = class Dialog extends Popup {
     constructor() {
         super();
         /**
-         * Determines whether the component should be stretched to fullscreen.
+         * Determines if the dialog will be stretched to full screen on mobile. On desktop,
+         * the dialog will be stretched to approximately 90% of the viewport.
          *
-         * **Note:** The component will be stretched to approximately
-         * 90% of the viewport.
+         * **Note:** For better usability of the component it is recommended to set this property to "true" when the dialog is opened on phone.
          * @default false
          * @public
          */
@@ -199,7 +197,7 @@ let Dialog = Dialog_1 = class Dialog extends Popup {
         return !this.stretch && this.onDesktop && (this.draggable || this.resizable);
     }
     get _headerTabIndex() {
-        return this._movable ? "0" : undefined;
+        return this._movable ? 0 : undefined;
     }
     get _showResizeHandle() {
         return this.resizable && this.onDesktop;
@@ -227,9 +225,9 @@ let Dialog = Dialog_1 = class Dialog extends Popup {
             return undefined;
         }
         if (this.state === ValueState.Negative || this.state === ValueState.Critical) {
-            return PopupAccessibleRole.AlertDialog.toLowerCase();
+            return toLowercaseEnumValue(PopupAccessibleRole.AlertDialog);
         }
-        return this.accessibleRole.toLowerCase();
+        return toLowercaseEnumValue(this.accessibleRole);
     }
     _show() {
         super._show();
@@ -243,6 +241,7 @@ let Dialog = Dialog_1 = class Dialog extends Popup {
         super.onEnterDOM();
         this._attachScreenResizeHandler();
         this.addEventListener("dragstart", this._dragStartHandler);
+        this.setAttribute("data-sap-ui-fastnavgroup-container", "true");
     }
     onExitDOM() {
         super.onExitDOM();
@@ -488,10 +487,6 @@ Dialog = Dialog_1 = __decorate([
             PopupsCommonCss,
             dialogCSS,
             getEffectiveScrollbarStyle(),
-        ],
-        dependencies: [
-            Icon,
-            ...Popup.dependencies,
         ],
     })
 ], Dialog);

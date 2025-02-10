@@ -9,16 +9,15 @@ import { isDesktop } from "@ui5/webcomponents-base/dist/Device.js";
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
-import event from "@ui5/webcomponents-base/dist/decorators/event.js";
-import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
+import jsxRenderer from "@ui5/webcomponents-base/dist/renderer/JsxRenderer.js";
+import event from "@ui5/webcomponents-base/dist/decorators/event-strict.js";
 import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
-import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
+import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AccessibilityTextsHelper.js";
 import { isSpace, isEnter, isDown, isLeft, isUp, isRight, } from "@ui5/webcomponents-base/dist/Keys.js";
-import Label from "./Label.js";
 import RadioButtonGroup from "./RadioButtonGroup.js";
 // Template
-import RadioButtonTemplate from "./generated/templates/RadioButtonTemplate.lit.js";
+import RadioButtonTemplate from "./RadioButtonTemplate.js";
 // i18n
 import { VALUE_STATE_ERROR, VALUE_STATE_WARNING, VALUE_STATE_SUCCESS, VALUE_STATE_INFORMATION, FORM_SELECTABLE_REQUIRED2, } from "./generated/i18n/i18n-defaults.js";
 // Styles
@@ -82,8 +81,8 @@ let RadioButton = RadioButton_1 = class RadioButton extends UI5Element {
         /**
          * Defines whether the component is read-only.
          *
-         * **Note:** A read-only component is not editable,
-         * but still provides visual feedback upon user interaction.
+         * **Note:** A read-only component isn't editable or selectable.
+         * However, because it's focusable, it still provides visual feedback upon user interaction.
          * @default false
          * @public
          */
@@ -101,6 +100,9 @@ let RadioButton = RadioButton_1 = class RadioButton extends UI5Element {
          * **Note:** The property value can be changed with user interaction,
          * either by clicking/tapping on the component,
          * or by using the Space or Enter key.
+         *
+         * **Note:** Only enabled radio buttons can be checked.
+         * Read-only radio buttons are not selectable, and therefore are always unchecked.
          * @default false
          * @formEvents change
          * @formProperty
@@ -251,7 +253,7 @@ let RadioButton = RadioButton_1 = class RadioButton extends UI5Element {
         }
         if (!this.name) {
             this.checked = !this.checked;
-            this.fireEvent("change");
+            this.fireDecoratorEvent("change");
             return this;
         }
         RadioButtonGroup.selectItem(this, this.name);
@@ -260,15 +262,8 @@ let RadioButton = RadioButton_1 = class RadioButton extends UI5Element {
     canToggle() {
         return !(this.disabled || this.readonly || this.checked);
     }
-    get classes() {
-        return {
-            inner: {
-                "ui5-radio-inner--hoverable": !this.disabled && !this.readonly && isDesktop(),
-            },
-        };
-    }
     get effectiveAriaDisabled() {
-        return this.disabled ? "true" : null;
+        return (this.disabled || this.readonly) ? true : undefined;
     }
     get ariaLabelText() {
         return [getEffectiveAriaLabelText(this), this.text].filter(Boolean).join(" ");
@@ -296,12 +291,12 @@ let RadioButton = RadioButton_1 = class RadioButton extends UI5Element {
     get effectiveTabIndex() {
         const tabindex = this.getAttribute("tabindex");
         if (this.disabled) {
-            return "-1";
+            return -1;
         }
         if (this.name) {
             return this._tabIndex;
         }
-        return tabindex || "0";
+        return tabindex ? parseInt(tabindex) : 0;
     }
 };
 __decorate([
@@ -338,7 +333,7 @@ __decorate([
     property()
 ], RadioButton.prototype, "accessibleNameRef", void 0);
 __decorate([
-    property()
+    property({ type: Number })
 ], RadioButton.prototype, "_tabIndex", void 0);
 __decorate([
     property({ type: Boolean })
@@ -357,10 +352,9 @@ RadioButton = RadioButton_1 = __decorate([
         tag: "ui5-radio-button",
         languageAware: true,
         formAssociated: true,
-        renderer: litRender,
+        renderer: jsxRenderer,
         template: RadioButtonTemplate,
         styles: radioButtonCss,
-        dependencies: [Label],
     })
     /**
      * Fired when the component checked state changes.
@@ -368,7 +362,9 @@ RadioButton = RadioButton_1 = __decorate([
      * @since 1.0.0-rc.15
      */
     ,
-    event("change")
+    event("change", {
+        bubbles: true,
+    })
 ], RadioButton);
 RadioButton.define();
 export default RadioButton;

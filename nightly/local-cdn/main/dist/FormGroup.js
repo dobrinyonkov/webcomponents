@@ -32,7 +32,6 @@ import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
  * @public
  * @implements {IFormItem}
  * @since 2.0.0
- * @experimental This component is availabe since 2.0 under an experimental flag and its API and behaviour are subject to change.
  * @extends UI5Element
  */
 let FormGroup = class FormGroup extends UI5Element {
@@ -46,14 +45,12 @@ let FormGroup = class FormGroup extends UI5Element {
         this.colsL = 1;
         this.colsXl = 1;
         this.itemSpacing = "Normal";
-        this.labelSpan = "S12 M4 L4 XL4";
     }
     onBeforeRendering() {
         this.processFormItems();
     }
     processFormItems() {
         this.items.forEach((item) => {
-            item.labelSpan = this.labelSpan;
             item.itemSpacing = this.itemSpacing;
         });
     }
@@ -89,7 +86,10 @@ __decorate([
     property()
 ], FormGroup.prototype, "itemSpacing", void 0);
 FormGroup = __decorate([
-    customElement("ui5-form-group")
+    customElement({
+        tag: "ui5-form-group",
+        fastNavigation: true,
+    })
 ], FormGroup);
 FormGroup.define();
 export default FormGroup;

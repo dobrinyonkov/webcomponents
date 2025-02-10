@@ -9,23 +9,17 @@ import { isDesktop } from "@ui5/webcomponents-base/dist/Device.js";
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
-import event from "@ui5/webcomponents-base/dist/decorators/event.js";
-import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
+import event from "@ui5/webcomponents-base/dist/decorators/event-strict.js";
+import jsxRenderer from "@ui5/webcomponents-base/dist/renderer/JsxRenderer.js";
 import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
-import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
+import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AccessibilityTextsHelper.js";
 import { isSpace, isEnter } from "@ui5/webcomponents-base/dist/Keys.js";
-import "@ui5/webcomponents-icons/dist/accept.js";
-import "@ui5/webcomponents-icons/dist/complete.js";
-import "@ui5/webcomponents-icons/dist/border.js";
-import "@ui5/webcomponents-icons/dist/tri-state.js";
-import Icon from "./Icon.js";
-import Label from "./Label.js";
 import { VALUE_STATE_ERROR, VALUE_STATE_WARNING, VALUE_STATE_SUCCESS, FORM_CHECKABLE_REQUIRED, } from "./generated/i18n/i18n-defaults.js";
 // Styles
 import checkboxCss from "./generated/themes/CheckBox.css.js";
 // Template
-import CheckBoxTemplate from "./generated/templates/CheckBoxTemplate.lit.js";
+import CheckBoxTemplate from "./CheckBoxTemplate.js";
 let isGlobalHandlerAttached = false;
 let activeCb;
 /**
@@ -230,10 +224,10 @@ let CheckBox = CheckBox_1 = class CheckBox extends UI5Element {
             else {
                 this.checked = !this.checked;
             }
-            const changePrevented = !this.fireEvent("change", null, true);
+            const changePrevented = !this.fireDecoratorEvent("change");
             // Angular two way data binding
-            const valueChagnePrevented = !this.fireEvent("value-changed", null, true);
-            if (changePrevented || valueChagnePrevented) {
+            const valueChangePrevented = !this.fireDecoratorEvent("value-changed");
+            if (changePrevented || valueChangePrevented) {
                 this.checked = lastState.checked;
                 this.indeterminate = lastState.indeterminate;
             }
@@ -288,22 +282,18 @@ let CheckBox = CheckBox_1 = class CheckBox extends UI5Element {
     }
     get effectiveTabIndex() {
         const tabindex = this.getAttribute("tabindex");
-        return this.disabled || this.displayOnly ? undefined : tabindex || "0";
+        if (this.tabbable) {
+            return tabindex ? parseInt(tabindex) : 0;
+        }
+    }
+    get tabbable() {
+        return !this.disabled && !this.displayOnly;
     }
     get isCompletelyChecked() {
         return this.checked && !this.indeterminate;
     }
     get isDisplayOnly() {
         return this.displayOnly && !this.disabled;
-    }
-    get displayOnlyIcon() {
-        if (this.isCompletelyChecked) {
-            return "complete";
-        }
-        if (this.checked && this.indeterminate) {
-            return "tri-state";
-        }
-        return "border";
     }
 };
 __decorate([
@@ -353,21 +343,28 @@ CheckBox = CheckBox_1 = __decorate([
         tag: "ui5-checkbox",
         languageAware: true,
         formAssociated: true,
-        renderer: litRender,
+        renderer: jsxRenderer,
         template: CheckBoxTemplate,
         styles: checkboxCss,
-        dependencies: [
-            Label,
-            Icon,
-        ],
     })
     /**
      * Fired when the component checked state changes.
      * @public
-     * @allowPreventDefault
      */
     ,
-    event("change")
+    event("change", {
+        bubbles: true,
+        cancelable: true,
+    })
+    /**
+     * Fired to make Angular two way data binding work properly.
+     * @private
+     */
+    ,
+    event("value-changed", {
+        bubbles: true,
+        cancelable: true,
+    })
 ], CheckBox);
 CheckBox.define();
 export default CheckBox;

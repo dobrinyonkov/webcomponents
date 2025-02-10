@@ -32,9 +32,10 @@ type TimePickerEntityProperties = {
     textValue?: string;
     displayStep?: number;
     lastItemReplacement?: number;
-    showInnerCircle?: boolean;
+    hideFractions?: boolean;
     prependZero: boolean;
     active?: boolean;
+    skipAnimation?: boolean;
     focused?: boolean;
     hasSeparator?: boolean;
     attributes?: TimePickerEntityAttributes;
@@ -53,6 +54,9 @@ type TimePickerEntityProperties = {
  * @private
  */
 declare class TimePickerInternals extends UI5Element {
+    eventDetails: {
+        change: TimeSelectionChangeEventDetail;
+    };
     /**
      * Defines a formatted time value.
      * @default undefined
@@ -81,7 +85,7 @@ declare class TimePickerInternals extends UI5Element {
      * Contains calendar type.
      * @private
      */
-    _calendarType?: CalendarType;
+    _calendarType?: `${CalendarType}`;
     /**
      * Contains currently available Time Picker components depending on time format.
      * @private
@@ -167,7 +171,7 @@ declare class TimePickerInternals extends UI5Element {
     _secondsChange(seconds: number): void;
     _buttonAmPm(): SegmentedButton | null | undefined;
     _createPeriodComponent(): void;
-    _periodChange(evt: PointerEvent): void;
+    _periodChange(evt: MouseEvent): void;
     _calculatePeriodChange(period: string): void;
     /**
      * Shifts hours value with +/- 12 depending on hour value and day period.

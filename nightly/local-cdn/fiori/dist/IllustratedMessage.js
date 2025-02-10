@@ -12,16 +12,15 @@ import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import { getIllustrationDataSync, getIllustrationData } from "@ui5/webcomponents-base/dist/asset-registries/Illustrations.js";
-import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
-import Title from "@ui5/webcomponents/dist/Title.js";
-import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
+import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AccessibilityTextsHelper.js";
+import jsxRenderer from "@ui5/webcomponents-base/dist/renderer/JsxRenderer.js";
 import IllustrationMessageDesign from "./types/IllustrationMessageDesign.js";
 import IllustrationMessageType from "./types/IllustrationMessageType.js";
 import "./illustrations/BeforeSearch.js";
 // Styles
 import IllustratedMessageCss from "./generated/themes/IllustratedMessage.css.js";
 // Template
-import IllustratedMessageTemplate from "./generated/templates/IllustratedMessageTemplate.lit.js";
+import IllustratedMessageTemplate from "./IllustratedMessageTemplate.js";
 const getEffectiveIllustrationName = (name) => {
     if (name.startsWith("Tnt")) {
         return name.replace("Tnt", "tnt/");
@@ -350,10 +349,9 @@ IllustratedMessage = IllustratedMessage_1 = __decorate([
         tag: "ui5-illustrated-message",
         languageAware: true,
         themeAware: true,
-        renderer: litRender,
+        renderer: jsxRenderer,
         styles: IllustratedMessageCss,
         template: IllustratedMessageTemplate,
-        dependencies: [Title],
     })
 ], IllustratedMessage);
 IllustratedMessage.define();

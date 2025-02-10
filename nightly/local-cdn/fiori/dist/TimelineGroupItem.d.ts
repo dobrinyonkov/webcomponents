@@ -1,5 +1,5 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
-import TimelineLayout from "./types/TimelineLayout.js";
+import type TimelineLayout from "./types/TimelineLayout.js";
 import type { ITimelineItem } from "./Timeline.js";
 /**
  * @class
@@ -18,6 +18,9 @@ import type { ITimelineItem } from "./Timeline.js";
  * @since 2.1.0
  */
 declare class TimelineGroupItem extends UI5Element implements ITimelineItem {
+    eventDetails: {
+        "toggle": void;
+    };
     /**
      * Defines the text of the button that expands and collapses the group.
      * @default undefined
@@ -63,6 +66,5 @@ declare class TimelineGroupItem extends UI5Element implements ITimelineItem {
     onGroupItemClick(): void;
     get isGroupItem(): boolean;
     get _groupName(): string | undefined;
-    get _groupItemIcon(): "slim-arrow-down" | "slim-arrow-up" | "slim-arrow-left" | "slim-arrow-right";
 }
 export default TimelineGroupItem;

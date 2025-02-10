@@ -1,19 +1,19 @@
-import { ComponentFeature, registerComponentFeature } from "@ui5/webcomponents-base/dist/FeaturesRegistry.js";
 import generateHighlightedMarkup from "@ui5/webcomponents-base/dist/util/generateHighlightedMarkup.js";
-import List from "../List.js";
-import SuggestionItem from "../SuggestionItem.js";
-import Button from "../Button.js";
-import Icon from "../Icon.js";
+import "../SuggestionItem.js";
+import "../SuggestionItemGroup.js";
+import InputSuggestionsTemplate from "./InputSuggestionsTemplate.js";
+import Input from "../Input.js";
 import { LIST_ITEM_POSITION, LIST_ITEM_GROUP_HEADER, } from "../generated/i18n/i18n-defaults.js";
-import SuggestionItemGroup from "../SuggestionItemGroup.js";
 /**
  * A class to manage the `Input` suggestion items.
  * @class
  * @private
  */
-class Suggestions extends ComponentFeature {
+class Suggestions {
+    get template() {
+        return InputSuggestionsTemplate;
+    }
     constructor(component, slotName, highlight, handleFocus) {
-        super();
         // The component, that the suggestion would plug into.
         this.component = component;
         // Defines the items` slot name.
@@ -26,14 +26,16 @@ class Suggestions extends ComponentFeature {
         // that changes due to user interaction.
         this.selectedItemIndex = -1;
     }
-    onUp(e) {
+    onUp(e, indexOfItem) {
         e.preventDefault();
-        this._handleItemNavigation(false /* forward */);
+        const index = !this.isOpened && this._hasValueState && indexOfItem === -1 ? 0 : indexOfItem;
+        this._handleItemNavigation(false /* forward */, index);
         return true;
     }
-    onDown(e) {
+    onDown(e, indexOfItem) {
         e.preventDefault();
-        this._handleItemNavigation(true /* forward */);
+        const index = !this.isOpened && this._hasValueState && indexOfItem === -1 ? 0 : indexOfItem;
+        this._handleItemNavigation(true /* forward */, index);
         return true;
     }
     onSpace(e) {
@@ -196,7 +198,8 @@ class Suggestions extends ComponentFeature {
     isOpened() {
         return !!(this._getPicker()?.open);
     }
-    _handleItemNavigation(forward) {
+    _handleItemNavigation(forward, index) {
+        this.selectedItemIndex = index;
         if (!this._getItems().length) {
             return;
         }
@@ -396,18 +399,8 @@ class Suggestions extends ComponentFeature {
         this.accInfo = undefined;
         this.selectedItemIndex = 0;
     }
-    static get dependencies() {
-        return [
-            SuggestionItem,
-            SuggestionItemGroup,
-            List,
-            Button,
-            Icon,
-        ];
-    }
 }
 Suggestions.SCROLL_STEP = 60;
-// Add suggestions support to the global features registry so that Input.js can use it
-registerComponentFeature("InputSuggestions", Suggestions);
+Input.SuggestionsClass = Suggestions;
 export default Suggestions;
 //# sourceMappingURL=InputSuggestions.js.map

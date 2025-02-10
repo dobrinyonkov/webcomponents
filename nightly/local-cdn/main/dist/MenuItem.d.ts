@@ -1,11 +1,11 @@
-import type { AccessibilityAttributes } from "@ui5/webcomponents-base/dist/types.js";
+import type { AccessibilityAttributes, AriaHasPopup, AriaRole } from "@ui5/webcomponents-base";
 import "@ui5/webcomponents-icons/dist/nav-back.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import ItemNavigation from "@ui5/webcomponents-base/dist/delegate/ItemNavigation.js";
 import type { ListItemAccessibilityAttributes } from "./ListItem.js";
 import ListItem from "./ListItem.js";
-import ResponsivePopover from "./ResponsivePopover.js";
+import type ResponsivePopover from "./ResponsivePopover.js";
 import type PopoverPlacement from "./types/PopoverPlacement.js";
-import type { ResponsivePopoverBeforeCloseEventDetail } from "./ResponsivePopover.js";
 import type { IMenuItem } from "./Menu.js";
 type MenuBeforeOpenEventDetail = {
     item?: MenuItem;
@@ -38,6 +38,13 @@ type MenuItemAccessibilityAttributes = Pick<AccessibilityAttributes, "ariaKeySho
  * @public
  */
 declare class MenuItem extends ListItem implements IMenuItem {
+    eventDetails: ListItem["eventDetails"] & {
+        "before-open": MenuBeforeOpenEventDetail;
+        "open": void;
+        "before-close": MenuBeforeCloseEventDetail;
+        "close": void;
+        "close-menu": void;
+    };
     /**
      * Defines the text of the tree item.
      * @default undefined
@@ -152,6 +159,10 @@ declare class MenuItem extends ListItem implements IMenuItem {
      */
     endContent: Array<HTMLElement>;
     static i18nBundle: I18nBundle;
+    _itemNavigation: ItemNavigation;
+    constructor();
+    get _navigableItems(): Array<HTMLElement>;
+    _navigateToEndContent(isLast?: boolean): void;
     get placement(): `${PopoverPlacement}`;
     get isRtl(): boolean;
     get hasSubmenu(): boolean;
@@ -166,12 +177,13 @@ declare class MenuItem extends ListItem implements IMenuItem {
     get acessibleNameText(): string;
     get isSeparator(): boolean;
     onBeforeRendering(): void;
+    focus(focusOptions?: FocusOptions): Promise<void>;
     get _focusable(): boolean;
     get _accInfo(): {
-        role: string;
-        ariaHaspopup: "dialog" | "grid" | "listbox" | "menu" | "tree" | undefined;
-        ariaKeyShortcuts: string | undefined;
-        ariaHidden: boolean | undefined;
+        role: AriaRole;
+        ariaHaspopup?: `${AriaHasPopup}`;
+        ariaKeyShortcuts?: string;
+        ariaHidden?: boolean;
         ariaExpanded?: boolean;
         ariaLevel?: number;
         ariaLabel: string;
@@ -191,7 +203,7 @@ declare class MenuItem extends ListItem implements IMenuItem {
     _close(): void;
     _beforePopoverOpen(e: CustomEvent): void;
     _afterPopoverOpen(): void;
-    _beforePopoverClose(e: CustomEvent<ResponsivePopoverBeforeCloseEventDetail>): void;
+    _beforePopoverClose(e: CustomEvent): void;
     _afterPopoverClose(): void;
 }
 export default MenuItem;

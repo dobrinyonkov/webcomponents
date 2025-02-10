@@ -9,28 +9,20 @@ import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
-import event from "@ui5/webcomponents-base/dist/decorators/event.js";
+import event from "@ui5/webcomponents-base/dist/decorators/event-strict.js";
 import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import ItemNavigation from "@ui5/webcomponents-base/dist/delegate/ItemNavigation.js";
 import { locationOpen } from "@ui5/webcomponents-base/dist/Location.js";
-import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
+import jsxRenderer from "@ui5/webcomponents-base/dist/renderer/JsxRenderer.js";
 import { renderFinished } from "@ui5/webcomponents-base/dist/Render.js";
 import { isSpace, isShow, isEnter, } from "@ui5/webcomponents-base/dist/Keys.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import NavigationMode from "@ui5/webcomponents-base/dist/types/NavigationMode.js";
 import BreadcrumbsDesign from "./types/BreadcrumbsDesign.js";
-import BreadcrumbsItem from "./BreadcrumbsItem.js";
-import { BREADCRUMB_ITEM_POS, BREADCRUMBS_ARIA_LABEL, BREADCRUMBS_OVERFLOW_ARIA_LABEL, BREADCRUMBS_CANCEL_BUTTON, } from "./generated/i18n/i18n-defaults.js";
-import Link from "./Link.js";
-import Label from "./Label.js";
-import ResponsivePopover from "./ResponsivePopover.js";
-import List from "./List.js";
-import ListItemStandard from "./ListItemStandard.js";
-import Icon from "./Icon.js";
-import Button from "./Button.js";
-import "@ui5/webcomponents-icons/dist/slim-arrow-down.js";
+import "./BreadcrumbsItem.js";
+import { BREADCRUMB_ITEM_POS, BREADCRUMBS_ARIA_LABEL, BREADCRUMBS_OVERFLOW_ARIA_LABEL, BREADCRUMBS_CANCEL_BUTTON, FORM_SELECTABLE_AVALIABLE_VALUES, } from "./generated/i18n/i18n-defaults.js";
 // Templates
-import BreadcrumbsTemplate from "./generated/templates/BreadcrumbsTemplate.lit.js";
+import BreadcrumbsTemplate from "./BreadcrumbsTemplate.js";
 // Styles
 import breadcrumbsCss from "./generated/themes/Breadcrumbs.css.js";
 import breadcrumbsPopoverCss from "./generated/themes/BreadcrumbsPopover.css.js";
@@ -160,6 +152,13 @@ let Breadcrumbs = Breadcrumbs_1 = class Breadcrumbs extends UI5Element {
         }
         return items;
     }
+    /**
+     * Returns the translatable accessible name for the popover
+     * @private
+     */
+    get _accessibleNamePopover() {
+        return Breadcrumbs_1.i18nBundle.getText(FORM_SELECTABLE_AVALIABLE_VALUES);
+    }
     _onfocusin(e) {
         const target = e.target, labelWrapper = this.getCurrentLocationLabelWrapper(), currentItem = (target === labelWrapper) ? this._labelFocusAdaptor : target;
         this._itemNavigation.setCurrentItem(currentItem);
@@ -244,19 +243,19 @@ let Breadcrumbs = Breadcrumbs_1 = class Breadcrumbs extends UI5Element {
     }
     _onLinkPress(e) {
         const link = e.target, items = this._getItems(), item = items.find(x => `${x._id}-link` === link.id), { altKey, ctrlKey, metaKey, shiftKey, } = e.detail;
-        if (!this.fireEvent("item-click", {
+        if (!this.fireDecoratorEvent("item-click", {
             item,
             altKey,
             ctrlKey,
             metaKey,
             shiftKey,
-        }, true)) {
+        })) {
             e.preventDefault();
         }
     }
     _onLabelPress(e) {
         const items = this._getItems(), item = items[items.length - 1], { altKey, ctrlKey, metaKey, shiftKey, } = e;
-        this.fireEvent("item-click", {
+        this.fireDecoratorEvent("item-click", {
             item,
             altKey,
             ctrlKey,
@@ -266,7 +265,7 @@ let Breadcrumbs = Breadcrumbs_1 = class Breadcrumbs extends UI5Element {
     }
     _onOverflowListItemSelect(e) {
         const listItem = e.detail.selectedItems[0], items = this._getItems(), item = items.find(x => `${x._id}-li` === listItem.id);
-        if (this.fireEvent("item-click", { item }, true)) {
+        if (this.fireDecoratorEvent("item-click", { item })) {
             locationOpen(item.href, item.target || "_self", "noopener,noreferrer");
             this.responsivePopover.open = false;
         }
@@ -461,25 +460,14 @@ Breadcrumbs = Breadcrumbs_1 = __decorate([
     customElement({
         tag: "ui5-breadcrumbs",
         languageAware: true,
-        renderer: litRender,
+        renderer: jsxRenderer,
         template: BreadcrumbsTemplate,
         styles: [breadcrumbsCss, breadcrumbsPopoverCss],
-        dependencies: [
-            BreadcrumbsItem,
-            Link,
-            Label,
-            ResponsivePopover,
-            List,
-            ListItemStandard,
-            Icon,
-            Button,
-        ],
     })
     /**
      * Fires when a `BreadcrumbsItem` is clicked.
      *
      * **Note:** You can prevent browser location change by calling `event.preventDefault()`.
-     * @allowPreventDefault
      * @param {HTMLElement} item The clicked item.
      * @param {Boolean} altKey Returns whether the "ALT" key was pressed when the event was triggered.
      * @param {Boolean} ctrlKey Returns whether the "CTRL" key was pressed when the event was triggered.
@@ -489,28 +477,8 @@ Breadcrumbs = Breadcrumbs_1 = __decorate([
      */
     ,
     event("item-click", {
-        detail: {
-            /**
-             * @public
-             */
-            item: { type: HTMLElement },
-            /**
-             * @public
-             */
-            altKey: { type: Boolean },
-            /**
-             * @public
-             */
-            ctrlKey: { type: Boolean },
-            /**
-             * @public
-             */
-            metaKey: { type: Boolean },
-            /**
-             * @public
-             */
-            shiftKey: { type: Boolean },
-        },
+        bubbles: true,
+        cancelable: true,
     })
 ], Breadcrumbs);
 Breadcrumbs.define();

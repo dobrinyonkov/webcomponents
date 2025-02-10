@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var MonthPicker_1;
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
-import event from "@ui5/webcomponents-base/dist/decorators/event.js";
+import event from "@ui5/webcomponents-base/dist/decorators/event-strict.js";
 import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import getCachedLocaleDataInstance from "@ui5/webcomponents-localization/dist/getCachedLocaleDataInstance.js";
 import convertMonthNumbersToMonthNames from "@ui5/webcomponents-localization/dist/dates/convertMonthNumbersToMonthNames.js";
@@ -19,7 +19,7 @@ import getLocale from "@ui5/webcomponents-base/dist/locale/getLocale.js";
 import { MONTH_PICKER_DESCRIPTION, } from "./generated/i18n/i18n-defaults.js";
 import CalendarPart from "./CalendarPart.js";
 // Template
-import MonthPickerTemplate from "./generated/templates/MonthPickerTemplate.lit.js";
+import MonthPickerTemplate from "./MonthPickerTemplate.js";
 // Styles
 import monthPickerStyles from "./generated/themes/MonthPicker.css.js";
 import CalendarSelectionMode from "./types/CalendarSelectionMode.js";
@@ -55,7 +55,7 @@ let MonthPicker = MonthPicker_1 = class MonthPicker extends CalendarPart {
          * @since 2.2.0
          */
         this.selectionMode = "Single";
-        this._months = [];
+        this._monthsInterval = [];
         this._hidden = false;
     }
     get roleDescription() {
@@ -99,13 +99,13 @@ let MonthPicker = MonthPicker_1 = class MonthPicker extends CalendarPart {
             const month = {
                 timestamp: timestamp.toString(),
                 focusRef: isFocused,
-                _tabIndex: isFocused ? "0" : "-1",
+                _tabIndex: isFocused ? 0 : -1,
                 selected: isSelected || isSelectedBetween,
-                ariaSelected: String(isSelected || isSelectedBetween),
+                ariaSelected: isSelected || isSelectedBetween,
                 name: monthsNames[i],
                 nameInSecType: this.hasSecondaryCalendarType && this._getDisplayedSecondaryMonthText(timestamp).text,
                 disabled: isDisabled,
-                ariaDisabled: isDisabled ? "true" : undefined,
+                ariaDisabled: isDisabled,
                 classes: "ui5-mp-item",
                 parts: "month-cell",
             };
@@ -128,7 +128,7 @@ let MonthPicker = MonthPicker_1 = class MonthPicker extends CalendarPart {
                 months[quarterIndex] = [month];
             }
         }
-        this._months = months;
+        this._monthsInterval = months;
     }
     _getDisplayedSecondaryMonthText(timestamp) {
         const monthsName = transformDateToSecondaryType(this._primaryCalendarType, this.secondaryCalendarType, timestamp);
@@ -178,10 +178,10 @@ let MonthPicker = MonthPicker_1 = class MonthPicker extends CalendarPart {
             this._onHomeOrEnd(isHome(e));
         }
         else if (isHomeCtrl(e)) {
-            this._setTimestamp(parseInt(this._months[0][0].timestamp)); // first month of first row
+            this._setTimestamp(parseInt(this._monthsInterval[0][0].timestamp)); // first month of first row
         }
         else if (isEndCtrl(e)) {
-            this._setTimestamp(parseInt(this._months[PAGE_SIZE / this.rowSize - 1][this.rowSize - 1].timestamp)); // last month of last row
+            this._setTimestamp(parseInt(this._monthsInterval[PAGE_SIZE / this.rowSize - 1][this.rowSize - 1].timestamp)); // last month of last row
         }
         else {
             preventDefault = false;
@@ -191,7 +191,7 @@ let MonthPicker = MonthPicker_1 = class MonthPicker extends CalendarPart {
         }
     }
     _onHomeOrEnd(homePressed) {
-        this._months.forEach(row => {
+        this._monthsInterval.forEach(row => {
             const indexInRow = row.findIndex(item => CalendarDate.fromTimestamp(parseInt(item.timestamp) * 1000).getMonth() === this._calendarDate.getMonth());
             if (indexInRow !== -1) { // The current month is on this row
                 const index = homePressed ? 0 : this.rowSize - 1; // select the first (if Home) or last (if End) month on the row
@@ -206,7 +206,7 @@ let MonthPicker = MonthPicker_1 = class MonthPicker extends CalendarPart {
      */
     _setTimestamp(value) {
         this._safelySetTimestamp(value);
-        this.fireEvent("navigate", { timestamp: this.timestamp });
+        this.fireDecoratorEvent("navigate", { timestamp: this.timestamp });
     }
     /**
      * In range selection, the currently focused or hovered month is considered the "second day".
@@ -242,7 +242,7 @@ let MonthPicker = MonthPicker_1 = class MonthPicker extends CalendarPart {
         this._safelyModifyTimestampBy(amount, "month", preserveDate);
         this._updateSecondTimestamp();
         // Notify the calendar to update its timestamp
-        this.fireEvent("navigate", { timestamp: this.timestamp });
+        this.fireDecoratorEvent("navigate", { timestamp: this.timestamp });
     }
     _onkeyup(e) {
         if (isSpace(e)) {
@@ -264,7 +264,7 @@ let MonthPicker = MonthPicker_1 = class MonthPicker extends CalendarPart {
         this._safelySetTimestamp(timestamp);
         this._updateSecondTimestamp();
         this._updateSelectedDates(timestamp);
-        this.fireEvent("change", {
+        this.fireDecoratorEvent("change", {
             timestamp: this.timestamp,
             dates: this.selectedDates,
         });
@@ -325,7 +325,7 @@ __decorate([
 ], MonthPicker.prototype, "selectionMode", void 0);
 __decorate([
     property({ type: Array })
-], MonthPicker.prototype, "_months", void 0);
+], MonthPicker.prototype, "_monthsInterval", void 0);
 __decorate([
     property({ type: Boolean, noAttribute: true })
 ], MonthPicker.prototype, "_hidden", void 0);
@@ -345,13 +345,17 @@ MonthPicker = MonthPicker_1 = __decorate([
      * Fired when the user selects a month via "Space", "Enter" or click.
      */
     ,
-    event("change")
+    event("change", {
+        bubbles: true,
+    })
     /**
      * Fired when the timestamp changes - the user navigates with the keyboard or clicks with the mouse.
      * @since 1.0.0-rc.9
      */
     ,
-    event("navigate")
+    event("navigate", {
+        bubbles: true,
+    })
 ], MonthPicker);
 MonthPicker.define();
 export default MonthPicker;

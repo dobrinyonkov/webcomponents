@@ -20,7 +20,11 @@ type Property = {
     };
 };
 type PropertyValue = boolean | number | string | object | undefined | null;
-type EventData = Record<string, object>;
+type EventData = Record<string, {
+    detail?: Record<string, object>;
+    cancelable?: boolean;
+    bubbles?: boolean;
+}>;
 type I18nBundleAccessorValue = {
     bundleName: string;
     target: typeof UI5Element;
@@ -63,11 +67,6 @@ declare class UI5ElementMetadata {
      * @public
      */
     getPureTag(): string;
-    /**
-     * Returns the tag of the UI5 Element without the scope
-     * @private
-     */
-    getFeatures(): Array<string>;
     /**
      * Returns the tag of the UI5 Element
      * @public

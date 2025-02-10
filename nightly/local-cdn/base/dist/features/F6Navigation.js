@@ -27,7 +27,10 @@ class F6Navigation {
         document.removeEventListener("keydown", this.keydownHandler);
     }
     async groupElementToFocus(nextElement) {
-        const nextElementDomRef = instanceOfUI5Element(nextElement) ? nextElement.getDomRef() : nextElement;
+        let nextElementDomRef = nextElement;
+        if (instanceOfUI5Element(nextElement)) {
+            nextElementDomRef = nextElement.getDomRef() || nextElement.firstElementChild;
+        }
         if (nextElementDomRef) {
             if (isElementClickable(nextElementDomRef)) {
                 return nextElementDomRef;
@@ -128,8 +131,21 @@ class F6Navigation {
         elementToFocus?.focus();
     }
     updateGroups() {
+        const container = this.findContainer();
         this.setSelectedGroup();
-        this.groups = getFastNavigationGroups(document.body);
+        this.groups = getFastNavigationGroups(container);
+    }
+    findContainer() {
+        const htmlElement = window.document.querySelector("html");
+        let element = this.deepActive(window.document);
+        while (element && element !== htmlElement) {
+            const closestScopeEl = element.closest("[data-sap-ui-fastnavgroup-container='true']");
+            if (closestScopeEl) {
+                return closestScopeEl;
+            }
+            element = element.parentElement ? element.parentElement : element.parentNode.host;
+        }
+        return document.body;
     }
     setSelectedGroup(root = window.document) {
         const htmlElement = window.document.querySelector("html");

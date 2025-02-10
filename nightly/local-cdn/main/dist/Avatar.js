@@ -9,22 +9,21 @@ import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
-import event from "@ui5/webcomponents-base/dist/decorators/event.js";
+import event from "@ui5/webcomponents-base/dist/decorators/event-strict.js";
 import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
-import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
+import jsxRenderer from "@ui5/webcomponents-base/dist/renderer/JsxRenderer.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import { renderFinished } from "@ui5/webcomponents-base/dist/Render.js";
 import { isEnter, isSpace } from "@ui5/webcomponents-base/dist/Keys.js";
 import { isDesktop } from "@ui5/webcomponents-base/dist/Device.js";
 // Template
-import AvatarTemplate from "./generated/templates/AvatarTemplate.lit.js";
+import AvatarTemplate from "./AvatarTemplate.js";
 import { AVATAR_TOOLTIP } from "./generated/i18n/i18n-defaults.js";
 // Styles
 import AvatarCss from "./generated/themes/Avatar.css.js";
-import Icon from "./Icon.js";
+import AvatarSize from "./types/AvatarSize.js";
 // Icon
 import "@ui5/webcomponents-icons/dist/employee.js";
-import "@ui5/webcomponents-icons/dist/alert.js";
 /**
  * @class
  * ### Overview
@@ -126,7 +125,10 @@ let Avatar = Avatar_1 = class Avatar extends UI5Element {
         this._handleResizeBound = this.handleResize.bind(this);
     }
     get tabindex() {
-        return this.forcedTabIndex || (this._interactive ? "0" : "-1");
+        if (this.forcedTabIndex) {
+            return parseInt(this.forcedTabIndex);
+        }
+        return this._interactive ? 0 : undefined;
     }
     /**
      * Returns the effective avatar size.
@@ -135,7 +137,7 @@ let Avatar = Avatar_1 = class Avatar extends UI5Element {
      */
     get effectiveSize() {
         // we read the attribute, because the "size" property will always have a default value
-        return this.getAttribute("size");
+        return this.getAttribute("size") || AvatarSize.S;
     }
     /**
      * Returns the effective background color.
@@ -167,7 +169,8 @@ let Avatar = Avatar_1 = class Avatar extends UI5Element {
         if (this.accessibleName) {
             return this.accessibleName;
         }
-        return Avatar_1.i18nBundle.getText(AVATAR_TOOLTIP) || undefined;
+        const defaultLabel = Avatar_1.i18nBundle.getText(AVATAR_TOOLTIP);
+        return this.initials ? `${defaultLabel} ${this.initials}`.trim() : defaultLabel;
     }
     get hasImage() {
         this._hasImage = !!this.image.length;
@@ -178,9 +181,6 @@ let Avatar = Avatar_1 = class Avatar extends UI5Element {
     }
     get fallBackIconDomRef() {
         return this.getDomRef().querySelector(".ui5-avatar-icon-fallback");
-    }
-    onBeforeRendering() {
-        this._onclick = this._interactive ? this._onClickHandler.bind(this) : undefined;
     }
     async onAfterRendering() {
         await renderFinished();
@@ -220,8 +220,7 @@ let Avatar = Avatar_1 = class Avatar extends UI5Element {
         this.initialsContainer?.classList.remove("ui5-avatar-initials-hidden");
         this.fallBackIconDomRef?.classList.add("ui5-avatar-fallback-icon-hidden");
     }
-    _onClickHandler(e) {
-        // prevent the native event and fire custom event to ensure the noConfict "ui5-click" is fired
+    _onclick(e) {
         e.stopPropagation();
         this._fireClick();
     }
@@ -242,7 +241,7 @@ let Avatar = Avatar_1 = class Avatar extends UI5Element {
         }
     }
     _fireClick() {
-        this.fireEvent("click");
+        this.fireDecoratorEvent("click");
     }
     _getAriaHasPopup() {
         const ariaHaspopup = this.accessibilityAttributes.hasPopup;
@@ -304,10 +303,9 @@ Avatar = Avatar_1 = __decorate([
     customElement({
         tag: "ui5-avatar",
         languageAware: true,
-        renderer: litRender,
+        renderer: jsxRenderer,
         styles: AvatarCss,
         template: AvatarTemplate,
-        dependencies: [Icon],
     })
     /**
      * Fired on mouseup, space and enter if avatar is interactive
@@ -318,7 +316,9 @@ Avatar = Avatar_1 = __decorate([
      * @since 1.0.0-rc.11
      */
     ,
-    event("click")
+    event("click", {
+        bubbles: true,
+    })
 ], Avatar);
 Avatar.define();
 export default Avatar;

@@ -19,6 +19,11 @@ type TreeItemBaseStepOutEventDetail = TreeItemBaseEventDetail;
  * @public
  */
 declare class TreeItemBase extends ListItem {
+    eventDetails: ListItem["eventDetails"] & {
+        toggle: TreeItemBaseToggleEventDetail;
+        "step-in": TreeItemBaseStepInEventDetail;
+        "step-out": TreeItemBaseStepOutEventDetail;
+    };
     /**
      * Defines the indentation of the tree list item. Use level 1 for tree list items, representing top-level tree nodes.
      * @protected
@@ -128,10 +133,10 @@ declare class TreeItemBase extends ListItem {
     get requiresToggleButton(): boolean;
     get effectiveLevel(): number;
     get hasParent(): boolean;
-    get _toggleIconName(): "navigation-down-arrow" | "navigation-right-arrow";
+    get _toggleIconName(): "navigation-right-arrow" | "navigation-down-arrow";
     get _ariaLabel(): string;
     get _accInfo(): {
-        role: string;
+        role: "treeitem";
         ariaExpanded: boolean | undefined;
         ariaLevel: number;
         posinset: number;
@@ -139,7 +144,7 @@ declare class TreeItemBase extends ListItem {
         ariaSelectedText: string | undefined;
         listItemAriaLabel: string | undefined;
         ariaOwns: string | undefined;
-        ariaHaspopup: ("dialog" | "grid" | "listbox" | "menu" | "tree") | undefined;
+        ariaHaspopup: import("@ui5/webcomponents-base/dist/types.js").AriaHasPopup | undefined;
         ariaLabel: string;
         ariaLabelRadioButton: string;
         ariaSelected?: boolean;

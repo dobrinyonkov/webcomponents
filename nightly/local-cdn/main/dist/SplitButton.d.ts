@@ -1,8 +1,8 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
+import type { AriaHasPopup } from "@ui5/webcomponents-base";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
-import "@ui5/webcomponents-icons/dist/slim-arrow-down.js";
 import type ButtonDesign from "./types/ButtonDesign.js";
-import Button from "./Button.js";
+import type Button from "./Button.js";
 /**
  * @class
  *
@@ -42,19 +42,26 @@ import Button from "./Button.js";
  * ### ES6 Module Import
  *
  * `import "@ui5/webcomponents/dist/SplitButton.js";`
+ * @csspart button - Used to style the native button element
+ * @csspart icon - Used to style the icon in the native button element
+ * @csspart endIcon - Used to style the end icon in the native button element
  * @constructor
  * @extends UI5Element
  * @public
  * @since 1.1.0
  */
 declare class SplitButton extends UI5Element {
+    eventDetails: {
+        click: void;
+        "arrow-click": void;
+    };
     /**
      * Defines the icon to be displayed as graphical element within the component.
      * The SAP-icons font provides numerous options.
      *
      * Example:
      *
-     * See all the available icons in the [Icon Explorer](https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html).
+     * See all available icons in the [Icon Explorer](https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html).
      * @default undefined
      * @public
      */
@@ -91,7 +98,7 @@ declare class SplitButton extends UI5Element {
      * @default "0"
      * @private
      */
-    _tabIndex: string;
+    _tabIndex: number;
     /**
      * Indicates if there is Space key pressed
      * @default false
@@ -117,24 +124,38 @@ declare class SplitButton extends UI5Element {
      */
     _activeArrowButton: boolean;
     /**
+     * Defines the display of the end icon as a graphical element within the default action of the component after the button text.
+     * The SAP-icons font provides different options.
+     *
+     * Example:
+     *
+     * See all available icons in the [Icon Explorer](https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html).
+     * @default undefined
+     * @private
+     */
+    _endIcon?: string;
+    /**
+     * Defines the visibility of the arrow button of the component.
+     *
+     * @default false
+     * @private
+     */
+    _hideArrowButton: boolean;
+    /**
      * Defines the text of the component.
      *
      * **Note:** Although this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
      * @public
      */
     text: Array<Node>;
-    _textButtonPress: {
-        handleEvent: (e: MouseEvent) => void;
-        passive: boolean;
-    };
     _isDefaultActionPressed: boolean;
     _isKeyDownOperation: boolean;
     static i18nBundle: I18nBundle;
-    constructor();
     onBeforeRendering(): void;
     _handleMouseClick(e: MouseEvent): void;
-    _onFocusOut(e: FocusEvent): void;
-    _onFocusIn(e: FocusEvent): void;
+    _onFocusOut(): void;
+    _onFocusIn(): void;
+    handleTouchStart(e: TouchEvent | MouseEvent): void;
     _onInnerButtonFocusIn(e: FocusEvent): void;
     _onKeyDown(e: KeyboardEvent): void;
     _onKeyUp(e: KeyboardEvent): void;
@@ -189,7 +210,8 @@ declare class SplitButton extends UI5Element {
         arrowButton: {
             title: string;
             accessibilityAttributes: {
-                hasPopup: string;
+                hasPopup: AriaHasPopup;
+                expanded: boolean;
             };
         };
     };

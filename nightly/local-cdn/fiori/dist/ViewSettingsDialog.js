@@ -8,27 +8,20 @@ var ViewSettingsDialog_1;
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
-import event from "@ui5/webcomponents-base/dist/decorators/event.js";
+import event from "@ui5/webcomponents-base/dist/decorators/event-strict.js";
 import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import { isPhone } from "@ui5/webcomponents-base/dist/Device.js";
-import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
+import jsxRenderer from "@ui5/webcomponents-base/dist/renderer/JsxRenderer.js";
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
-import Dialog from "@ui5/webcomponents/dist/Dialog.js";
-import Button from "@ui5/webcomponents/dist/Button.js";
-import Label from "@ui5/webcomponents/dist/Label.js";
-import ListItemGroup from "@ui5/webcomponents/dist/ListItemGroup.js";
-import List from "@ui5/webcomponents/dist/List.js";
-import ListItemStandard from "@ui5/webcomponents/dist/ListItemStandard.js";
-import Title from "@ui5/webcomponents/dist/Title.js";
-import SegmentedButton from "@ui5/webcomponents/dist/SegmentedButton.js";
-import SegmentedButtonItem from "@ui5/webcomponents/dist/SegmentedButtonItem.js";
+import announce from "@ui5/webcomponents-base/dist/util/InvisibleMessage.js";
+import InvisibleMessageMode from "@ui5/webcomponents-base/dist/types/InvisibleMessageMode.js";
 import ViewSettingsDialogMode from "./types/ViewSettingsDialogMode.js";
 import "@ui5/webcomponents-icons/dist/sort.js";
 import "@ui5/webcomponents-icons/dist/filter.js";
 import "@ui5/webcomponents-icons/dist/nav-back.js";
-import { VSD_DIALOG_TITLE_SORT, VSD_SUBMIT_BUTTON, VSD_CANCEL_BUTTON, VSD_RESET_BUTTON, VSD_SORT_ORDER, VSD_SORT_BY, VSD_ORDER_ASCENDING, VSD_ORDER_DESCENDING, VSD_FILTER_BY, } from "./generated/i18n/i18n-defaults.js";
+import { VSD_DIALOG_TITLE_SORT, VSD_SUBMIT_BUTTON, VSD_CANCEL_BUTTON, VSD_RESET_BUTTON, VSD_SORT_ORDER, VSD_SORT_BY, VSD_ORDER_ASCENDING, VSD_ORDER_DESCENDING, VSD_FILTER_BY, VSD_SORT_TOOLTIP, VSD_FILTER_TOOLTIP, VSD_RESET_BUTTON_ACTION, } from "./generated/i18n/i18n-defaults.js";
 // Template
-import ViewSettingsDialogTemplate from "./generated/templates/ViewSettingsDialogTemplate.lit.js";
+import ViewSettingsDialogTemplate from "./ViewSettingsDialogTemplate.js";
 // Styles
 import viewSettingsDialogCSS from "./generated/themes/ViewSettingsDialog.css.js";
 /**
@@ -178,6 +171,15 @@ let ViewSettingsDialog = ViewSettingsDialog_1 = class ViewSettingsDialog extends
     get _sortByLabel() {
         return ViewSettingsDialog_1.i18nBundle.getText(VSD_SORT_BY);
     }
+    get _sortButtonTooltip() {
+        return ViewSettingsDialog_1.i18nBundle.getText(VSD_SORT_TOOLTIP);
+    }
+    get _filterButtonTooltip() {
+        return ViewSettingsDialog_1.i18nBundle.getText(VSD_FILTER_TOOLTIP);
+    }
+    get _resetButtonAction() {
+        return ViewSettingsDialog_1.i18nBundle.getText(VSD_RESET_BUTTON_ACTION);
+    }
     get _isPhone() {
         return isPhone();
     }
@@ -296,33 +298,48 @@ let ViewSettingsDialog = ViewSettingsDialog_1 = class ViewSettingsDialog extends
         else {
             this._restoreSettings(this._confirmedSettings);
         }
-        this.fireEvent("before-open", {}, true, false);
+        this.fireDecoratorEvent("before-open");
     }
     afterDialogOpen() {
         this._dialog?.querySelector("[ui5-list]")?.focusFirstItem();
         this._focusRecentlyUsedControl();
-        this.fireEvent("open");
+        this.fireDecoratorEvent("open");
     }
     afterDialogClose() {
-        this.fireEvent("close");
+        this.fireDecoratorEvent("close");
     }
     _handleModeChange(e) {
-        const mode = e.detail.selectedItems[0].getAttribute("mode");
+        const mode = e.detail.selectedItems[0].getAttribute("data-mode");
         this._currentMode = ViewSettingsDialogMode[mode];
     }
     _handleFilterValueItemClick(e) {
+        const itemText = e.detail.targetItem.innerText;
         // Update the component state
         this._currentSettings.filters = this._currentSettings.filters.map(filter => {
             if (filter.selected) {
                 filter.filterOptions.forEach(option => {
-                    if (option.text === e.detail.item.innerText) {
+                    if (option.text === itemText) {
                         option.selected = !option.selected;
                     }
                 });
             }
             return filter;
         });
+        this._setSelectedProp(itemText);
         this._currentSettings = JSON.parse(JSON.stringify(this._currentSettings));
+    }
+    /**
+     * Sets the selected property of the clicked item.
+     * @private
+     */
+    _setSelectedProp(itemText) {
+        this.filterItems.forEach(filterItem => {
+            filterItem.values.forEach(option => {
+                if (option.text === itemText) {
+                    option.selected = !option.selected;
+                }
+            });
+        });
     }
     _navigateToFilters() {
         this._filterStepTwo = false;
@@ -352,24 +369,25 @@ let ViewSettingsDialog = ViewSettingsDialog_1 = class ViewSettingsDialog extends
     _confirmSettings() {
         this.open = false;
         this._confirmedSettings = this._currentSettings;
-        this.fireEvent("confirm", this.eventsParams);
+        this.fireDecoratorEvent("confirm", this.eventsParams);
     }
     /**
      * Sets current settings to recently confirmed ones and fires `cancel` event.
      */
     _cancelSettings() {
         this._restoreSettings(this._confirmedSettings);
-        this.fireEvent("cancel", this.eventsParams);
+        this.fireDecoratorEvent("cancel", this.eventsParams);
         this.open = false;
     }
     get eventsParams() {
-        const _currentSortOrderSelected = this._currentSettings.sortOrder.filter(item => item.selected)[0], _currentSortBySelected = this._currentSettings.sortBy.filter(item => item.selected)[0], sortOrder = _currentSortOrderSelected && (_currentSortOrderSelected.text || ""), sortDescending = !this._currentSettings.sortOrder[0].selected, sortBy = _currentSortBySelected && (_currentSortBySelected.text || ""), sortByElementIndex = _currentSortBySelected && _currentSortBySelected.index, sortByItem = this.sortItems[sortByElementIndex];
+        const _currentSortOrderSelected = this._currentSettings.sortOrder.filter(item => item.selected)[0], _currentSortBySelected = this._currentSettings.sortBy.filter(item => item.selected)[0], sortOrder = _currentSortOrderSelected && (_currentSortOrderSelected.text || ""), sortDescending = !this._currentSettings.sortOrder[0].selected, sortBy = _currentSortBySelected && (_currentSortBySelected.text || ""), sortByElementIndex = _currentSortBySelected && _currentSortBySelected.index, sortByItem = this.sortItems[sortByElementIndex], selectedFilterItems = this.filterItems.filter(filterItem => filterItem.values.some(item => item.selected));
         return {
             sortOrder,
             sortDescending,
             sortBy,
             sortByItem,
             filters: this.selectedFilters,
+            filterItems: selectedFilterItems,
         };
     }
     get selectedFilters() {
@@ -406,6 +424,7 @@ let ViewSettingsDialog = ViewSettingsDialog_1 = class ViewSettingsDialog extends
         this._restoreSettings(this._initialSettings);
         this._recentlyFocused = this._sortOrder;
         this._focusRecentlyUsedControl();
+        announce(this._resetButtonAction, InvisibleMessageMode.Polite);
     }
     /**
      * Sets current settings to ones passed as `settings` argument.
@@ -422,7 +441,7 @@ let ViewSettingsDialog = ViewSettingsDialog_1 = class ViewSettingsDialog extends
     _onSortOrderChange(e) {
         this._recentlyFocused = this._sortOrder;
         this._currentSettings.sortOrder = this.initSortOrderItems.map(item => {
-            item.selected = item.text === e.detail.item.innerText;
+            item.selected = item.text === e.detail.targetItem.innerText;
             return item;
         });
         // Invalidate
@@ -432,7 +451,7 @@ let ViewSettingsDialog = ViewSettingsDialog_1 = class ViewSettingsDialog extends
      * Stores `Sort By` list as recently used control and its selected item in current state.
      */
     _onSortByChange(e) {
-        const selectedItemIndex = Number(e.detail.item.getAttribute("data-ui5-external-action-item-index"));
+        const selectedItemIndex = Number(e.detail.targetItem.getAttribute("data-ui5-external-action-item-index"));
         this._recentlyFocused = this._sortBy;
         this._currentSettings.sortBy = this.initSortByItems.map((item, index) => {
             item.selected = index === selectedItemIndex;
@@ -530,20 +549,9 @@ __decorate([
 ViewSettingsDialog = ViewSettingsDialog_1 = __decorate([
     customElement({
         tag: "ui5-view-settings-dialog",
-        renderer: litRender,
+        renderer: jsxRenderer,
         styles: viewSettingsDialogCSS,
         template: ViewSettingsDialogTemplate,
-        dependencies: [
-            Button,
-            Title,
-            Dialog,
-            Label,
-            List,
-            ListItemStandard,
-            ListItemGroup,
-            SegmentedButton,
-            SegmentedButtonItem,
-        ],
     })
     /**
      * Fired when confirmation button is activated.
@@ -556,28 +564,7 @@ ViewSettingsDialog = ViewSettingsDialog_1 = __decorate([
      */
     ,
     event("confirm", {
-        detail: {
-            /**
-             * @public
-             */
-            sortOrder: { type: String },
-            /**
-             * @public
-             */
-            sortBy: { type: String },
-            /**
-             * @public
-             */
-            sortByItem: { type: HTMLElement },
-            /**
-             * @public
-             */
-            sortDescending: { type: Boolean },
-            /**
-             * @public
-             */
-            filters: { type: Array },
-        },
+        bubbles: true,
     })
     /**
      * Fired when cancel button is activated.
@@ -590,49 +577,34 @@ ViewSettingsDialog = ViewSettingsDialog_1 = __decorate([
      */
     ,
     event("cancel", {
-        detail: {
-            /**
-             * @public
-             */
-            sortOrder: { type: String },
-            /**
-             * @public
-             */
-            sortBy: { type: String },
-            /**
-             * @public
-             */
-            sortByItem: { type: HTMLElement },
-            /**
-             * @public
-             */
-            sortDescending: { type: Boolean },
-            /**
-             * @public
-             */
-            filters: { type: Array },
-        },
+        bubbles: true,
     })
     /**
-     * Fired before the component is opened. **This event does not bubble.**
+     * Fired before the component is opened.
      * @public
      */
     ,
-    event("before-open")
+    event("before-open", {
+        cancelable: true,
+    })
     /**
      * Fired after the dialog is opened.
      * @since 2.0.0
      * @public
      */
     ,
-    event("open")
+    event("open", {
+        bubbles: true,
+    })
     /**
      * Fired after the dialog is closed.
      * @since 2.0.0
      * @public
      */
     ,
-    event("close")
+    event("close", {
+        bubbles: true,
+    })
 ], ViewSettingsDialog);
 ViewSettingsDialog.define();
 export default ViewSettingsDialog;

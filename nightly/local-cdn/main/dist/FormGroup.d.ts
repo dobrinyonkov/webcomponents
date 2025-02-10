@@ -26,7 +26,6 @@ import type FormItemSpacing from "./types/FormItemSpacing.js";
  * @public
  * @implements {IFormItem}
  * @since 2.0.0
- * @experimental This component is availabe since 2.0 under an experimental flag and its API and behaviour are subject to change.
  * @extends UI5Element
  */
 declare class FormGroup extends UI5Element implements IFormItem {
@@ -58,7 +57,6 @@ declare class FormGroup extends UI5Element implements IFormItem {
     colsL: number;
     colsXl: number;
     itemSpacing: `${FormItemSpacing}`;
-    labelSpan: string;
     onBeforeRendering(): void;
     processFormItems(): void;
     get isGroup(): boolean;

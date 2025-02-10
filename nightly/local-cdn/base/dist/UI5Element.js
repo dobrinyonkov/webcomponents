@@ -16,9 +16,9 @@ import isValidPropertyName from "./util/isValidPropertyName.js";
 import { getSlotName, getSlottedNodesList } from "./util/SlotsHelper.js";
 import arraysAreEqual from "./util/arraysAreEqual.js";
 import { markAsRtlAware } from "./locale/RTLAwareRegistry.js";
-import executeTemplate, { getTagsToScope } from "./renderer/executeTemplate.js";
+import executeTemplate from "./renderer/executeTemplate.js";
+import { shouldScopeCustomElement } from "./CustomElementsScopeUtils.js";
 import { updateFormValue, setFormValue } from "./features/InputElementsFormSupport.js";
-import { getComponentFeature, subscribeForFeatureLoad } from "./FeaturesRegistry.js";
 import { getI18nBundle } from "./i18nBundle.js";
 import { fetchCldr } from "./asset-registries/LocaleData.js";
 import getLocale from "./locale/getLocale.js";
@@ -168,18 +168,6 @@ class UI5Element extends HTMLElement {
      * @private
      */
     async connectedCallback() {
-        if (DEV_MODE) {
-            const rootNode = this.getRootNode();
-            // when an element is connected, check if it exists in the `dependencies` of the parent
-            if (rootNode instanceof ShadowRoot && instanceOfUI5Element(rootNode.host)) {
-                const klass = rootNode.host.constructor;
-                const hasDependency = getTagsToScope(rootNode.host).includes(this.constructor.getMetadata().getPureTag());
-                if (!hasDependency) {
-                    // eslint-disable-next-line no-console
-                    console.error(`[UI5-FWK] ${this.constructor.getMetadata().getTag()} not found in dependencies of ${klass.getMetadata().getTag()}`);
-                }
-            }
-        }
         if (DEV_MODE) {
             const props = this.constructor.getMetadata().getProperties();
             for (const [prop, propData] of Object.entries(props)) { // eslint-disable-line
@@ -675,7 +663,7 @@ class UI5Element extends HTMLElement {
         }
         */
         this._changedState = [];
-        // Update shadow root and static area item
+        // Update shadow root
         if (ctor._needsShadowDOM()) {
             updateShadowRoot(this);
         }
@@ -765,6 +753,7 @@ class UI5Element extends HTMLElement {
      * @param cancelable - true, if the user can call preventDefault on the event object
      * @param bubbles - true, if the event bubbles
      * @returns false, if the event was cancelled (preventDefault called), true otherwise
+     * @deprecated use fireDecoratorEvent instead
      */
     fireEvent(name, data, cancelable = false, bubbles = true) {
         const eventResult = this._fireEvent(name, data, cancelable, bubbles);
@@ -775,6 +764,28 @@ class UI5Element extends HTMLElement {
         //	 After: onLiveChange
         if (pascalCaseEventName !== name) {
             return eventResult && this._fireEvent(pascalCaseEventName, data, cancelable, bubbles);
+        }
+        return eventResult;
+    }
+    /**
+     * Fires a custom event, configured via the "event" decorator.
+     * @public
+     * @param name - name of the event
+     * @param data - additional data for the event
+     * @returns false, if the event was cancelled (preventDefault called), true otherwise
+     */
+    fireDecoratorEvent(name, data) {
+        const eventData = this.getEventData(name);
+        const cancellable = eventData ? eventData.cancelable : false;
+        const bubbles = eventData ? eventData.bubbles : false;
+        const eventResult = this._fireEvent(name, data, cancellable, bubbles);
+        const pascalCaseEventName = kebabToPascalCase(name);
+        // pascal events are more convinient for native react usage
+        // live-change:
+        //	 Before: onlive-change
+        //	 After: onLiveChange
+        if (pascalCaseEventName !== name) {
+            return eventResult && this._fireEvent(pascalCaseEventName, data, cancellable, bubbles);
         }
         return eventResult;
     }
@@ -800,6 +811,11 @@ class UI5Element extends HTMLElement {
         const normalEventResult = this.dispatchEvent(normalEvent);
         // Return false if any of the two events was prevented (its result was false).
         return normalEventResult && noConflictEventResult;
+    }
+    getEventData(name) {
+        const ctor = this.constructor;
+        const eventMap = ctor.getMetadata().getEvents();
+        return eventMap[name];
     }
     /**
      * Returns the actual children, associated with a slot.
@@ -846,6 +862,9 @@ class UI5Element extends HTMLElement {
     get isUI5Element() {
         return true;
     }
+    get isUI5AbstractElement() {
+        return !this.constructor._needsShadowDOM();
+    }
     get classes() {
         return {};
     }
@@ -862,6 +881,19 @@ class UI5Element extends HTMLElement {
      */
     static get observedAttributes() {
         return this.getMetadata().getAttributesList();
+    }
+    /**
+     * Returns all tags, used inside component's template subject to scoping.
+     * returns {Array[]} // TODO add @
+     * @private
+     */
+    static get tagsToScope() {
+        const componentTag = this.getMetadata().getPureTag();
+        const tagsToScope = this.getUniqueDependencies().map((dep) => dep.getMetadata().getPureTag()).filter(shouldScopeCustomElement);
+        if (shouldScopeCustomElement(componentTag)) {
+            tagsToScope.push(componentTag);
+        }
+        return tagsToScope;
     }
     /**
      * @private
@@ -959,9 +991,10 @@ class UI5Element extends HTMLElement {
     }
     /**
      * Returns an array with the dependencies for this UI5 Web Component, which could be:
-     *  - composed components (used in its shadow root or static area item)
+     *  - composed components (used in its shadow root)
      *  - slotted components that the component may need to communicate with
      *
+     * @deprecated no longer necessary for jsxRenderer-enabled components
      * @protected
      */
     static get dependencies() {
@@ -1003,33 +1036,30 @@ class UI5Element extends HTMLElement {
         }
         return Promise.resolve();
     }
+    static get i18nBundles() {
+        return this.i18nBundleStorage;
+    }
     /**
      * Registers a UI5 Web Component in the browser window object
      * @public
      */
     static define() {
-        this.definePromise = Promise.all([
-            this.fetchI18nBundles(),
-            this.fetchCLDR(),
-            boot(),
-            this.onDefine(),
-        ]).then(result => {
+        const defineSequence = async () => {
+            await boot(); // boot must finish first, because it initializes configuration
+            const result = await Promise.all([
+                this.fetchI18nBundles(), // uses configuration
+                this.fetchCLDR(),
+                this.onDefine(),
+            ]);
             const [i18nBundles] = result;
             Object.entries(this.getMetadata().getI18n()).forEach((pair, index) => {
                 const propertyName = pair[0];
-                const targetClass = pair[1].target;
-                targetClass[propertyName] = i18nBundles[index];
+                this.i18nBundleStorage[propertyName] = i18nBundles[index];
             });
             this.asyncFinished = true;
-        });
+        };
+        this.definePromise = defineSequence();
         const tag = this.getMetadata().getTag();
-        const features = this.getMetadata().getFeatures();
-        features.forEach(feature => {
-            if (getComponentFeature(feature)) {
-                this.cacheUniqueDependencies();
-            }
-            subscribeForFeatureLoad(feature, this, this.cacheUniqueDependencies.bind(this));
-        });
         const definedLocally = isTagRegistered(tag);
         const definedGlobally = customElements.get(tag);
         if (definedGlobally && !definedLocally) {
@@ -1076,6 +1106,7 @@ UI5Element.metadata = {};
  * @protected
  */
 UI5Element.styles = "";
+UI5Element.i18nBundleStorage = {};
 /**
  * Always use duck-typing to cover all runtimes on the page.
  */

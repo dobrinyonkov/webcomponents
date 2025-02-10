@@ -3,8 +3,8 @@ import type { ITabbable } from "@ui5/webcomponents-base/dist/delegate/ItemNaviga
 import type { ClassMap } from "@ui5/webcomponents-base/dist/types.js";
 type ListItemBasePressEventDetail = {
     item: ListItemBase;
-    selected: boolean;
-    key: string;
+    selected?: boolean;
+    key?: string;
 };
 /**
  * @class
@@ -16,6 +16,13 @@ type ListItemBasePressEventDetail = {
  * @public
  */
 declare class ListItemBase extends UI5Element implements ITabbable {
+    eventDetails: {
+        "request-tabindex-change": FocusEvent;
+        "_press": ListItemBasePressEventDetail;
+        "_focused": FocusEvent;
+        "forward-after": void;
+        "forward-before": void;
+    };
     /**
      * Defines the selected state of the component.
      * @default false
@@ -77,7 +84,7 @@ declare class ListItemBase extends UI5Element implements ITabbable {
     get _focusable(): boolean;
     get _pressable(): boolean;
     get hasConfigurableMode(): boolean;
-    get _effectiveTabIndex(): string | 0 | -1 | undefined;
+    get _effectiveTabIndex(): number | undefined;
 }
 export default ListItemBase;
 export type { ListItemBasePressEventDetail, };

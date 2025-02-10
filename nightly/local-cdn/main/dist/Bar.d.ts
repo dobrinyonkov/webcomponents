@@ -29,6 +29,9 @@ import type BarDesign from "./types/BarDesign.js";
  *
  * `import "@ui5/webcomponents/dist/Bar.js";`
  * @csspart bar - Used to style the wrapper of the content of the component
+ * @csspart startContent - Used to style the wrapper of the start content of the component
+ * @csspart midContent - Used to style the wrapper of the middle content of the component
+ * @csspart endContent - Used to style the wrapper of the end content of the component
  * @constructor
  * @extends UI5Element
  * @public
@@ -62,11 +65,6 @@ declare class Bar extends UI5Element {
     };
     constructor();
     handleResize(): void;
-    get classes(): {
-        root: {
-            "ui5-bar-root": boolean;
-        };
-    };
     onEnterDOM(): void;
     onExitDOM(): void;
 }

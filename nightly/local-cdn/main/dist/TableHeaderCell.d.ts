@@ -1,4 +1,8 @@
 import TableCellBase from "./TableCellBase.js";
+import TableSortOrder from "./types/TableSortOrder.js";
+import type TableHeaderCellActionBase from "./TableHeaderCellActionBase.js";
+import "@ui5/webcomponents-icons/dist/sort-ascending.js";
+import "@ui5/webcomponents-icons/dist/sort-descending.js";
 /**
  * @class
  *
@@ -30,8 +34,10 @@ declare class TableHeaderCell extends TableCellBase {
     /**
      * Defines the minimum width of the column.
      *
-     * If the table is in `Popin` mode, the column will move into the popin when
-     * when the minimum width does not fit anymore.
+     * If the table is in `Popin` mode and the minimum width does not fit anymore,
+     * the column will move into the popin.
+     *
+     * **Note:** If `minWidth` has the `auto` value, the table ensures that the column is wider than at least `3rem`.
      *
      * @default "auto"
      * @public
@@ -55,10 +61,36 @@ declare class TableHeaderCell extends TableCellBase {
      * @public
      */
     importance: number;
+    /**
+     * The text for the column when it pops in.
+     *
+     * @default undefined
+     * @since 2.7.0
+     * @public
+     */
+    popinText?: string;
+    /**
+     * Defines the sort indicator of the column.
+     *
+     * @default "None"
+     * @since 2.8.0
+     * @public
+     */
+    sortIndicator: `${TableSortOrder}`;
+    /**
+     * Defines the action of the column.
+     *
+     * **Note:** While multiple actions are technically possible, this is not supported.
+     *
+     * @public
+     * @since 2.8.0
+     */
+    action: Array<TableHeaderCellActionBase>;
     _popin: boolean;
     protected ariaRole: string;
     _popinWidth: number;
     onEnterDOM(): void;
     onBeforeRendering(): void;
+    get _sortIcon(): string | undefined;
 }
 export default TableHeaderCell;

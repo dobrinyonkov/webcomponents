@@ -1,7 +1,6 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
-import "@ui5/webcomponents-icons/dist/favorite.js";
-import "@ui5/webcomponents-icons/dist/unfavorite.js";
+import type RatingIndicatorSize from "./types/RatingIndicatorSize.js";
 type Star = {
     selected: boolean;
     index: number;
@@ -42,6 +41,9 @@ type Star = {
  * @since 1.0.0-rc.8
  */
 declare class RatingIndicator extends UI5Element {
+    eventDetails: {
+        change: void;
+    };
     /**
      * The indicated value of the rating.
      *
@@ -61,6 +63,13 @@ declare class RatingIndicator extends UI5Element {
      * @since 1.0.0-rc.15
      */
     max: number;
+    /**
+     * Defines the size of the component.
+     * @default "M"
+     * @public
+     * @since 2.6.0
+     */
+    size: `${RatingIndicatorSize}`;
     /**
      * Defines whether the component is disabled.
      *
@@ -123,7 +132,7 @@ declare class RatingIndicator extends UI5Element {
     _onkeydown(e: KeyboardEvent): void;
     _onfocusin(): void;
     _onfocusout(): void;
-    get effectiveTabIndex(): string;
+    get effectiveTabIndex(): number;
     get ratingTooltip(): string | undefined;
     get defaultTooltip(): string;
     get _ariaRoleDescription(): string;
@@ -133,3 +142,4 @@ declare class RatingIndicator extends UI5Element {
     get ariaReadonly(): "true" | undefined;
 }
 export default RatingIndicator;
+export type { Star };

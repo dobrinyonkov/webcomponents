@@ -9,17 +9,15 @@ import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
-import event from "@ui5/webcomponents-base/dist/decorators/event.js";
+import event from "@ui5/webcomponents-base/dist/decorators/event-strict.js";
 import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
-import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
+import jsxRenderer from "@ui5/webcomponents-base/dist/renderer/JsxRenderer.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import { isEnter, isSpace } from "@ui5/webcomponents-base/dist/Keys.js";
 import ToolbarItemOverflowBehavior from "@ui5/webcomponents/dist/types/ToolbarItemOverflowBehavior.js";
 import { isDesktop } from "@ui5/webcomponents-base/dist/Device.js";
-import Icon from "@ui5/webcomponents/dist/Icon.js";
-import Title from "@ui5/webcomponents/dist/Title.js";
 // Template
-import DynamicPageTitleTemplate from "./generated/templates/DynamicPageTitleTemplate.lit.js";
+import DynamicPageTitleTemplate from "./DynamicPageTitleTemplate.js";
 // Styles
 import DynamicPageTitleCss from "./generated/themes/DynamicPageTitle.css.js";
 // Texts
@@ -100,16 +98,6 @@ let DynamicPageTitle = DynamicPageTitle_1 = class DynamicPageTitle extends UI5El
     onBeforeRendering() {
         this.prepareLayoutActions();
     }
-    get styles() {
-        return {
-            content: {
-                "min-width": this.minContentWidth ? `${this.minContentWidth || 0}px` : undefined,
-            },
-            actions: {
-                "min-width": this.minActionsWidth ? `${this.minActionsWidth || 0}px` : undefined,
-            },
-        };
-    }
     get hasContent() {
         return !!this.content.length;
     }
@@ -123,7 +111,7 @@ let DynamicPageTitle = DynamicPageTitle_1 = class DynamicPageTitle extends UI5El
         return !this.snapped ? "subheading" : "snappedSubheading";
     }
     get _tabIndex() {
-        return this.interactive ? "0" : undefined;
+        return this.interactive ? 0 : undefined;
     }
     get _headerExpanded() {
         return !this.snapped;
@@ -138,7 +126,7 @@ let DynamicPageTitle = DynamicPageTitle_1 = class DynamicPageTitle extends UI5El
         }
     }
     get _needsSeparator() {
-        return (this.navigationBar.length && this.actionsBar.length);
+        return (this.navigationBar.length > 0 && this.actionsBar.length > 0);
     }
     prepareLayoutActions() {
         const navigationBar = this.querySelector("[ui5-toolbar][slot='navigationBar']"), isWideScreen = this.offsetWidth >= 1280;
@@ -164,12 +152,12 @@ let DynamicPageTitle = DynamicPageTitle_1 = class DynamicPageTitle extends UI5El
         }
     }
     onTitleClick() {
-        this.fireEvent("_toggle-title");
+        this.fireDecoratorEvent("toggle-title");
     }
     _onkeydown(e) {
         if (isEnter(e) || isSpace(e)) {
             e.preventDefault();
-            this.fireEvent("_toggle-title");
+            this.fireDecoratorEvent("toggle-title");
         }
     }
 };
@@ -228,17 +216,18 @@ DynamicPageTitle = DynamicPageTitle_1 = __decorate([
     customElement({
         tag: "ui5-dynamic-page-title",
         fastNavigation: true,
-        renderer: litRender,
+        renderer: jsxRenderer,
         styles: DynamicPageTitleCss,
         template: DynamicPageTitleTemplate,
-        dependencies: [Title, Icon],
     })
     /**
      * Event is fired when the title is toggled.
      * @private
      */
     ,
-    event("_toggle-title")
+    event("toggle-title", {
+        bubbles: true,
+    })
 ], DynamicPageTitle);
 DynamicPageTitle.define();
 export default DynamicPageTitle;

@@ -54,6 +54,9 @@ type LinkAccessibilityAttributes = Pick<AccessibilityAttributes, "expanded" | "h
  * **Note:** Although this slot accepts HTML Elements, it is strongly recommended that you only use text in order to preserve the intended design.
  */
 declare class Link extends UI5Element implements ITabbable {
+    eventDetails: {
+        click: LinkClickEventDetail;
+    };
     /**
      * Defines whether the component is disabled.
      *
@@ -148,6 +151,13 @@ declare class Link extends UI5Element implements ITabbable {
      */
     accessibilityAttributes: LinkAccessibilityAttributes;
     /**
+     * Defines the accessible description of the component.
+     * @default undefined
+     * @public
+     * @since 2.5.0
+     */
+    accessibleDescription?: string;
+    /**
      * Defines the icon, displayed as graphical element within the component before the link's text.
      * The SAP-icons font provides numerous options.
      *
@@ -177,27 +187,22 @@ declare class Link extends UI5Element implements ITabbable {
     endIcon?: string;
     _rel: string | undefined;
     forcedTabIndex?: string;
-    /**
-     * Indicates if the element is on focus.
-     * @private
-     */
-    focused: boolean;
     _dummyAnchor: HTMLAnchorElement;
     static i18nBundle: I18nBundle;
     constructor();
+    onEnterDOM(): void;
     onBeforeRendering(): void;
     _isCrossOrigin(href: string): boolean;
-    get effectiveTabIndex(): string;
+    get effectiveTabIndex(): number;
     get ariaLabelText(): string | undefined;
     get hasLinkType(): boolean;
     static typeTextMappings(): Record<string, I18nText>;
     get linkTypeText(): string;
     get parsedRef(): string | undefined;
-    get effectiveAccRole(): string;
-    get _hasPopup(): ("dialog" | "grid" | "listbox" | "menu" | "tree") | undefined;
+    get effectiveAccRole(): "button" | "link";
+    get ariaDescriptionText(): string | undefined;
+    get _hasPopup(): import("@ui5/webcomponents-base/dist/types.js").AriaHasPopup | undefined;
     _onclick(e: MouseEvent | KeyboardEvent): void;
-    _onfocusin(e: FocusEvent): void;
-    _onfocusout(): void;
     _onkeydown(e: KeyboardEvent): void;
     _onkeyup(e: KeyboardEvent): void;
 }

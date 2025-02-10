@@ -6,38 +6,38 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var List_1;
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
-import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
+import jsxRenderer from "@ui5/webcomponents-base/dist/renderer/JsxRenderer.js";
 import ItemNavigation from "@ui5/webcomponents-base/dist/delegate/ItemNavigation.js";
+import toLowercaseEnumValue from "@ui5/webcomponents-base/dist/util/toLowercaseEnumValue.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
-import event from "@ui5/webcomponents-base/dist/decorators/event.js";
+import event from "@ui5/webcomponents-base/dist/decorators/event-strict.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import i18n from "@ui5/webcomponents-base/dist/decorators/i18n.js";
 import { renderFinished } from "@ui5/webcomponents-base/dist/Render.js";
-import { isTabNext, isSpace, isEnter, isTabPrevious, isCtrl, } from "@ui5/webcomponents-base/dist/Keys.js";
+import { isTabNext, isSpace, isEnter, isTabPrevious, isCtrl, isEnd, isHome, isDown, isUp, } from "@ui5/webcomponents-base/dist/Keys.js";
+import handleDragOver from "@ui5/webcomponents-base/dist/util/dragAndDrop/handleDragOver.js";
+import handleDrop from "@ui5/webcomponents-base/dist/util/dragAndDrop/handleDrop.js";
+import Orientation from "@ui5/webcomponents-base/dist/types/Orientation.js";
 import DragRegistry from "@ui5/webcomponents-base/dist/util/dragAndDrop/DragRegistry.js";
 import { findClosestPosition, findClosestPositionsByKey } from "@ui5/webcomponents-base/dist/util/dragAndDrop/findClosestPosition.js";
 import NavigationMode from "@ui5/webcomponents-base/dist/types/NavigationMode.js";
-import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
+import { getAllAccessibleDescriptionRefTexts, getEffectiveAriaDescriptionText, getEffectiveAriaLabelText, registerUI5Element, deregisterUI5Element, getAllAccessibleNameRefTexts, } from "@ui5/webcomponents-base/dist/util/AccessibilityTextsHelper.js";
 import getNormalizedTarget from "@ui5/webcomponents-base/dist/util/getNormalizedTarget.js";
 import getEffectiveScrollbarStyle from "@ui5/webcomponents-base/dist/util/getEffectiveScrollbarStyle.js";
 import debounce from "@ui5/webcomponents-base/dist/util/debounce.js";
 import isElementInView from "@ui5/webcomponents-base/dist/util/isElementInView.js";
-import Orientation from "@ui5/webcomponents-base/dist/types/Orientation.js";
-import MovePlacement from "@ui5/webcomponents-base/dist/types/MovePlacement.js";
 import ListSelectionMode from "./types/ListSelectionMode.js";
 import ListGrowingMode from "./types/ListGrowingMode.js";
-import DropIndicator from "./DropIndicator.js";
 import ListSeparator from "./types/ListSeparator.js";
-import BusyIndicator from "./BusyIndicator.js";
 // Template
-import ListTemplate from "./generated/templates/ListTemplate.lit.js";
+import ListTemplate from "./ListTemplate.js";
 // Styles
 import listCss from "./generated/themes/List.css.js";
 // Texts
 import { LOAD_MORE_TEXT, ARIA_LABEL_LIST_SELECTABLE, ARIA_LABEL_LIST_MULTISELECTABLE, ARIA_LABEL_LIST_DELETABLE, } from "./generated/i18n/i18n-defaults.js";
-import ListItemGroup, { isInstanceOfListItemGroup } from "./ListItemGroup.js";
+import { isInstanceOfListItemGroup } from "./ListItemGroup.js";
 const INFINITE_SCROLL_DEBOUNCE_RATE = 250; // ms
 const PAGE_UP_DOWN_SIZE = 10;
 /**
@@ -190,10 +190,16 @@ let List = List_1 = class List extends UI5Element {
     get listItems() {
         return this.getItems();
     }
+    _updateAssociatedLabelsTexts() {
+        this._associatedDescriptionRefTexts = getAllAccessibleDescriptionRefTexts(this);
+        this._associatedLabelsRefTexts = getAllAccessibleNameRefTexts(this);
+    }
     onEnterDOM() {
+        registerUI5Element(this, this._updateAssociatedLabelsTexts.bind(this));
         DragRegistry.subscribe(this);
     }
     onExitDOM() {
+        deregisterUI5Element(this);
         this.unobserveListEnd();
         this.resizeListenerAttached = false;
         ResizeHandler.deregister(this.getDomRef(), this._handleResize);
@@ -222,9 +228,8 @@ let List = List_1 = class List extends UI5Element {
         this.getItems().forEach(item => {
             if (item.hasAttribute("ui5-li-group-header")) {
                 item.addEventListener("ui5-_focused", this.onItemFocusedBound);
-                item.addEventListener("ui5-_forward-after", this.onForwardAfterBound);
-                item.addEventListener("ui5-_forward-before", this.onForwardBeforeBound);
-                item.addEventListener("ui5-_tabindex-change", this.onItemTabIndexChangeBound);
+                item.addEventListener("ui5-forward-after", this.onForwardAfterBound);
+                item.addEventListener("ui5-forward-before", this.onForwardBeforeBound);
             }
         });
     }
@@ -232,9 +237,8 @@ let List = List_1 = class List extends UI5Element {
         this.getItems().forEach(item => {
             if (item.hasAttribute("ui5-li-group-header")) {
                 item.removeEventListener("ui5-_focused", this.onItemFocusedBound);
-                item.removeEventListener("ui5-_forward-after", this.onForwardAfterBound);
-                item.removeEventListener("ui5-_forward-before", this.onForwardBeforeBound);
-                item.removeEventListener("ui5-_tabindex-change", this.onItemTabIndexChangeBound);
+                item.removeEventListener("ui5-forward-after", this.onForwardAfterBound);
+                item.removeEventListener("ui5-forward-before", this.onForwardBeforeBound);
             }
         });
     }
@@ -296,7 +300,10 @@ let List = List_1 = class List extends UI5Element {
         return ids.length ? ids.join(" ") : undefined;
     }
     get ariaLabelTxt() {
-        return getEffectiveAriaLabelText(this);
+        return this._associatedLabelsRefTexts || getEffectiveAriaLabelText(this);
+    }
+    get ariaDescriptionText() {
+        return this._associatedDescriptionRefTexts || getEffectiveAriaDescriptionText(this);
     }
     get ariaLabelModeText() {
         if (this.hasData) {
@@ -325,7 +332,7 @@ let List = List_1 = class List extends UI5Element {
         return this.growingButtonText || List_1.i18nBundle.getText(LOAD_MORE_TEXT);
     }
     get listAccessibleRole() {
-        return this.accessibleRole.toLowerCase();
+        return toLowercaseEnumValue(this.accessibleRole);
     }
     get classes() {
         return {
@@ -377,18 +384,17 @@ let List = List_1 = class List extends UI5Element {
     onSelectionRequested(e) {
         const previouslySelectedItems = this.getSelectedItems();
         let selectionChange = false;
-        this._selectionRequested = true;
         if (this.selectionMode !== ListSelectionMode.None && this[`handle${this.selectionMode}`]) {
             selectionChange = this[`handle${this.selectionMode}`](e.detail.item, !!e.detail.selected);
         }
         if (selectionChange) {
-            const changePrevented = !this.fireEvent("selection-change", {
+            const changePrevented = !this.fireDecoratorEvent("selection-change", {
                 selectedItems: this.getSelectedItems(),
                 previouslySelectedItems,
                 selectionComponentPressed: e.detail.selectionComponentPressed,
                 targetItem: e.detail.item,
                 key: e.detail.key,
-            }, true);
+            });
             if (changePrevented) {
                 this._revertSelection(previouslySelectedItems);
             }
@@ -416,7 +422,7 @@ let List = List_1 = class List extends UI5Element {
         return true;
     }
     handleDelete(item) {
-        this.fireEvent("item-delete", { item });
+        this.fireDecoratorEvent("item-delete", { item });
         return true;
     }
     deselectSelectedItems() {
@@ -434,11 +440,11 @@ let List = List_1 = class List extends UI5Element {
         const slottedItems = this.getSlottedNodes("items");
         slottedItems.forEach(item => {
             if (isInstanceOfListItemGroup(item)) {
-                const groupItems = [item.groupHeaderItem, ...item.items].filter(Boolean);
+                const groupItems = [item.groupHeaderItem, ...item.items.filter(listItem => listItem.assignedSlot)].filter(Boolean);
                 items.push(...groupItems);
             }
             else {
-                items.push(item);
+                item.assignedSlot && items.push(item);
             }
         });
         return items;
@@ -461,6 +467,20 @@ let List = List_1 = class List extends UI5Element {
         });
     }
     _onkeydown(e) {
+        if (isEnd(e)) {
+            this._handleEnd();
+            e.preventDefault();
+            return;
+        }
+        if (isHome(e)) {
+            this._handleHome();
+            return;
+        }
+        if (isDown(e)) {
+            this._handleDown();
+            e.preventDefault();
+            return;
+        }
         if (isCtrl(e)) {
             this._moveItem(e.target, e);
             return;
@@ -479,7 +499,7 @@ let List = List_1 = class List extends UI5Element {
         }
         e.preventDefault();
         const acceptedPosition = closestPositions.find(({ element, placement }) => {
-            return !this.fireEvent("move-over", {
+            return !this.fireDecoratorEvent("move-over", {
                 originalEvent: e,
                 source: {
                     element: item,
@@ -488,10 +508,10 @@ let List = List_1 = class List extends UI5Element {
                     element,
                     placement,
                 },
-            }, true);
+            });
         });
         if (acceptedPosition) {
-            this.fireEvent("move", {
+            this.fireDecoratorEvent("move", {
                 originalEvent: e,
                 source: {
                     element: item,
@@ -515,6 +535,10 @@ let List = List_1 = class List extends UI5Element {
         }
         if (isTabNext(e)) {
             this.focusAfterElement();
+        }
+        if (isUp(e)) {
+            this._handleLodeMoreUp(e);
+            return;
         }
         if (isTabPrevious(e)) {
             if (this.getPreviouslyFocusedItem()) {
@@ -541,11 +565,24 @@ let List = List_1 = class List extends UI5Element {
     _onLoadMoreClick() {
         this.loadMore();
     }
+    _handleLodeMoreUp(e) {
+        const growingButton = this.getGrowingButton();
+        if (growingButton === e.target) {
+            const items = this.getItems();
+            const lastItem = items[items.length - 1];
+            this.focusItem(lastItem);
+            e.preventDefault();
+            e.stopImmediatePropagation();
+        }
+    }
     checkListInViewport() {
         this._inViewport = isElementInView(this.getDomRef());
     }
     loadMore() {
-        this.fireEvent("load-more");
+        // don't fire load-more on initial mount
+        if (this.children.length > 0) {
+            this.fireDecoratorEvent("load-more");
+        }
     }
     /*
     * KEYBOARD SUPPORT
@@ -570,11 +607,28 @@ let List = List_1 = class List extends UI5Element {
             e.preventDefault();
         }
     }
+    _handleHome() {
+        if (!this.growsWithButton) {
+            return;
+        }
+        this.focusFirstItem();
+    }
+    _handleEnd() {
+        if (!this.growsWithButton) {
+            return;
+        }
+        this._shouldFocusGrowingButton();
+    }
+    _handleDown() {
+        if (!this.growsWithButton) {
+            return;
+        }
+        this._shouldFocusGrowingButton();
+    }
     _onfocusin(e) {
         const target = getNormalizedTarget(e.target);
         // If the focusin event does not origin from one of the 'triggers' - ignore it.
         if (!this.isForwardElement(target)) {
-            e.stopImmediatePropagation();
             return;
         }
         // The focus arrives in the List for the first time.
@@ -598,8 +652,8 @@ let List = List_1 = class List extends UI5Element {
                 return;
             }
             this.focusPreviouslyFocusedItem();
-            e.stopImmediatePropagation();
         }
+        e.stopImmediatePropagation();
         this.setForwardingFocus(false);
     }
     _ondragenter(e) {
@@ -612,8 +666,7 @@ let List = List_1 = class List extends UI5Element {
         this.dropIndicatorDOM.targetReference = null;
     }
     _ondragover(e) {
-        const draggedElement = DragRegistry.getDraggedElement();
-        if (!(e.target instanceof HTMLElement) || !draggedElement) {
+        if (!(e.target instanceof HTMLElement)) {
             return;
         }
         const closestPosition = findClosestPosition(this.items, e.clientY, Orientation.Vertical);
@@ -621,48 +674,17 @@ let List = List_1 = class List extends UI5Element {
             this.dropIndicatorDOM.targetReference = null;
             return;
         }
-        let placements = closestPosition.placements;
-        if (closestPosition.element === draggedElement) {
-            placements = placements.filter(placement => placement !== MovePlacement.On);
-        }
-        const placementAccepted = placements.some(placement => {
-            const beforeItemMovePrevented = !this.fireEvent("move-over", {
-                originalEvent: e,
-                source: {
-                    element: draggedElement,
-                },
-                destination: {
-                    element: closestPosition.element,
-                    placement,
-                },
-            }, true);
-            if (beforeItemMovePrevented) {
-                e.preventDefault();
-                this.dropIndicatorDOM.targetReference = closestPosition.element;
-                this.dropIndicatorDOM.placement = placement;
-                return true;
-            }
-            return false;
-        });
-        if (!placementAccepted) {
-            this.dropIndicatorDOM.targetReference = null;
-        }
+        const { targetReference, placement } = handleDragOver(e, this, closestPosition, closestPosition.element, { originalEvent: true });
+        this.dropIndicatorDOM.targetReference = targetReference;
+        this.dropIndicatorDOM.placement = placement;
     }
     _ondrop(e) {
-        e.preventDefault();
-        const draggedElement = DragRegistry.getDraggedElement();
-        this.fireEvent("move", {
-            originalEvent: e,
-            source: {
-                element: draggedElement,
-            },
-            destination: {
-                element: this.dropIndicatorDOM.targetReference,
-                placement: this.dropIndicatorDOM.placement,
-            },
-        });
+        if (!this.dropIndicatorDOM?.targetReference || !this.dropIndicatorDOM?.placement) {
+            e.preventDefault();
+            return;
+        }
+        handleDrop(e, this, this.dropIndicatorDOM.targetReference, this.dropIndicatorDOM.placement, { originalEvent: true });
         this.dropIndicatorDOM.targetReference = null;
-        draggedElement.focus();
     }
     isForwardElement(element) {
         const elementId = element.id;
@@ -678,6 +700,7 @@ let List = List_1 = class List extends UI5Element {
         return afterElement && afterElement.id === elementId;
     }
     onItemTabIndexChange(e) {
+        e.stopPropagation();
         const target = e.target;
         this._itemNavigation.setCurrentItem(target);
     }
@@ -685,7 +708,7 @@ let List = List_1 = class List extends UI5Element {
         const target = e.target;
         e.stopPropagation();
         this._itemNavigation.setCurrentItem(target);
-        this.fireEvent("item-focused", { item: target });
+        this.fireDecoratorEvent("item-focused", { item: target });
         if (this.selectionMode === ListSelectionMode.SingleAuto) {
             const detail = {
                 item: target,
@@ -698,11 +721,10 @@ let List = List_1 = class List extends UI5Element {
     }
     onItemPress(e) {
         const pressedItem = e.detail.item;
-        if (!this.fireEvent("item-click", { item: pressedItem }, true)) {
+        if (!this.fireDecoratorEvent("item-click", { item: pressedItem })) {
             return;
         }
-        if (!this._selectionRequested && this.selectionMode !== ListSelectionMode.Delete) {
-            this._selectionRequested = true;
+        if (this.selectionMode !== ListSelectionMode.Delete) {
             const detail = {
                 item: pressedItem,
                 selectionComponentPressed: false,
@@ -711,18 +733,17 @@ let List = List_1 = class List extends UI5Element {
             };
             this.onSelectionRequested({ detail });
         }
-        this._selectionRequested = false;
     }
     // This is applicable to NotificationListItem
     onItemClose(e) {
         const target = e.target;
         const shouldFireItemClose = target?.hasAttribute("ui5-li-notification") || target?.hasAttribute("ui5-li-notification-group");
         if (shouldFireItemClose) {
-            this.fireEvent("item-close", { item: e.detail?.item });
+            this.fireDecoratorEvent("item-close", { item: e.detail?.item });
         }
     }
     onItemToggle(e) {
-        this.fireEvent("item-toggle", { item: e.detail.item });
+        this.fireDecoratorEvent("item-toggle", { item: e.detail.item });
     }
     onForwardBefore(e) {
         this.setPreviouslyFocusedItem(e.target);
@@ -752,6 +773,14 @@ let List = List_1 = class List extends UI5Element {
         const growingBtn = this.getGrowingButton();
         if (growingBtn) {
             growingBtn.focus();
+        }
+    }
+    _shouldFocusGrowingButton() {
+        const items = this.getItems();
+        const lastIndex = items.length - 1;
+        const currentIndex = this._itemNavigation._currentIndex;
+        if (currentIndex !== -1 && currentIndex === lastIndex) {
+            this.focusGrowingButton();
         }
     }
     getGrowingButton() {
@@ -883,6 +912,18 @@ __decorate([
 ], List.prototype, "accessibleNameRef", void 0);
 __decorate([
     property()
+], List.prototype, "accessibleDescription", void 0);
+__decorate([
+    property()
+], List.prototype, "accessibleDescriptionRef", void 0);
+__decorate([
+    property({ noAttribute: true })
+], List.prototype, "_associatedDescriptionRefTexts", void 0);
+__decorate([
+    property({ noAttribute: true })
+], List.prototype, "_associatedLabelsRefTexts", void 0);
+__decorate([
+    property()
 ], List.prototype, "accessibleRole", void 0);
 __decorate([
     property({ type: Boolean })
@@ -907,29 +948,27 @@ List = List_1 = __decorate([
     customElement({
         tag: "ui5-list",
         fastNavigation: true,
-        renderer: litRender,
+        renderer: jsxRenderer,
         template: ListTemplate,
         styles: [
             listCss,
             getEffectiveScrollbarStyle(),
         ],
-        dependencies: [BusyIndicator, DropIndicator, ListItemGroup],
     })
     /**
      * Fired when an item is activated, unless the item's `type` property
      * is set to `Inactive`.
-     * @allowPreventDefault
+     *
+     * **Note**: This event is not triggered by interactions with selection components such as the checkboxes and radio buttons,
+     * associated with non-default `selectionMode` values, or if any other **interactive** component
+     * (such as a button or input) within the list item is directly clicked.
      * @param {HTMLElement} item The clicked item.
      * @public
      */
     ,
     event("item-click", {
-        detail: {
-            /**
-             * @public
-             */
-            item: { type: HTMLElement },
-        },
+        bubbles: true,
+        cancelable: true,
     })
     /**
      * Fired when the `Close` button of any item is clicked
@@ -942,12 +981,7 @@ List = List_1 = __decorate([
      */
     ,
     event("item-close", {
-        detail: {
-            /**
-             * @public
-             */
-            item: { type: HTMLElement },
-        },
+        bubbles: true,
     })
     /**
      * Fired when the `Toggle` button of any item is clicked.
@@ -959,12 +993,7 @@ List = List_1 = __decorate([
      */
     ,
     event("item-toggle", {
-        detail: {
-            /**
-             * @public
-             */
-            item: { type: HTMLElement },
-        },
+        bubbles: true,
     })
     /**
      * Fired when the Delete button of any item is pressed.
@@ -976,47 +1005,19 @@ List = List_1 = __decorate([
      */
     ,
     event("item-delete", {
-        detail: {
-            /**
-             * @public
-             */
-            item: { type: HTMLElement },
-        },
+        bubbles: true,
     })
     /**
      * Fired when selection is changed by user interaction
      * in `Single`, `SingleStart`, `SingleEnd` and `Multiple` selection modes.
-     * @allowPreventDefault
      * @param {Array<ListItemBase>} selectedItems An array of the selected items.
      * @param {Array<ListItemBase>} previouslySelectedItems An array of the previously selected items.
      * @public
      */
     ,
     event("selection-change", {
-        detail: {
-            /**
-             * @public
-             */
-            selectedItems: { type: Array },
-            /**
-             * @public
-             */
-            previouslySelectedItems: { type: Array },
-            /**
-             * protected, holds the event target item
-             * @protected
-             */
-            targetItem: { type: HTMLElement },
-            /**
-             * protected, indicates if the user used the selection components to change the selection
-             * @protected
-             */
-            selectionComponentPressed: { type: Boolean },
-            /**
-             * @private
-             */
-            key: { type: String },
-        },
+        bubbles: true,
+        cancelable: true,
     })
     /**
      * Fired when the user scrolls to the bottom of the list.
@@ -1026,15 +1027,15 @@ List = List_1 = __decorate([
      * @since 1.0.0-rc.6
      */
     ,
-    event("load-more")
+    event("load-more", {
+        bubbles: true,
+    })
     /**
      * @private
      */
     ,
     event("item-focused", {
-        detail: {
-            item: { type: HTMLElement },
-        },
+        bubbles: true,
     })
     /**
      * Fired when a movable list item is moved over a potential drop target during a dragging operation.
@@ -1044,24 +1045,11 @@ List = List_1 = __decorate([
      * @param {object} destination Contains information about the destination of the moved element. Has `element` and `placement` properties.
      * @public
      * @since 2.0.0
-     * @allowPreventDefault
      */
     ,
     event("move-over", {
-        detail: {
-            /**
-             * @public
-             */
-            originalEvent: { type: Event },
-            /**
-             * @public
-             */
-            source: { type: Object },
-            /**
-             * @public
-             */
-            destination: { type: Object },
-        },
+        bubbles: true,
+        cancelable: true,
     })
     /**
      * Fired when a movable list item is dropped onto a drop target.
@@ -1070,24 +1058,10 @@ List = List_1 = __decorate([
      * @param {object} source Contains information about the moved element under `element` property.
      * @param {object} destination Contains information about the destination of the moved element. Has `element` and `placement` properties.
      * @public
-     * @allowPreventDefault
      */
     ,
     event("move", {
-        detail: {
-            /**
-             * @public
-             */
-            originalEvent: { type: Event },
-            /**
-             * @public
-             */
-            source: { type: Object },
-            /**
-             * @public
-             */
-            destination: { type: Object },
-        },
+        bubbles: true,
     })
 ], List);
 List.define();

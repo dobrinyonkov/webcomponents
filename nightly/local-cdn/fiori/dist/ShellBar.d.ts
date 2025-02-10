@@ -1,23 +1,16 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
-import type AriaRole from "@ui5/webcomponents-base/dist/types/AriaRole.js";
 import type { ListSelectionChangeEventDetail } from "@ui5/webcomponents/dist/List.js";
 import type { ResizeObserverCallback } from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import Popover from "@ui5/webcomponents/dist/Popover.js";
 import type Input from "@ui5/webcomponents/dist/Input.js";
 import type { IButton } from "@ui5/webcomponents/dist/Button.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
-import "@ui5/webcomponents-icons/dist/search.js";
-import "@ui5/webcomponents-icons/dist/bell.js";
-import "@ui5/webcomponents-icons/dist/overflow.js";
-import "@ui5/webcomponents-icons/dist/grid.js";
-import "@ui5/webcomponents-icons/dist/slim-arrow-down.js";
-import type { Timeout, ClassMap, AccessibilityAttributes } from "@ui5/webcomponents-base/dist/types.js";
+import type { ClassMap, AccessibilityAttributes, AriaRole } from "@ui5/webcomponents-base";
 import type ListItemBase from "@ui5/webcomponents/dist/ListItemBase.js";
 import type PopoverHorizontalAlign from "@ui5/webcomponents/dist/types/PopoverHorizontalAlign.js";
 import type ShellBarItem from "./ShellBarItem.js";
-type LowercaseString<T> = T extends string ? Lowercase<T> : never;
 type ShellBarLogoAccessibilityAttributes = {
-    role?: Extract<LowercaseString<AriaRole>, "button" | "link">;
+    role?: Extract<AriaRole, "button" | "link">;
     name?: string;
 };
 type ShellBarProfileAccessibilityAttributes = Pick<AccessibilityAttributes, "name" | "expanded" | "hasPopup">;
@@ -45,6 +38,9 @@ type ShellBarLogoClickEventDetail = {
 type ShellBarMenuItemClickEventDetail = {
     item: HTMLElement;
 };
+type ShellBarContentItemVisibilityChangeEventDetail = {
+    items: Array<HTMLElement>;
+};
 type ShellBarSearchButtonEventDetail = {
     targetRef: HTMLElement;
     searchFieldVisible: boolean;
@@ -53,7 +49,6 @@ interface IShelBarItemInfo {
     id: string;
     icon?: string;
     text?: string;
-    priority: number;
     show: boolean;
     count?: string;
     custom?: boolean;
@@ -61,11 +56,11 @@ interface IShelBarItemInfo {
     stableDomRef?: string;
     refItemid?: string;
     press: (e: MouseEvent) => void;
-    styles: object;
     domOrder: number;
     classes: string;
     order?: number;
     profile?: boolean;
+    tooltip?: string;
 }
 /**
  * @class
@@ -100,6 +95,15 @@ interface IShelBarItemInfo {
  * @since 0.8.0
  */
 declare class ShellBar extends UI5Element {
+    eventDetails: {
+        "notifications-click": ShellBarNotificationsClickEventDetail;
+        "profile-click": ShellBarProfileClickEventDetail;
+        "product-switch-click": ShellBarProductSwitchClickEventDetail;
+        "logo-click": ShellBarLogoClickEventDetail;
+        "menu-item-click": ShellBarMenuItemClickEventDetail;
+        "search-button-click": ShellBarSearchButtonEventDetail;
+        "content-item-visibility-change": ShellBarContentItemVisibilityChangeEventDetail;
+    };
     /**
      * Defines the `primaryTitle`.
      *
@@ -180,17 +184,17 @@ declare class ShellBar extends UI5Element {
     /**
      * @private
      */
-    breakpointSize?: string;
+    breakpointSize: string;
     /**
      * @private
      */
     withLogo: boolean;
     _itemsInfo: Array<IShelBarItemInfo>;
-    _menuPopoverItems: Array<HTMLElement>;
     _menuPopoverExpanded: boolean;
     _overflowPopoverExpanded: boolean;
-    _fullWidthSearch: boolean;
-    _isXXLBreakpoint: boolean;
+    hasVisibleStartContent: boolean;
+    hasVisibleEndContent: boolean;
+    _cachedHiddenContent: Array<HTMLElement>;
     /**
      * Defines the assistant slot.
      *
@@ -224,7 +228,7 @@ declare class ShellBar extends UI5Element {
      */
     logo: Array<HTMLElement>;
     /**
-     * Defines the items displayed in menu after a click on the primary title.
+     * Defines the items displayed in menu after a click on a start button.
      *
      * **Note:** You can use the  `<ui5-li></ui5-li>` and its ancestors.
      * @since 0.10
@@ -238,7 +242,7 @@ declare class ShellBar extends UI5Element {
     searchField: Array<Input>;
     /**
      * Defines a `ui5-button` in the bar that will be placed in the beginning.
-     * We encourage this slot to be used for a back or home button.
+     * We encourage this slot to be used for a menu button.
      * It gets overstyled to match ShellBar's styling.
      * @public
      */
@@ -250,20 +254,41 @@ declare class ShellBar extends UI5Element {
      * @private
      */
     midContent: Array<HTMLElement>;
+    /**
+     * Define the items displayed in the additional content area.
+     * **Note:** The `content` slot is in an experimental state and is a subject to change.
+     *
+     * @public
+     * @since 2.7.0
+     */
+    content: Array<UI5Element>;
     static i18nBundle: I18nBundle;
     overflowPopover?: Popover | null;
     menuPopover?: Popover | null;
     _isInitialRendering: boolean;
     _defaultItemPressPrevented: boolean;
-    menuItemsObserver: MutationObserver;
-    _debounceInterval?: Timeout | null;
+    additionalContextObserver: MutationObserver;
     _hiddenIcons: Array<IShelBarItemInfo>;
     _handleResize: ResizeObserverCallback;
+    _overflowNotifications: string | null;
+    _lastOffsetWidth: number;
+    _observableContent: Array<HTMLElement>;
+    _searchBarAutoOpen: boolean;
+    _searchBarAutoClosed: boolean;
+    _searchIconPressed: boolean;
     _headerPress: () => void;
     static get FIORI_3_BREAKPOINTS(): number[];
     static get FIORI_3_BREAKPOINTS_MAP(): Record<string, string>;
     constructor();
-    _debounce(fn: () => void, delay: number): void;
+    _searchBarInitialState(): void;
+    _onKeyDown(e: KeyboardEvent): void;
+    _focusNextItem(items: HTMLElement[], currentIndex: number): void;
+    _focusPreviousItem(items: HTMLElement[], currentIndex: number): void;
+    _isVisible(element: HTMLElement): boolean;
+    _isInteractive(element: HTMLElement | UI5Element): boolean;
+    _getNavigableContent(): HTMLElement[];
+    _getRightChildItems(): HTMLElement[];
+    _getVisibleAndInteractiveItems(): HTMLElement[];
     _menuItemPress(e: CustomEvent<ListSelectionChangeEventDetail>): void;
     _logoPress(): void;
     _menuPopoverBeforeOpen(): void;
@@ -272,7 +297,12 @@ declare class ShellBar extends UI5Element {
     _overflowPopoverAfterClose(): void;
     _logoKeyup(e: KeyboardEvent): void;
     _logoKeydown(e: KeyboardEvent): void;
+    _calculateCSSREMValue(styleSet: CSSStyleDeclaration, propertyName: string): number;
+    _parsePxValue(styleSet: CSSStyleDeclaration, propertyName: string): number;
+    domCalculatedValues(cssVar: string): number;
     onBeforeRendering(): void;
+    get additionalContextSorted(): HTMLElement[];
+    get additionalContextContainer(): HTMLElement | null;
     onAfterRendering(): void;
     /**
      * Closes the overflow area.
@@ -280,10 +310,13 @@ declare class ShellBar extends UI5Element {
      * @public
      */
     closeOverflow(): void;
-    _handleBarBreakpoints(): string;
-    _handleSizeS(): void;
+    _handleBarBreakpoints(): void;
+    _hideOverflowItems(hiddenItems: number, items: IShelBarItemInfo[]): number;
+    _hideAdditionalContext(): void;
     _handleActionsOverflow(): IShelBarItemInfo[];
     _overflowActions(): void;
+    _updateAssistantIconVisibility(items: IShelBarItemInfo[]): void;
+    _updateSeparatorsVisibility(): void;
     _toggleActionPopover(): void;
     onEnterDOM(): void;
     onExitDOM(): void;
@@ -334,31 +367,30 @@ declare class ShellBar extends UI5Element {
      * Returns all items that will be placed in the right of the bar as icons / dom elements.
      * @param showOverflowButton Determines if overflow button should be visible (not overflowing)
      */
-    _getAllItems(showOverflowButton: boolean): IShelBarItemInfo[];
+    _getAllItems(showOverflowButton: boolean, showSearchButton?: boolean): Array<IShelBarItemInfo>;
     _updateItemsInfo(newItems: Array<IShelBarItemInfo>): void;
-    _updateClonedMenuItems(): void;
-    _observeMenuItems(): void;
+    _updateOverflowNotifications(): void;
+    _updateAdditionalContextItems(): void;
+    _observeAdditionalContextItems(): false | undefined;
     _getOverflowPopover(): Popover;
     _getMenuPopover(): Popover;
     isIconHidden(name: string): boolean;
     get classes(): ClassMap;
     get styles(): {
-        items: {
-            notification: {
-                order: string;
-            };
-            overflow: {
-                order: string;
-            };
-            profile: {
-                order: string;
-            };
-            product: {
-                order: string;
-            };
-        };
         searchField: {
             display: string;
+        };
+        additionalContext: {
+            start: {
+                separator: {
+                    visibility: string;
+                };
+            };
+            end: {
+                separator: {
+                    visibility: string;
+                };
+            };
         };
     };
     get correctSearchFieldStyles(): "none" | "flex";
@@ -373,52 +405,76 @@ declare class ShellBar extends UI5Element {
     get hasMidContent(): boolean;
     get hasProfile(): boolean;
     get hasMenuItems(): boolean;
+    get imageBtnText(): string | undefined;
     get _shellbarText(): string;
     get _logoText(): string;
     get _notificationsText(): string;
     get _cancelBtnText(): string;
+    get _logoAreaText(): string;
+    get _additionalContextText(): string;
+    get _searchFieldDescription(): string;
+    get _additionalContextRole(): "group" | undefined;
+    get additionalContext(): UI5Element[];
+    get startContent(): UI5Element[];
+    get endContent(): UI5Element[];
+    get _rightChildRole(): "toolbar" | undefined;
+    get _searchFieldExpanded(): boolean;
+    get _searchFieldText(): string;
+    get _searchBtnOpen(): string;
+    get _productSwitchBtnText(): string;
     get _showFullWidthSearch(): boolean;
+    get isSearchFieldVisible(): number;
     get _profileText(): string;
     get _productsText(): string;
     get _searchText(): string;
     get _overflowText(): string;
+    get hasAdditionalContext(): boolean;
+    get _hasVisibleStartContent(): boolean;
+    get _hasVisibleEndContent(): boolean;
+    get itemsToOverflow(): HTMLElement[];
+    get separatorsWidth(): number;
+    get searchFieldActualWidth(): number;
+    get separators(): HTMLElement[];
+    get additionalContextHidden(): UI5Element[];
+    get _lessSearchSpace(): boolean;
     get accInfo(): {
         notifications: {
             title: string;
             accessibilityAttributes: {
                 expanded: boolean | "true" | "false" | undefined;
-                hasPopup: ("dialog" | "menu" | "grid" | "listbox" | "tree") | undefined;
+                hasPopup: import("@ui5/webcomponents-base").AriaHasPopup | undefined;
             };
         };
         profile: {
             title: string;
             accessibilityAttributes: {
-                hasPopup: ("dialog" | "menu" | "grid" | "listbox" | "tree") | undefined;
+                hasPopup: import("@ui5/webcomponents-base").AriaHasPopup | undefined;
                 expanded: boolean | "true" | "false" | undefined;
             };
         };
         products: {
             title: string;
             accessibilityAttributes: {
-                hasPopup: ("dialog" | "menu" | "grid" | "listbox" | "tree") | undefined;
+                hasPopup: import("@ui5/webcomponents-base").AriaHasPopup | undefined;
                 expanded: boolean | "true" | "false" | undefined;
             };
         };
         search: {
             title: string;
             accessibilityAttributes: {
-                hasPopup: ("dialog" | "menu" | "grid" | "listbox" | "tree") | undefined;
+                hasPopup: import("@ui5/webcomponents-base").AriaHasPopup | undefined;
             };
         };
         overflow: {
             title: string;
             accessibilityAttributes: {
-                hasPopup: string;
+                hasPopup: import("@ui5/webcomponents-base").AriaHasPopup;
                 expanded: boolean | "true" | "false";
             };
         };
     };
     get accLogoRole(): "link" | "button";
+    get isSBreakPoint(): boolean;
 }
 export default ShellBar;
-export type { ShellBarNotificationsClickEventDetail, ShellBarProfileClickEventDetail, ShellBarProductSwitchClickEventDetail, ShellBarLogoClickEventDetail, ShellBarMenuItemClickEventDetail, ShellBarAccessibilityAttributes, ShellBarSearchButtonEventDetail, };
+export type { ShellBarContentItemVisibilityChangeEventDetail, ShellBarNotificationsClickEventDetail, ShellBarProfileClickEventDetail, ShellBarProductSwitchClickEventDetail, ShellBarLogoClickEventDetail, ShellBarMenuItemClickEventDetail, ShellBarAccessibilityAttributes, ShellBarSearchButtonEventDetail, };

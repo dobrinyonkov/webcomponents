@@ -4,14 +4,14 @@ import type { ICalendarPicker } from "./Calendar.js";
 import CalendarSelectionMode from "./types/CalendarSelectionMode.js";
 type Year = {
     timestamp: string;
-    _tabIndex: string;
+    _tabIndex: number;
     focusRef: boolean;
     selected: boolean;
-    ariaSelected: string;
+    ariaSelected: boolean;
     year: string;
     yearInSecType: string | undefined;
     disabled: boolean;
-    ariaDisabled: string | undefined;
+    ariaDisabled: boolean | undefined;
     classes: string;
     parts: string;
 };
@@ -32,6 +32,10 @@ type YearPickerNavigateEventDetail = {
  * @private
  */
 declare class YearPicker extends CalendarPart implements ICalendarPicker {
+    eventDetails: CalendarPart["eventDetails"] & {
+        "change": YearPickerChangeEventDetail;
+        "navigate": YearPickerNavigateEventDetail;
+    };
     /**
      * An array of UTC timestamps representing the selected date
      * or dates depending on the capabilities of the picker component.
@@ -50,7 +54,7 @@ declare class YearPicker extends CalendarPart implements ICalendarPicker {
      * @since 2.2.0
      */
     selectionMode: `${CalendarSelectionMode}`;
-    _years: YearInterval;
+    _yearsInterval: YearInterval;
     _hidden: boolean;
     /**
      * When selectionMode="Range" and the first year in the range is selected, this is the currently hovered or focused year.

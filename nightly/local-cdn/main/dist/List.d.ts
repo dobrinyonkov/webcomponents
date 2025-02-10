@@ -2,17 +2,17 @@ import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import type { ResizeObserverCallback } from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import ItemNavigation from "@ui5/webcomponents-base/dist/delegate/ItemNavigation.js";
 import type { ClassMap } from "@ui5/webcomponents-base/dist/types.js";
+import type { MoveEventDetail } from "@ui5/webcomponents-base/dist/util/dragAndDrop/DragRegistry.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
-import MovePlacement from "@ui5/webcomponents-base/dist/types/MovePlacement.js";
 import ListSelectionMode from "./types/ListSelectionMode.js";
 import ListGrowingMode from "./types/ListGrowingMode.js";
 import type ListAccessibleRole from "./types/ListAccessibleRole.js";
 import type ListItemBase from "./ListItemBase.js";
 import type { ListItemBasePressEventDetail } from "./ListItemBase.js";
-import DropIndicator from "./DropIndicator.js";
+import type DropIndicator from "./DropIndicator.js";
 import type { SelectionRequestEventDetail } from "./ListItem.js";
 import ListSeparator from "./types/ListSeparator.js";
-import ListItemGroup from "./ListItemGroup.js";
+import type ListItemGroup from "./ListItemGroup.js";
 type ListItemFocusEventDetail = {
     item: ListItemBase;
 };
@@ -26,16 +26,6 @@ type ListSelectionChangeEventDetail = {
 type ListItemDeleteEventDetail = {
     item: ListItemBase;
 };
-type ListMoveEventDetail = {
-    originalEvent: Event;
-    source: {
-        element: HTMLElement;
-    };
-    destination: {
-        element: HTMLElement;
-        placement: `${MovePlacement}`;
-    };
-};
 type ListItemCloseEventDetail = {
     item: ListItemBase;
 };
@@ -45,6 +35,7 @@ type ListItemToggleEventDetail = {
 type ListItemClickEventDetail = {
     item: ListItemBase;
 };
+type ListMoveEventDetail = MoveEventDetail;
 /**
  * @class
  *
@@ -103,6 +94,17 @@ type ListItemClickEventDetail = {
  * @csspart growing-button-inner - Used to style the button inner element
  */
 declare class List extends UI5Element {
+    eventDetails: {
+        "item-click": ListItemClickEventDetail;
+        "item-close": ListItemCloseEventDetail;
+        "item-toggle": ListItemToggleEventDetail;
+        "item-delete": ListItemDeleteEventDetail;
+        "selection-change": ListSelectionChangeEventDetail;
+        "load-more": void;
+        "item-focused": ListItemFocusEventDetail;
+        "move-over": ListMoveEventDetail;
+        "move": ListMoveEventDetail;
+    };
     /**
      * Defines the component header text.
      *
@@ -184,12 +186,36 @@ declare class List extends UI5Element {
      */
     accessibleName?: string;
     /**
-     * Defines the IDs of the elements that label the input.
+     * Defines the IDs of the elements that label the component.
      * @default undefined
      * @public
      * @since 1.0.0-rc.15
      */
     accessibleNameRef?: string;
+    /**
+     * Defines the accessible description of the component.
+     * @default undefined
+     * @public
+     * @since 2.5.0
+     */
+    accessibleDescription?: string;
+    /**
+     * Defines the IDs of the elements that describe the component.
+     * @default undefined
+     * @public
+     * @since 2.5.0
+     */
+    accessibleDescriptionRef?: string;
+    /**
+     * Constantly updated value of texts collected from the associated labels
+     * @private
+     */
+    _associatedDescriptionRefTexts?: string;
+    /**
+     * Constantly updated value of texts collected from the associated labels
+     * @private
+     */
+    _associatedLabelsRefTexts?: string;
     /**
      * Defines the accessible role of the component.
      * @public
@@ -246,6 +272,7 @@ declare class List extends UI5Element {
      * @public
      */
     get listItems(): ListItemBase[];
+    _updateAssociatedLabelsTexts(): void;
     onEnterDOM(): void;
     onExitDOM(): void;
     onBeforeRendering(): void;
@@ -266,12 +293,13 @@ declare class List extends UI5Element {
     get isMultiple(): boolean;
     get ariaLabelledBy(): string | undefined;
     get ariaLabelTxt(): string | undefined;
+    get ariaDescriptionText(): string | undefined;
     get ariaLabelModeText(): string;
     get grows(): boolean;
     get growsOnScroll(): boolean;
     get growsWithButton(): boolean;
     get _growingButtonText(): string;
-    get listAccessibleRole(): string;
+    get listAccessibleRole(): "menu" | "list" | "listbox" | "tree";
     get classes(): ClassMap;
     prepareListItems(): void;
     observeListEnd(): Promise<void>;
@@ -297,9 +325,13 @@ declare class List extends UI5Element {
     _onLoadMoreMousedown(): void;
     _onLoadMoreMouseup(): void;
     _onLoadMoreClick(): void;
+    _handleLodeMoreUp(e: KeyboardEvent): void;
     checkListInViewport(): void;
     loadMore(): void;
     _handleTabNext(e: KeyboardEvent): void;
+    _handleHome(): void;
+    _handleEnd(): void;
+    _handleDown(): void;
     _onfocusin(e: FocusEvent): void;
     _ondragenter(e: DragEvent): void;
     _ondragleave(e: DragEvent): void;
@@ -317,6 +349,7 @@ declare class List extends UI5Element {
     focusBeforeElement(): void;
     focusAfterElement(): void;
     focusGrowingButton(): void;
+    _shouldFocusGrowingButton(): void;
     getGrowingButton(): HTMLElement;
     /**
      * Focuses the first list item and sets its tabindex to "0" via the ItemNavigation
