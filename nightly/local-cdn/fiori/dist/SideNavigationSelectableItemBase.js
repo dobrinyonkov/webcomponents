@@ -7,12 +7,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event-strict.js";
-import { isSpace, isEnter } from "@ui5/webcomponents-base/dist/Keys.js";
+import { isSpace, isEnter, isLeft, isRight, } from "@ui5/webcomponents-base/dist/Keys.js";
 import SideNavigationItemBase from "./SideNavigationItemBase.js";
 /**
  * Fired when the component is activated either with a click/tap or by using the [Enter] or [Space] keys.
  *
  * @public
+ * @param {boolean} altKey Returns whether the "ALT" key was pressed when the event was triggered.
+ * @param {boolean} ctrlKey Returns whether the "CTRL" key was pressed when the event was triggered.
+ * @param {boolean} metaKey Returns whether the "META" key was pressed when the event was triggered.
+ * @param {boolean} shiftKey Returns whether the "SHIFT" key was pressed when the event was triggered.
  */
 let SideNavigationSelectableItemBase = class SideNavigationSelectableItemBase extends SideNavigationItemBase {
     constructor() {
@@ -111,16 +115,34 @@ let SideNavigationSelectableItemBase = class SideNavigationSelectableItemBase ex
         return "page";
     }
     _onkeydown(e) {
-        if (isSpace(e)) {
+        const isRTL = this.effectiveDir === "rtl";
+        if (isSpace(e) || isRight(e) || isLeft(e)) {
             e.preventDefault();
         }
         if (isEnter(e)) {
             this._activate(e);
         }
+        if ((isRTL ? isLeft(e) : isRight(e)) && this.sideNavCollapsed && this.hasSubItems) {
+            this._activate(e);
+        }
+        if ((isRTL ? isRight(e) : isLeft(e)) && this.inPopover) {
+            this.associatedItem?.sideNavigation?.closePicker();
+        }
     }
     _onkeyup(e) {
         if (isSpace(e)) {
             this._activate(e);
+            if (this.href && !e.defaultPrevented) {
+                const customEvent = new MouseEvent("click");
+                customEvent.stopImmediatePropagation();
+                if (this.getDomRef().querySelector("a")) {
+                    this.getDomRef().querySelector("a").dispatchEvent(customEvent);
+                }
+                else {
+                    // when Side Navigation is collapsed and it is first level item we have directly <a> element
+                    this.getDomRef().dispatchEvent(customEvent);
+                }
+            }
         }
     }
     _onclick(e) {
@@ -131,9 +153,18 @@ let SideNavigationSelectableItemBase = class SideNavigationSelectableItemBase ex
         this.sideNavigation?.focusItem(this);
     }
     _activate(e) {
+        const { altKey, ctrlKey, metaKey, shiftKey, } = e;
         e.stopPropagation();
         if (this.isOverflow) {
-            this.fireDecoratorEvent("click");
+            const executeEvent = this.fireDecoratorEvent("click", {
+                altKey,
+                ctrlKey,
+                metaKey,
+                shiftKey,
+            });
+            if (!executeEvent) {
+                e.preventDefault();
+            }
         }
         else {
             this.sideNavigation?._handleItemClick(e, this);
@@ -170,6 +201,7 @@ __decorate([
 SideNavigationSelectableItemBase = __decorate([
     event("click", {
         bubbles: true,
+        cancelable: true,
     })
     /**
      * @class

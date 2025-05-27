@@ -94,6 +94,7 @@ function getPropertyDescriptor(proto, name) {
 class UI5Element extends HTMLElement {
     constructor() {
         super();
+        this.__shouldHydrate = false;
         // used to differentiate whether a setter is called from the constructor (from an initializer) or later
         // setters from the constructor should not set attributes, this is delegated after the first rendering but is async
         // setters after the constructor can set attributes synchronously for more convinient development
@@ -131,7 +132,14 @@ class UI5Element extends HTMLElement {
         const ctor = this.constructor;
         if (ctor._needsShadowDOM()) {
             const defaultOptions = { mode: "open" };
-            this.attachShadow({ ...defaultOptions, ...ctor.getMetadata().getShadowRootOptions() });
+            if (!this.shadowRoot) {
+                this.attachShadow({ ...defaultOptions, ...ctor.getMetadata().getShadowRootOptions() });
+            }
+            else {
+                // The shadow root is initially rendered. This applies to case where the component's template
+                // is inserted into the DOM declaratively using a <template> tag.
+                this.__shouldHydrate = true;
+            }
             const slotsAreManaged = ctor.getMetadata().slotsAreManaged();
             if (slotsAreManaged) {
                 this.shadowRoot.addEventListener("slotchange", this._onShadowRootSlotChange.bind(this));
@@ -180,7 +188,7 @@ class UI5Element extends HTMLElement {
         }
         const ctor = this.constructor;
         this.setAttribute(ctor.getMetadata().getPureTag(), "");
-        if (ctor.getMetadata().supportsF6FastNavigation()) {
+        if (ctor.getMetadata().supportsF6FastNavigation() && !this.hasAttribute("data-sap-ui-fastnavgroup")) {
             this.setAttribute("data-sap-ui-fastnavgroup", "true");
         }
         const slotsAreManaged = ctor.getMetadata().slotsAreManaged();
@@ -953,8 +961,12 @@ class UI5Element extends HTMLElement {
                             oldValue: oldState,
                         });
                         if (this._rendered) {
-                            // is already rendered so it is not the constructor - can set the attribute synchronously
-                            this._updateAttribute(prop, value);
+                            // the component is already rendered, indicating it is not the constructor -
+                            // therefore the attribute can be set synchronously.
+                            // get the effective value of the property,
+                            // as it might differ from the provided value
+                            const newValue = origGet ? origGet.call(this) : this._state[prop];
+                            this._updateAttribute(prop, newValue);
                         }
                         if (ctor.getMetadata().isFormAssociated()) {
                             setFormValue(this);
@@ -1053,8 +1065,8 @@ class UI5Element extends HTMLElement {
             ]);
             const [i18nBundles] = result;
             Object.entries(this.getMetadata().getI18n()).forEach((pair, index) => {
-                const propertyName = pair[0];
-                this.i18nBundleStorage[propertyName] = i18nBundles[index];
+                const bundleName = pair[1].bundleName;
+                this.i18nBundleStorage[bundleName] = i18nBundles[index];
             });
             this.asyncFinished = true;
         };

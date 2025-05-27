@@ -2,11 +2,9 @@ import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import type { ClassMap, Timeout } from "@ui5/webcomponents-base/dist/types.js";
 import type { ResizeObserverCallback } from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
+import type { UI5CustomEvent } from "@ui5/webcomponents-base";
 import "@ui5/webcomponents-icons/dist/slim-arrow-down.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
-import "@ui5/webcomponents-icons/dist/decline.js";
-import "@ui5/webcomponents-icons/dist/multiselect-all.js";
-import "@ui5/webcomponents-icons/dist/not-editable.js";
 import "@ui5/webcomponents-icons/dist/error.js";
 import "@ui5/webcomponents-icons/dist/alert.js";
 import "@ui5/webcomponents-icons/dist/sys-enter-2.js";
@@ -20,6 +18,7 @@ import Popover from "./Popover.js";
 import ResponsivePopover from "./ResponsivePopover.js";
 import List from "./List.js";
 import type { ListSelectionChangeEventDetail } from "./List.js";
+import ToggleButton from "./ToggleButton.js";
 import type ComboBoxFilter from "./types/ComboBoxFilter.js";
 import type { InputEventDetail } from "./Input.js";
 import type PopoverHorizontalAlign from "./types/PopoverHorizontalAlign.js";
@@ -29,6 +28,7 @@ import type PopoverHorizontalAlign from "./types/PopoverHorizontalAlign.js";
  */
 interface IMultiComboBoxItem extends UI5Element {
     text?: string;
+    additionalText?: string;
     headerText?: string;
     selected: boolean;
     isGroupItem?: boolean;
@@ -211,9 +211,10 @@ declare class MultiComboBox extends UI5Element implements IFormInputElement {
     tokenizerOpen: boolean;
     /**
      * Indicates whether the items picker is open.
-     * @private
+     * @public
+     * @since 2.9.0
      */
-    _open: boolean;
+    open: boolean;
     _valueBeforeOpen: string;
     _filteredItems: Array<IMultiComboBoxItem>;
     _previouslySelectedItems: Array<IMultiComboBoxItem>;
@@ -289,13 +290,7 @@ declare class MultiComboBox extends UI5Element implements IFormInputElement {
     _toggleTokenizerPopover(): void;
     togglePopoverByDropdownIcon(): void;
     _showFilteredItems(): void;
-    filterSelectedItems(e: MouseEvent): void;
-    /**
-     * Indicates whether the dropdown is open. True if the dropdown is open, false otherwise.
-     * @default false
-     * @public
-     */
-    get open(): boolean;
+    filterSelectedItems(e: UI5CustomEvent<ToggleButton, "click">): void;
     get _showAllItemsButtonPressed(): boolean;
     get _inputDom(): HTMLInputElement;
     _inputLiveChange(e: InputEvent): void;

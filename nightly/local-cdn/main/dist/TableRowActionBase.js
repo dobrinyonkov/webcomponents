@@ -5,22 +5,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
-import { customElement, property } from "@ui5/webcomponents-base/dist/decorators.js";
-import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
-import TableRowActionBaseTemplate from "./generated/templates/TableRowActionBaseTemplate.lit.js";
+import { customElement, property, eventStrict } from "@ui5/webcomponents-base/dist/decorators.js";
+import jsxRenderer from "@ui5/webcomponents-base/dist/renderer/JsxRenderer.js";
+import TableRowActionBaseTemplate from "./TableRowActionBaseTemplate.js";
 import TableRowActionBaseStyles from "./generated/themes/TableRowActionBase.css.js";
-import Icon from "./Icon.js";
-import Button from "./Button.js";
 let MenuConstructor;
 let MenuItemConstructor;
 /**
- * @class
- * The `TableRowActionBase` class serves as a foundation for table row actions.
- * @constructor
- * @abstract
- * @extends UI5Element
- * @since 2.7.0
+ * Fired when a row action is clicked.
+ *
  * @public
+ * @since 2.9.0
  */
 let TableRowActionBase = class TableRowActionBase extends UI5Element {
     constructor() {
@@ -47,7 +42,7 @@ let TableRowActionBase = class TableRowActionBase extends UI5Element {
             this._menu.addEventListener("item-click", ((e) => {
                 const menuItem = e.detail.item;
                 const rowAction = this._menuItems.get(menuItem);
-                rowAction._onActionClick();
+                rowAction._fireClickEvent();
             }));
             document.body.append(this._menu);
         }
@@ -69,10 +64,15 @@ let TableRowActionBase = class TableRowActionBase extends UI5Element {
     onEnterDOM() {
         this.toggleAttribute("_fixed", this.isFixedAction());
     }
-    _onActionClick() {
+    _fireClickEvent() {
         const row = this.parentElement;
         const table = row.parentElement;
+        this.fireDecoratorEvent("click");
         table._onRowActionClick(this);
+    }
+    _onActionClick(e) {
+        this._fireClickEvent();
+        e.stopPropagation();
     }
     get _text() {
         return this.getRenderInfo().text;
@@ -89,11 +89,23 @@ __decorate([
     property({ type: Boolean })
 ], TableRowActionBase.prototype, "invisible", void 0);
 TableRowActionBase = __decorate([
+    eventStrict("click", {
+        bubbles: false,
+    })
+    /**
+     * @class
+     * The `TableRowActionBase` class serves as a foundation for table row actions.
+     * @constructor
+     * @abstract
+     * @extends UI5Element
+     * @since 2.7.0
+     * @public
+     */
+    ,
     customElement({
-        renderer: litRender,
+        renderer: jsxRenderer,
         styles: TableRowActionBaseStyles,
         template: TableRowActionBaseTemplate,
-        dependencies: [Button, Icon],
     })
 ], TableRowActionBase);
 export default TableRowActionBase;

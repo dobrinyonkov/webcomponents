@@ -13,6 +13,9 @@ type MenuBeforeOpenEventDetail = {
 type MenuBeforeCloseEventDetail = {
     escPressed: boolean;
 };
+type MenuNavigateOutOfEndContentEventDetail = {
+    shouldNavigateToNextItem: boolean;
+};
 type MenuItemAccessibilityAttributes = Pick<AccessibilityAttributes, "ariaKeyShortcuts" | "role"> & ListItemAccessibilityAttributes;
 /**
  * @class
@@ -44,6 +47,7 @@ declare class MenuItem extends ListItem implements IMenuItem {
         "before-close": MenuBeforeCloseEventDetail;
         "close": void;
         "close-menu": void;
+        "exit-end-content": MenuNavigateOutOfEndContentEventDetail;
     };
     /**
      * Defines the text of the tree item.
@@ -162,14 +166,13 @@ declare class MenuItem extends ListItem implements IMenuItem {
     _itemNavigation: ItemNavigation;
     constructor();
     get _navigableItems(): Array<HTMLElement>;
-    _navigateToEndContent(isLast?: boolean): void;
+    _navigateToEndContent(shouldNavigateToPreviousItem: boolean): void;
     get placement(): `${PopoverPlacement}`;
     get isRtl(): boolean;
     get hasSubmenu(): boolean;
     get hasEndContent(): boolean;
     get hasIcon(): boolean;
     get isSubMenuOpen(): boolean;
-    get ariaLabelledByText(): string;
     get menuHeaderTextPhone(): string | undefined;
     get isPhone(): boolean;
     get labelBack(): string;
@@ -199,12 +202,20 @@ declare class MenuItem extends ListItem implements IMenuItem {
     };
     get _popover(): ResponsivePopover;
     get _menuItems(): MenuItem[];
+    _closeOtherSubMenus(item: MenuItem): void;
+    _itemMouseOver(e: MouseEvent): void;
+    _itemKeyDown(e: KeyboardEvent): void;
+    _endContentKeyDown(e: KeyboardEvent): void;
+    _navigateOutOfEndContent(e: CustomEvent): void;
     _closeAll(): void;
     _close(): void;
     _beforePopoverOpen(e: CustomEvent): void;
     _afterPopoverOpen(): void;
     _beforePopoverClose(e: CustomEvent): void;
     _afterPopoverClose(): void;
+    get isMenuItem(): boolean;
 }
+declare const isInstanceOfMenuItem: (object: any) => object is MenuItem;
 export default MenuItem;
 export type { MenuBeforeCloseEventDetail, MenuBeforeOpenEventDetail, MenuItemAccessibilityAttributes, };
+export { isInstanceOfMenuItem, };

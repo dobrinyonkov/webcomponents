@@ -27,7 +27,7 @@ import PromptInputCss from "./generated/themes/PromptInput.css.js";
  *
  * ### ES6 Module Import
  *
- * `import "@ui5/webcomponents-ai/dist/PromptInput.js
+ * `import "@ui5/webcomponents-ai/dist/PromptInput.js"`
  * @class
  * @constructor
  * @public
@@ -105,7 +105,7 @@ let PromptInput = PromptInput_1 = class PromptInput extends UI5Element {
         }
     }
     _onInnerInput(e) {
-        this.value = e.target.value;
+        this.value = e.currentTarget.value;
         this.fireDecoratorEvent("input");
     }
     _onInnerChange() {
@@ -115,7 +115,7 @@ let PromptInput = PromptInput_1 = class PromptInput extends UI5Element {
         this.fireDecoratorEvent("submit");
     }
     _onTypeAhead(e) {
-        this.value = e.target.value;
+        this.value = e.currentTarget.value;
     }
     get _exceededText() {
         if (this.showExceededText) {

@@ -5,13 +5,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { customElement, property, slot } from "@ui5/webcomponents-base/dist/decorators.js";
+import { toggleAttribute } from "./TableUtils.js";
 import TableCellBase from "./TableCellBase.js";
-import TableHeaderCellTemplate from "./generated/templates/TableHeaderCellTemplate.lit.js";
+import TableHeaderCellTemplate from "./TableHeaderCellTemplate.js";
 import TableHeaderCellStyles from "./generated/themes/TableHeaderCell.css.js";
-import Icon from "./Icon.js";
-import TableSortOrder from "./types/TableSortOrder.js";
-import "@ui5/webcomponents-icons/dist/sort-ascending.js";
-import "@ui5/webcomponents-icons/dist/sort-descending.js";
+import SortOrder from "@ui5/webcomponents-base/dist/types/SortOrder.js";
 /**
  * @class
  *
@@ -36,32 +34,6 @@ let TableHeaderCell = class TableHeaderCell extends TableCellBase {
     constructor() {
         super(...arguments);
         /**
-         * Defines the width of column.
-         *
-         * @default "auto"
-         * @public
-         */
-        this.width = "auto";
-        /**
-         * Defines the minimum width of the column.
-         *
-         * If the table is in `Popin` mode and the minimum width does not fit anymore,
-         * the column will move into the popin.
-         *
-         * **Note:** If `minWidth` has the `auto` value, the table ensures that the column is wider than at least `3rem`.
-         *
-         * @default "auto"
-         * @public
-         */
-        this.minWidth = "auto";
-        /**
-         * Defines the maximum width of the column.
-         *
-         * @default "auto"
-         * @public
-         */
-        this.maxWidth = "auto";
-        /**
          * Defines the importance of the column.
          *
          * This property affects the popin behaviour.
@@ -80,15 +52,20 @@ let TableHeaderCell = class TableHeaderCell extends TableCellBase {
          * @public
          */
         this.sortIndicator = "None";
+        /**
+         * Defines if the column is hidden in the popin.
+         *
+         * **Note:** Please be aware that hiding the column in the popin might lead to accessibility issues as
+         * users might not be able to access the content of the column on small screens.
+         *
+         * @default false
+         * @since 2.8.0
+         * @public
+         */
+        this.popinHidden = false;
         this._popin = false;
         this.ariaRole = "columnheader";
         this._popinWidth = 0;
-    }
-    onEnterDOM() {
-        super.onEnterDOM();
-        this.style.minWidth = this.minWidth;
-        this.style.maxWidth = this.maxWidth;
-        this.style.width = this.width;
     }
     onBeforeRendering() {
         super.onBeforeRendering();
@@ -96,17 +73,7 @@ let TableHeaderCell = class TableHeaderCell extends TableCellBase {
             // overwrite setting of TableCellBase so that the TableHeaderCell always uses the slot variable
             this.style.justifyContent = `var(--horizontal-align-${this._individualSlot})`;
         }
-        if (this.sortIndicator !== TableSortOrder.None) {
-            this.setAttribute("aria-sort", this.sortIndicator.toLowerCase());
-        }
-        else if (this.hasAttribute("aria-sort")) {
-            this.removeAttribute("aria-sort");
-        }
-    }
-    get _sortIcon() {
-        if (this.sortIndicator !== TableSortOrder.None) {
-            return `sort-${this.sortIndicator.toLowerCase()}`;
-        }
+        toggleAttribute(this, "aria-sort", this.sortIndicator !== SortOrder.None, this.sortIndicator.toLowerCase());
     }
 };
 __decorate([
@@ -116,9 +83,6 @@ __decorate([
     property()
 ], TableHeaderCell.prototype, "minWidth", void 0);
 __decorate([
-    property()
-], TableHeaderCell.prototype, "maxWidth", void 0);
-__decorate([
     property({ type: Number })
 ], TableHeaderCell.prototype, "importance", void 0);
 __decorate([
@@ -127,6 +91,9 @@ __decorate([
 __decorate([
     property()
 ], TableHeaderCell.prototype, "sortIndicator", void 0);
+__decorate([
+    property({ type: Boolean })
+], TableHeaderCell.prototype, "popinHidden", void 0);
 __decorate([
     slot()
 ], TableHeaderCell.prototype, "action", void 0);
@@ -138,7 +105,6 @@ TableHeaderCell = __decorate([
         tag: "ui5-table-header-cell",
         styles: [TableCellBase.styles, TableHeaderCellStyles],
         template: TableHeaderCellTemplate,
-        dependencies: [Icon],
     })
 ], TableHeaderCell);
 TableHeaderCell.define();

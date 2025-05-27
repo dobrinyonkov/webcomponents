@@ -124,6 +124,12 @@ declare abstract class ListItem extends ListItemBase {
     _forcedAccessibleRole?: string;
     _selectionMode: `${ListSelectionMode}`;
     /**
+     * Defines the current media query size.
+     * @default "S"
+     * @private
+     */
+    mediaRange: string;
+    /**
      * Defines the delete button, displayed in "Delete" mode.
      * **Note:** While the slot allows custom buttons, to match
      * design guidelines, please use the `ui5-button` component.
@@ -136,7 +142,6 @@ declare abstract class ListItem extends ListItemBase {
     deactivate: () => void;
     accessibleName?: string;
     indeterminate?: boolean;
-    disableDeleteButton?: boolean;
     static i18nBundle: I18nBundle;
     constructor();
     onBeforeRendering(): void;
@@ -168,13 +173,6 @@ declare abstract class ListItem extends ListItemBase {
     get modeSingleSelect(): boolean;
     get modeMultiple(): boolean;
     get modeDelete(): boolean;
-    /**
-     * Used in UploadCollectionItem
-     */
-    get renderDeleteButton(): boolean;
-    /**
-     * End
-     */
     get typeDetail(): boolean;
     get typeNavigation(): boolean;
     get typeActive(): boolean;
@@ -184,6 +182,7 @@ declare abstract class ListItem extends ListItemBase {
     get deleteText(): string;
     get hasDeleteButtonSlot(): boolean;
     get _accessibleNameRef(): string;
+    get ariaLabelledByText(): string;
     get _accInfo(): AccInfo;
     get _hasHighlightColor(): boolean;
     get hasConfigurableMode(): boolean;

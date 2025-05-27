@@ -148,8 +148,6 @@ class Suggestions {
             additionalText: item.additionalText,
         };
         this._getComponent().onItemSelected(item, keyboardUsed);
-        item.selected = false;
-        item.focused = false;
         this._getComponent().open = false;
     }
     onItemSelect(item) {
@@ -174,16 +172,8 @@ class Suggestions {
         }
         this.onItemSelected(pressedItem, false /* keyboardUsed */);
     }
-    _onOpen() {
-        this._applyFocus();
-    }
     _onClose() {
         this._handledPress = false;
-    }
-    _applyFocus() {
-        if (this.selectedItemIndex) {
-            this._getItems()[this.selectedItemIndex]?.focus();
-        }
     }
     _isItemOnTarget() {
         return this.isOpened() && this.selectedItemIndex !== null && this.selectedItemIndex !== -1 && !this._isGroupItem;

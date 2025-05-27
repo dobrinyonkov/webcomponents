@@ -6,7 +6,7 @@ import type { MoveEventDetail } from "@ui5/webcomponents-base/dist/util/dragAndD
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import ListSelectionMode from "./types/ListSelectionMode.js";
 import ListGrowingMode from "./types/ListGrowingMode.js";
-import type ListAccessibleRole from "./types/ListAccessibleRole.js";
+import ListAccessibleRole from "./types/ListAccessibleRole.js";
 import type ListItemBase from "./ListItemBase.js";
 import type { ListItemBasePressEventDetail } from "./ListItemBase.js";
 import type DropIndicator from "./DropIndicator.js";
@@ -234,6 +234,12 @@ declare class List extends UI5Element {
      */
     _loadMoreActive: boolean;
     /**
+     * Defines the current media query size.
+     * @default "S"
+     * @private
+     */
+    mediaRange: string;
+    /**
      * Defines the items of the component.
      *
      * **Note:** Use `ui5-li`, `ui5-li-custom`, and `ui5-li-group` for the intended design.
@@ -251,11 +257,12 @@ declare class List extends UI5Element {
     static i18nBundle: I18nBundle;
     _previouslyFocusedItem: ListItemBase | null;
     _forwardingFocus: boolean;
-    resizeListenerAttached: boolean;
     listEndObserved: boolean;
-    _handleResize: ResizeObserverCallback;
+    _handleResizeCallback: ResizeObserverCallback;
     initialIntersection: boolean;
     _selectionRequested?: boolean;
+    _groupCount: number;
+    _groupItemCount: number;
     growingIntersectionObserver?: IntersectionObserver | null;
     _itemNavigation: ItemNavigation;
     _beforeElement?: HTMLElement | null;
@@ -279,7 +286,7 @@ declare class List extends UI5Element {
     onAfterRendering(): void;
     attachGroupHeaderEvents(): void;
     detachGroupHeaderEvents(): void;
-    attachForResize(): void;
+    getFocusDomRef(): HTMLElement | undefined;
     get shouldRenderH1(): string | false | undefined;
     get headerID(): string;
     get modeLabelID(): string;
@@ -293,7 +300,10 @@ declare class List extends UI5Element {
     get isMultiple(): boolean;
     get ariaLabelledBy(): string | undefined;
     get ariaLabelTxt(): string | undefined;
-    get ariaDescriptionText(): string | undefined;
+    get ariaDescriptionText(): string;
+    get scrollContainer(): HTMLElement | null;
+    hasGrowingComponent(): boolean;
+    _getDescriptionForGroups(): string;
     get ariaLabelModeText(): string;
     get grows(): boolean;
     get growsOnScroll(): boolean;
@@ -328,6 +338,7 @@ declare class List extends UI5Element {
     _handleLodeMoreUp(e: KeyboardEvent): void;
     checkListInViewport(): void;
     loadMore(): void;
+    _handleResize(): void;
     _handleTabNext(e: KeyboardEvent): void;
     _handleHome(): void;
     _handleEnd(): void;

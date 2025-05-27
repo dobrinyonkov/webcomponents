@@ -101,14 +101,16 @@ let Avatar = Avatar_1 = class Avatar extends UI5Element {
         this.size = "S";
         /**
          * Defines the background color of the desired image.
-         * @default "Accent6"
+         * If `colorScheme` is set to `Auto`, the avatar will be displayed with the `Accent6` color.
+         *
+         * @default "Auto"
          * @public
          */
-        this.colorScheme = "Accent6";
+        this.colorScheme = "Auto";
         /**
          * @private
          */
-        this._colorScheme = "Accent6";
+        this._colorScheme = "Auto";
         /**
          * Defines the additional accessibility attributes that will be applied to the component.
          * The following field is supported:
@@ -121,8 +123,14 @@ let Avatar = Avatar_1 = class Avatar extends UI5Element {
          * @default {}
          */
         this.accessibilityAttributes = {};
+        /**
+         * @private
+         */
         this._hasImage = false;
         this._handleResizeBound = this.handleResize.bind(this);
+    }
+    onBeforeRendering() {
+        this._hasImage = this.hasImage;
     }
     get tabindex() {
         if (this.forcedTabIndex) {
@@ -141,10 +149,10 @@ let Avatar = Avatar_1 = class Avatar extends UI5Element {
     }
     /**
      * Returns the effective background color.
-     * @default "Accent6"
+     * @default "Auto"
      * @private
      */
-    get еffectiveBackgroundColor() {
+    get effectiveBackgroundColor() {
         // we read the attribute, because the "background-color" property will always have a default value
         return this.getAttribute("color-scheme") || this._colorScheme;
     }
@@ -173,8 +181,7 @@ let Avatar = Avatar_1 = class Avatar extends UI5Element {
         return this.initials ? `${defaultLabel} ${this.initials}`.trim() : defaultLabel;
     }
     get hasImage() {
-        this._hasImage = !!this.image.length;
-        return this._hasImage;
+        return !!this.image.length;
     }
     get initialsContainer() {
         return this.getDomRef().querySelector(".ui5-avatar-initials");

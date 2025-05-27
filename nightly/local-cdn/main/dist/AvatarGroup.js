@@ -154,7 +154,7 @@ let AvatarGroup = AvatarGroup_1 = class AvatarGroup extends UI5Element {
      * @public
      */
     get colorScheme() {
-        return this.items.map(avatar => avatar.еffectiveBackgroundColor);
+        return this.items.map(avatar => avatar.effectiveBackgroundColor);
     }
     get _customOverflowButton() {
         return this.overflowButton.length ? this.overflowButton[0] : undefined;
@@ -312,7 +312,7 @@ let AvatarGroup = AvatarGroup_1 = class AvatarGroup extends UI5Element {
         this.items.forEach((avatar, index) => {
             const colorIndex = this._getNextBackgroundColor();
             avatar.interactive = !this._isGroup;
-            if (!avatar.getAttribute("_color-scheme")) {
+            if (avatar.getAttribute("_color-scheme") === AvatarColorScheme.Auto) {
                 // AvatarGroup respects colors set to ui5-avatar
                 avatar.setAttribute("_color-scheme", AvatarColorScheme[`Accent${colorIndex}`]);
             }
@@ -320,6 +320,9 @@ let AvatarGroup = AvatarGroup_1 = class AvatarGroup extends UI5Element {
             if (index !== this._itemsCount - 1 || this._customOverflowButton) {
                 // based on RTL the browser automatically sets left or right margin to avatars
                 avatar.style.marginInlineEnd = offsets[avatar.effectiveSize][this.type];
+            }
+            else {
+                avatar.style.marginInlineEnd = "";
             }
         });
     }
@@ -353,6 +356,7 @@ let AvatarGroup = AvatarGroup_1 = class AvatarGroup extends UI5Element {
     _overflowItems() {
         if (this.items.length < 2) {
             // no need to overflow avatars
+            this._setHiddenItems(0);
             return;
         }
         let hiddenItems = 0;

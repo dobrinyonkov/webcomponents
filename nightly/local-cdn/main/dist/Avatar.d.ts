@@ -114,7 +114,9 @@ declare class Avatar extends UI5Element implements ITabbable, IAvatarGroupItem {
     size: `${AvatarSize}`;
     /**
      * Defines the background color of the desired image.
-     * @default "Accent6"
+     * If `colorScheme` is set to `Auto`, the avatar will be displayed with the `Accent6` color.
+     *
+     * @default "Auto"
      * @public
      */
     colorScheme: `${AvatarColorScheme}`;
@@ -143,11 +145,17 @@ declare class Avatar extends UI5Element implements ITabbable, IAvatarGroupItem {
      */
     accessibilityAttributes: AvatarAccessibilityAttributes;
     forcedTabIndex?: string;
+    /**
+     * @private
+     */
     _hasImage: boolean;
     /**
      * Receives the desired `<img>` tag
      *
-     * **Note:** If you experience flickering of the provided image, you can hide the component until it is being defined with the following CSS:
+     * **Note:** If you experience flickering of the provided image, you can hide the component until it is defined with the following CSS:<br/>
+     * `ui5-avatar:not(:defined) {`<br/>
+     * &nbsp;&nbsp;&nbsp;&nbsp;`visibility: hidden;`<br/>
+     * `}`
      * @public
      * @since 1.0.0-rc.15
      */
@@ -165,6 +173,7 @@ declare class Avatar extends UI5Element implements ITabbable, IAvatarGroupItem {
     static i18nBundle: I18nBundle;
     _handleResizeBound: ResizeObserverCallback;
     constructor();
+    onBeforeRendering(): void;
     get tabindex(): number | undefined;
     /**
      * Returns the effective avatar size.
@@ -174,10 +183,10 @@ declare class Avatar extends UI5Element implements ITabbable, IAvatarGroupItem {
     get effectiveSize(): AvatarSize;
     /**
      * Returns the effective background color.
-     * @default "Accent6"
+     * @default "Auto"
      * @private
      */
-    get еffectiveBackgroundColor(): AvatarColorScheme;
+    get effectiveBackgroundColor(): AvatarColorScheme;
     get _role(): "button" | "img";
     get _ariaHasPopup(): import("@ui5/webcomponents-base/dist/types.js").AriaHasPopup | undefined;
     get _interactive(): boolean;
