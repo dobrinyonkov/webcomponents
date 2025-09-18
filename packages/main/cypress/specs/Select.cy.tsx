@@ -499,6 +499,25 @@ describe("Select - Popover", () => {
 				});
 			});
 		});
+
+	it("ResponsivePopover should not have accessible name on desktop", () => {
+		cy.mount(
+			<Select id="desktopSelect">
+				<Option value="option1">Option 1</Option>
+				<Option value="option2">Option 2</Option>
+				<Option value="option3">Option 3</Option>
+			</Select>
+		);
+
+		// Open the popover
+		cy.get("#desktopSelect").realClick();
+
+		// Check that the ResponsivePopover does not have an accessible name on desktop
+		cy.get("#desktopSelect")
+			.shadow()
+			.find("[ui5-responsive-popover]")
+			.should("not.have.attr", "accessible-name");
+	});
 });
 
 describe("Select - Properties", () => {
