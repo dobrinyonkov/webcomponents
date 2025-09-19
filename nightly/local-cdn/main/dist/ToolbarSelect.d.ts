@@ -1,6 +1,5 @@
 import type ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
-import ToolbarSelectTemplate from "./ToolbarSelectTemplate.js";
-import ToolbarPopoverSelectTemplate from "./ToolbarPopoverSelectTemplate.js";
+import type Select from "./Select.js";
 import ToolbarItem from "./ToolbarItem.js";
 import type { ToolbarItemEventDetail } from "./ToolbarItem.js";
 import type ToolbarSelectOption from "./ToolbarSelectOption.js";
@@ -48,6 +47,13 @@ declare class ToolbarSelect extends ToolbarItem {
      */
     options: Array<ToolbarSelectOption>;
     /**
+     * Defines the HTML element that will be displayed in the component input part,
+     * representing the selected option.
+     * @public
+     * @since 2.15.0
+    */
+    label: Array<HTMLElement>;
+    /**
      * Defines the value state of the component.
      * @default "None"
      * @public
@@ -73,8 +79,17 @@ declare class ToolbarSelect extends ToolbarItem {
      * @public
      */
     accessibleNameRef?: string;
-    static get toolbarTemplate(): typeof ToolbarSelectTemplate;
-    static get toolbarPopoverTemplate(): typeof ToolbarPopoverSelectTemplate;
+    /**
+     * Defines the value of the component:
+     *
+     * @public
+     * @default ""
+     * @since 2.15.0
+     */
+    set value(newValue: string);
+    get value(): string | undefined;
+    get select(): Select | null;
+    _value: string;
     onClick(e: Event): void;
     onOpen(e: Event): void;
     onClose(e: Event): void;
@@ -83,6 +98,7 @@ declare class ToolbarSelect extends ToolbarItem {
     get styles(): {
         width: string | undefined;
     };
+    get hasCustomLabel(): boolean;
 }
 export default ToolbarSelect;
 export type { ToolbarSelectChangeEventDetail, };

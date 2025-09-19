@@ -165,12 +165,31 @@ declare class Select extends UI5Element implements IFormInputElement {
      */
     accessibleNameRef?: string;
     /**
+     * Defines the accessible description of the component.
+     * @default undefined
+     * @public
+     * @since 2.14.0
+     */
+    accessibleDescription?: string;
+    /**
+     * Receives id(or many ids) of the elements that describe the select.
+     * @default undefined
+     * @public
+     * @since 2.14.0
+     */
+    accessibleDescriptionRef?: string;
+    /**
      * Defines the tooltip of the select.
      * @default undefined
      * @public
      * @since 2.8.0
      */
     tooltip?: string;
+    /**
+     * Constantly updated value of texts collected from the associated description texts
+     * @private
+     */
+    _associatedDescriptionRefTexts?: string;
     /**
      * @private
      */
@@ -235,6 +254,8 @@ declare class Select extends UI5Element implements IFormInputElement {
     get formValidity(): ValidityStateFlags;
     formElementAnchor(): Promise<HTMLElement | undefined>;
     get formFormattedValue(): string | null;
+    onEnterDOM(): void;
+    onExitDOM(): void;
     onBeforeRendering(): void;
     onAfterRendering(): void;
     /**
@@ -337,6 +358,7 @@ declare class Select extends UI5Element implements IFormInputElement {
     get valueStateTypeText(): string;
     get hasValueState(): boolean;
     get valueStateTextId(): string | undefined;
+    get responsivePopoverId(): string;
     get isDisabled(): true | undefined;
     get _headerTitleText(): string;
     get _currentlySelectedOption(): IOption;
@@ -349,6 +371,7 @@ declare class Select extends UI5Element implements IFormInputElement {
     get classes(): {
         popoverValueState: {
             "ui5-valuestatemessage-root": boolean;
+            "ui5-valuestatemessage-header": boolean;
             "ui5-valuestatemessage--success": boolean;
             "ui5-valuestatemessage--error": boolean;
             "ui5-valuestatemessage--warning": boolean;
@@ -360,11 +383,12 @@ declare class Select extends UI5Element implements IFormInputElement {
     };
     get styles(): {
         popoverHeader: {
-            "max-width": string;
+            display: string;
         };
         responsivePopoverHeader: {
             display: string;
             width: string;
+            "max-width": string;
         };
         responsivePopover: {
             "min-width": string;
@@ -381,6 +405,10 @@ declare class Select extends UI5Element implements IFormInputElement {
     closeValueStatePopover(): void;
     toggleValueStatePopover(open: boolean): void;
     get selectedOptionIcon(): string | undefined;
+    get ariaDescriptionText(): string | undefined;
+    get ariaDescriptionTextId(): "" | "accessibleDescription";
+    get ariaDescribedByIds(): string | undefined;
+    _updateAssociatedLabelsTexts(): void;
     _getPopover(): Popover | null;
 }
 export default Select;

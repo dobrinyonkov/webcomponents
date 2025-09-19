@@ -1,5 +1,6 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import type { ResizeObserverCallback } from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
+import type { SliderTooltipChangeEventDetails } from "./SliderTooltip.js";
 type StateStorage = {
     [key: string]: number | undefined;
 };
@@ -96,13 +97,14 @@ declare abstract class SliderBase extends UI5Element {
     /**
      * @private
      */
-    _tooltipVisibility: string;
+    _tooltipsOpen: boolean;
     _labelsOverlapping: boolean;
     _hiddenTickmarks: boolean;
     _isInputValueValid: boolean;
     _resizeHandler: ResizeObserverCallback;
     _moveHandler: (e: TouchEvent | MouseEvent) => void;
     _upHandler: (e: TouchEvent | MouseEvent) => void;
+    _windowMouseoutHandler: (e: MouseEvent) => void;
     _stateStorage: StateStorage;
     notResized: boolean;
     _isUserInteraction: boolean;
@@ -119,11 +121,6 @@ declare abstract class SliderBase extends UI5Element {
     _handleUp(e: TouchEvent | MouseEvent): void;
     _onmousedown(e: TouchEvent | MouseEvent): void;
     _handleActionKeyPress(e: Event): void;
-    _updateInputValue(): void;
-    abstract styles: {
-        label: Record<string, string>;
-        labelContainer: Record<string, string>;
-    };
     abstract tickmarksObject: Array<boolean>;
     abstract _ariaLabelledByText: string;
     static get ACTION_KEYS(): ((event: KeyboardEvent) => boolean)[];
@@ -155,10 +152,8 @@ declare abstract class SliderBase extends UI5Element {
      */
     _onmouseout(): void;
     _onkeydown(e: KeyboardEvent): void;
-    _onInputKeydown(e: KeyboardEvent): void;
-    _onInputChange(): void;
-    _onInputInput(): void;
-    _updateValueFromInput(e: Event): void;
+    _onTooltipChange(e: CustomEvent<SliderTooltipChangeEventDetails>): void;
+    _updateValueFromInput(fieldValue: string): void;
     _onKeyupBase(): void;
     /**
      * Flags if an inner element is currently being focused

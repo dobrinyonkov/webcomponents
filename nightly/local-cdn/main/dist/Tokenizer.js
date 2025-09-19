@@ -9,7 +9,6 @@ import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event-strict.js";
-import getEffectiveScrollbarStyle from "@ui5/webcomponents-base/dist/util/getEffectiveScrollbarStyle.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import jsxRenderer from "@ui5/webcomponents-base/dist/renderer/JsxRenderer.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
@@ -25,7 +24,7 @@ import { isSpace, isSpaceCtrl, isSpaceShift, isLeftCtrl, isRightCtrl, isUpCtrl, 
 import { isPhone } from "@ui5/webcomponents-base/dist/Device.js";
 import ListSelectionMode from "./types/ListSelectionMode.js";
 import TokenizerTemplate from "./TokenizerTemplate.js";
-import { MULTIINPUT_SHOW_MORE_TOKENS, TOKENIZER_ARIA_LABEL, TOKENIZER_POPOVER_REMOVE, TOKENIZER_ARIA_CONTAIN_TOKEN, TOKENIZER_ARIA_CONTAIN_ONE_TOKEN, TOKENIZER_ARIA_CONTAIN_SEVERAL_TOKENS, TOKENIZER_SHOW_ALL_ITEMS, TOKENIZER_CLEAR_ALL, } from "./generated/i18n/i18n-defaults.js";
+import { MULTIINPUT_SHOW_MORE_TOKENS, TOKENIZER_ARIA_LABEL, TOKENIZER_POPOVER_REMOVE, TOKENIZER_ARIA_CONTAIN_TOKEN, TOKENIZER_ARIA_CONTAIN_ONE_TOKEN, TOKENIZER_ARIA_CONTAIN_SEVERAL_TOKENS, TOKENIZER_SHOW_ALL_ITEMS, TOKENIZER_CLEAR_ALL, TOKENIZER_DIALOG_OK_BUTTON, TOKENIZER_DIALOG_CANCEL_BUTTON, } from "./generated/i18n/i18n-defaults.js";
 // Styles
 import TokenizerCss from "./generated/themes/Tokenizer.css.js";
 import TokenizerPopoverCss from "./generated/themes/TokenizerPopover.css.js";
@@ -157,6 +156,11 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
         this._preventCollapse = false;
         this._skipTabIndex = false;
         this._previousToken = null;
+        /**
+         * Scroll to end when tokenizer is expanded
+         * @private
+         */
+        this._scrollToEndOnExpand = false;
         this._resizeHandler = this._handleResize.bind(this);
         this._itemNav = new ItemNavigation(this, {
             currentIndex: -1,
@@ -191,7 +195,6 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
         this.expanded = true;
         if (!this.preventPopoverOpen) {
             this.open = true;
-            this.scrollToEnd();
         }
         this._tokens.forEach(token => {
             token.forcedTabIndex = "-1";
@@ -202,12 +205,11 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
     _onmousedown(e) {
         if (e.target.hasAttribute("ui5-token")) {
             const target = e.target;
-            this.expanded = true;
             if (this.open) {
                 this._preventCollapse = true;
             }
             if (!target.toBeDeleted) {
-                this._itemNav.setCurrentItem(target);
+                this._addTokenToNavigation(target);
                 this._scrollToToken(target);
             }
         }
@@ -245,7 +247,22 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
         if (this.expanded) {
             this._expandedScrollWidth = this.contentDom.scrollWidth;
         }
+        this._scrollToEndIfNeeded();
         this._tokenDeleting = false;
+    }
+    /**
+     * Scrolls the container to the end to ensure very long tokens are visible at their end.
+     * Otherwise, tokens may appear visually cut off.
+     * @protected
+     */
+    _scrollToEndIfNeeded() {
+        // if scroll to end is prevented, skip scroll to the end
+        if (!this._scrollToEndOnExpand) {
+            return;
+        }
+        if (this.tokens.length || this.expanded) {
+            this.scrollToEnd();
+        }
     }
     _delete(e) {
         const target = e.target;
@@ -346,12 +363,6 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
         }
     }
     handleBeforeClose() {
-        const tokensArray = this._tokens;
-        if (isPhone()) {
-            tokensArray.forEach(token => {
-                token.selected = false;
-            });
-        }
         if (!this._tokenDeleting && !this._preventCollapse) {
             this._preventCollapse = false;
             this.expanded = false;
@@ -577,12 +588,13 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
         this._handleTokenSelection(e);
     }
     _onfocusin(e) {
-        const target = e.target;
         this.open = false;
-        this._itemNav.setCurrentItem(target);
-        if (!this.expanded) {
-            this.expanded = true;
-        }
+        this.expanded = true;
+        this._addTokenToNavigation(e.target);
+    }
+    _addTokenToNavigation(token) {
+        this._scrollToEndOnExpand = false;
+        this._itemNav.setCurrentItem(token);
     }
     _onfocusout(e) {
         const relatedTarget = e.relatedTarget;
@@ -633,9 +645,7 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
     _fillClipboard(shortcutName, tokens) {
         const tokensTexts = tokens.filter(token => token.selected).map(token => token.text).join("\r\n");
         const cutToClipboard = (e) => {
-            if (e.clipboardData) {
-                e.clipboardData.setData("text/plain", tokensTexts);
-            }
+            navigator.clipboard.writeText(tokensTexts);
             e.preventDefault();
         };
         document.addEventListener(shortcutName, cutToClipboard);
@@ -665,7 +675,8 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
     }
     /**
      * Scrolls token to the visible area of the container.
-     * Adds 4 pixels to the scroll position to ensure padding and border visibility on both ends
+     * Adds 5 pixels to the scroll position to ensure padding and border visibility on both ends
+     * For the last token, if its width is more than the needed space, scroll to the end without offset
      * @protected
      */
     _scrollToToken(token) {
@@ -674,11 +685,17 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
         }
         const tokenRect = token.getBoundingClientRect();
         const tokenContainerRect = this.contentDom.getBoundingClientRect();
+        const oneSideBorderAndPaddingOffset = 5;
+        const isLastToken = this._tokens.indexOf(token) === this._tokens.length - 1;
+        if (isLastToken) {
+            this.scrollToEnd();
+            return;
+        }
         if (tokenRect.left < tokenContainerRect.left) {
-            this._scrollEnablement?.scrollTo(this.contentDom.scrollLeft - (tokenContainerRect.left - tokenRect.left + 5), 0);
+            this._scrollEnablement?.scrollTo(this.contentDom.scrollLeft - (tokenContainerRect.left - tokenRect.left + oneSideBorderAndPaddingOffset), 0);
         }
         else if (tokenRect.right > tokenContainerRect.right) {
-            this._scrollEnablement?.scrollTo(this.contentDom.scrollLeft + (tokenRect.right - tokenContainerRect.right + 5), 0);
+            this._scrollEnablement?.scrollTo(this.contentDom.scrollLeft + (tokenRect.right - tokenContainerRect.right + oneSideBorderAndPaddingOffset), 0);
         }
     }
     _getList() {
@@ -718,6 +735,12 @@ let Tokenizer = Tokenizer_1 = class Tokenizer extends UI5Element {
     get tokenizerLabel() {
         const effectiveLabelText = getEffectiveAriaLabelText(this);
         return effectiveLabelText || Tokenizer_1.i18nBundle.getText(TOKENIZER_ARIA_LABEL);
+    }
+    get _okButtonText() {
+        return Tokenizer_1.i18nBundle.getText(TOKENIZER_DIALOG_OK_BUTTON);
+    }
+    get _cancelButtonText() {
+        return Tokenizer_1.i18nBundle.getText(TOKENIZER_DIALOG_CANCEL_BUTTON);
     }
     get tokenizerAriaDescription() {
         return getEffectiveAriaLabelText(this) ? Tokenizer_1.i18nBundle.getText(TOKENIZER_ARIA_LABEL) : undefined;
@@ -842,6 +865,10 @@ __decorate([
         type: HTMLElement,
         "default": true,
         individualSlots: true,
+        invalidateOnChildChange: {
+            properties: ["text"],
+            slots: false,
+        },
     })
 ], Tokenizer.prototype, "tokens", void 0);
 __decorate([
@@ -858,7 +885,6 @@ Tokenizer = Tokenizer_1 = __decorate([
             ResponsivePopoverCommonCss,
             SuggestionsCss,
             TokenizerPopoverCss,
-            getEffectiveScrollbarStyle(),
         ],
     })
     /**

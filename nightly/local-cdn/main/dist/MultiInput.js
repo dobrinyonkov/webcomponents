@@ -10,7 +10,7 @@ import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event-strict.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import jsxRenderer from "@ui5/webcomponents-base/dist/renderer/JsxRenderer.js";
-import { isShow, isBackSpace, isLeft, isRight, isRightCtrl, isHome, isEnd, isDown, } from "@ui5/webcomponents-base/dist/Keys.js";
+import { isShow, isBackSpace, isLeft, isRight, isRightCtrl, isHome, isEnd, isDown, isEnter, } from "@ui5/webcomponents-base/dist/Keys.js";
 import { getScopedVarName } from "@ui5/webcomponents-base/dist/CustomElementsScope.js";
 import { MULTIINPUT_ROLEDESCRIPTION_TEXT, MULTIINPUT_VALUE_HELP_LABEL, MULTIINPUT_VALUE_HELP } from "./generated/i18n/i18n-defaults.js";
 import Input from "./Input.js";
@@ -101,7 +101,6 @@ let MultiInput = MultiInput_1 = class MultiInput extends Input {
     _tokenizerFocusOut(e) {
         if (!this.contains(e.relatedTarget) && !this.shadowRoot.contains(e.relatedTarget)) {
             this.tokenizer._tokens.forEach(token => { token.selected = false; });
-            this.tokenizer.scrollToStart();
         }
     }
     valueHelpMouseUp() {
@@ -110,20 +109,26 @@ let MultiInput = MultiInput_1 = class MultiInput extends Input {
         }, 0);
     }
     innerFocusIn() {
+        this.tokenizer._scrollToEndOnExpand = true;
         this.tokenizer.expanded = true;
         this.focused = true;
-        this.tokenizer.scrollToEnd();
         this.tokens.forEach(token => {
             token.selected = false;
         });
     }
+    _showMoreItemsPress() {
+        this.tokenizer._scrollToEndOnExpand = true;
+    }
     _onkeydown(e) {
-        super._onkeydown(e);
+        !this._isComposing && super._onkeydown(e);
         const target = e.target;
         const isHomeInBeginning = isHome(e) && target.selectionStart === 0;
         if (isHomeInBeginning) {
             this._skipOpenSuggestions = true; // Prevent input focus when navigating through the tokens
             return this._focusFirstToken(e);
+        }
+        if (isEnter(e)) {
+            e.preventDefault();
         }
         if (isLeft(e)) {
             this._skipOpenSuggestions = true;
@@ -215,12 +220,6 @@ let MultiInput = MultiInput_1 = class MultiInput extends Input {
     onAfterRendering() {
         super.onAfterRendering();
         this.tokenizer.preventInitialFocus = true;
-        if (this.tokenizer.expanded) {
-            this.tokenizer.scrollToEnd();
-        }
-        else {
-            this.tokenizer.scrollToStart();
-        }
     }
     get iconsCount() {
         return super.iconsCount + (this.showValueHelpIcon ? 1 : 0);
@@ -254,7 +253,7 @@ let MultiInput = MultiInput_1 = class MultiInput extends Input {
         return this.placeholder;
     }
     get accInfo() {
-        const ariaDescribedBy = `${this._tokensCountTextId} ${this.suggestionsTextId} ${this.valueStateTextId} ${this._valueHelpTextId}`.trim();
+        const ariaDescribedBy = `${this._tokensCountTextId} ${this.suggestionsTextId} ${this.valueStateTextId} ${this._valueStateLinksShortcutsTextAccId} ${this._valueHelpTextId}`.trim();
         return {
             ...super.accInfo,
             "ariaRoledescription": this.ariaRoleDescription,

@@ -1,11 +1,11 @@
 import { getFeature, registerFeature } from "../FeaturesRegistry.js";
 import { isF6Next, isF6Previous } from "../Keys.js";
-import { instanceOfUI5Element } from "../UI5Element.js";
 import { getFirstFocusableElement } from "../util/FocusableElements.js";
 import getFastNavigationGroups from "../util/getFastNavigationGroups.js";
 import isElementClickable from "../util/isElementClickable.js";
 import { getCurrentRuntimeIndex, compareRuntimes } from "../Runtimes.js";
 import getSharedResource from "../getSharedResource.js";
+import getParentElement from "../util/getParentElement.js";
 const currentRuntimeINdex = getCurrentRuntimeIndex();
 const shouldUpdate = (runtimeIndex) => {
     if (runtimeIndex === undefined) {
@@ -27,15 +27,11 @@ class F6Navigation {
         document.removeEventListener("keydown", this.keydownHandler);
     }
     async groupElementToFocus(nextElement) {
-        let nextElementDomRef = nextElement;
-        if (instanceOfUI5Element(nextElement)) {
-            nextElementDomRef = nextElement.getDomRef() || nextElement.firstElementChild;
-        }
-        if (nextElementDomRef) {
-            if (isElementClickable(nextElementDomRef)) {
-                return nextElementDomRef;
+        if (nextElement) {
+            if (isElementClickable(nextElement)) {
+                return nextElement;
             }
-            const elementToFocus = await getFirstFocusableElement(nextElementDomRef);
+            const elementToFocus = await getFirstFocusableElement(nextElement);
             if (elementToFocus) {
                 return elementToFocus;
             }
@@ -82,9 +78,18 @@ class F6Navigation {
                 //     </ui5-list>
                 // </ui5-flexible-column-layout>
                 // Here for both FCL & List the firstFoccusableElement is the same (the ui5-li)
-                const firstFocusable = await this.groupElementToFocus(this.groups[currentIndex - 1]);
-                const shouldSkipParent = firstFocusable === await this.groupElementToFocus(this.groups[currentIndex]);
-                currentIndex = shouldSkipParent ? currentIndex - 2 : currentIndex - 1;
+                const currentGroupFocusable = await this.groupElementToFocus(this.groups[currentIndex]);
+                let distanceToNextGroup = 1;
+                for (let distanceIndex = 1; distanceIndex < this.groups.length; distanceIndex++) {
+                    const firstFocusable = await this.groupElementToFocus(this.groups[currentIndex - distanceIndex]);
+                    if (firstFocusable === currentGroupFocusable) {
+                        distanceToNextGroup++;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                currentIndex -= distanceToNextGroup;
                 if (currentIndex < 0) {
                     currentIndex = this.groups.length - 1;
                 }
@@ -149,7 +154,7 @@ class F6Navigation {
             if (closestScopeEl) {
                 return closestScopeEl;
             }
-            element = element.parentElement ? element.parentElement : element.parentNode.host;
+            element = getParentElement(element);
         }
         return document.body;
     }
@@ -157,7 +162,7 @@ class F6Navigation {
         const htmlElement = window.document.querySelector("html");
         let element = this.deepActive(root);
         while (element && element.getAttribute("data-sap-ui-fastnavgroup") !== "true" && element !== htmlElement) {
-            element = element.parentElement ? element.parentNode : element.parentNode.host;
+            element = getParentElement(element);
         }
         this.selectedGroup = element;
     }
