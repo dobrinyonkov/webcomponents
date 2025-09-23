@@ -1,0 +1,52 @@
+name: Cleanup PR Website Deployment
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: gh-pages
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Remove PR deployment folder
+      run: |
+        BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+        FOLDER_NAME="pr-${BRANCH_NAME}"
+        
+        if [ -d "$FOLDER_NAME" ]; then
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          rm -rf "$FOLDER_NAME"
+          git add .
+          git commit -m "cleanup: remove deployment for PR #${{ github.event.pull_request.number }} (${BRANCH_NAME})" || exit 0
+          git push
+          
+          echo "Removed deployment folder: $FOLDER_NAME"
+        else
+          echo "Deployment folder $FOLDER_NAME not found, nothing to clean up"
+        fi
+
+    - name: Comment on PR
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const branchName = context.payload.pull_request.head.ref;
+          
+          const comment = `🧹 **PR Website Deployment Cleaned Up**
+          
+          The deployment for branch \`${branchName}\` has been removed from GitHub Pages.`;
+          
+          await github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            body: comment
+          });

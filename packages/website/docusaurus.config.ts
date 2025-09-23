@@ -8,14 +8,21 @@ console.log("DEPLOYMENT_TYPE", process.env.DEPLOYMENT_TYPE); // eslint-disable-l
 
 const LATEST_URL_PARTH = "/webcomponents/";
 const NIGHTLY_URL_PARTH = "/webcomponents/nightly/";
+const PR_URL_PARTH = `/webcomponents/pr-${process.env.BRANCH_NAME || 'unknown'}/`;
 
 const LATEST_DEPLOYMENT = process.env.DEPLOYMENT_TYPE === "latest";
+const PR_DEPLOYMENT = process.env.DEPLOYMENT_TYPE === "pr";
 const DEVELOPMENT_ENVIRONMENT =  process.env.NODE_ENV === "development";
 
 const getBaseURL = () => {
   // localhost
   if (DEVELOPMENT_ENVIRONMENT) {
     return "/";
+  }
+
+  // PR deployment
+  if (PR_DEPLOYMENT) {
+    return PR_URL_PARTH;
   }
 
   // latest deployment or nightly deployment
@@ -28,8 +35,8 @@ const getFullURL = () => {
   return DEVELOPMENT_ENVIRONMENT ? `${BASE_URL}` : `https://ui5.github.io${BASE_URL}`
 }
 
-// ["v1", "nightly", "current"]
-const siteVersion = LATEST_DEPLOYMENT ? (packageJson.version.startsWith("1") ? "v1" : "current") : "nightly";
+// ["v1", "nightly", "current", "pr"]
+const siteVersion = LATEST_DEPLOYMENT ? (packageJson.version.startsWith("1") ? "v1" : "current") : (PR_DEPLOYMENT ? "pr" : "nightly");
 
 const config: Config = {
   customFields: {

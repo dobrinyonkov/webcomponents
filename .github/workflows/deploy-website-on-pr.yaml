@@ -1,0 +1,99 @@
+name: Deploy Website [PR]
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'packages/website/**'
+      - 'packages/main/**' 
+      - 'packages/fiori/**'
+      - 'packages/compat/**'
+      - 'packages/ai/**'
+      - 'packages/base/**'
+      - 'packages/theming/**'
+      - 'packages/localization/**'
+      - 'packages/icons/**'
+      - 'packages/icons-business-suite/**'
+      - 'packages/icons-tnt/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+        
+    - uses: actions/setup-node@v4.1.0
+      with:
+        node-version: 22
+        cache: 'yarn'
+
+    - name: Install and Build
+      run: |
+        export NODE_OPTIONS="--max_old_space_size=4096"
+        yarn install
+
+    - name: Update version.md
+      run: |
+        touch packages/website/static/version.md
+        git log -1 &>> packages/website/static/version.md
+
+    - name: Build PR Website
+      env:
+        DEPLOYMENT_TYPE: "pr"
+        BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+        URL_SHORTENER_API_KEY: ${{ secrets.URL_SHORTENER_API_KEY }}
+      run: |
+        yarn ci:deploy:pr
+
+    - name: Deploy to PR folder
+      uses: JamesIves/github-pages-deploy-action@v4.3.3
+      with:
+        branch: gh-pages
+        folder: packages/website/build
+        target-folder: pr-${{ github.event.pull_request.head.ref }}
+        clean: true
+
+    - name: Comment PR with deployment link
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const branchName = context.payload.pull_request.head.ref;
+          const deploymentUrl = `https://ui5.github.io/webcomponents/pr-${branchName}/`;
+          
+          const comment = `🚀 **PR Website Deployed!**
+          
+          Your changes are now available at: ${deploymentUrl}
+          
+          This deployment includes all changes from this PR and will be updated on every push to the branch.`;
+          
+          // Check if we already commented
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+          });
+          
+          const existingComment = comments.find(comment => 
+            comment.user.login === 'github-actions[bot]' && 
+            comment.body.includes('PR Website Deployed!')
+          );
+          
+          if (existingComment) {
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: existingComment.id,
+              body: comment
+            });
+          } else {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
+          }
