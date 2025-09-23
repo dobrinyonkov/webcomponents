@@ -31,8 +31,26 @@ const getBaseURL = () => {
 
 const BASE_URL = getBaseURL();
 
+// Dynamically determine repository owner and project name
+const getRepositoryInfo = () => {
+  // In GitHub Actions, GITHUB_REPOSITORY contains "owner/repo"
+  // Fall back to parsing git remote URL if not available
+  let githubRepository = process.env.GITHUB_REPOSITORY;
+  
+  if (!githubRepository) {
+    // This is a fallback for local development - in practice, 
+    // the website deployment should always have GITHUB_REPOSITORY set
+    githubRepository = 'ui5/webcomponents';
+  }
+  
+  const [owner, repo] = githubRepository.split('/');
+  return { owner, repo };
+};
+
+const { owner: REPO_OWNER, repo: REPO_NAME } = getRepositoryInfo();
+
 const getFullURL = () => {
-  return DEVELOPMENT_ENVIRONMENT ? `${BASE_URL}` : `https://ui5.github.io${BASE_URL}`
+  return DEVELOPMENT_ENVIRONMENT ? `${BASE_URL}` : `https://${REPO_OWNER}.github.io${BASE_URL}`
 }
 
 // ["v1", "nightly", "current", "pr"]
@@ -49,7 +67,7 @@ const config: Config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://ui5.github.io',
+  url: `https://${REPO_OWNER}.github.io`,
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: BASE_URL,
@@ -58,8 +76,8 @@ const config: Config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'SAP', // Usually your GitHub org/user name.
-  projectName: 'webcomponents', // Usually your repo name.
+  organizationName: REPO_OWNER, // Usually your GitHub org/user name.
+  projectName: REPO_NAME, // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
