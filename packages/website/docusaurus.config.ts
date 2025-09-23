@@ -209,7 +209,7 @@ const config: Config = {
       copyright: `© Copyright ${new Date().getFullYear()}, SAP SE and UI5 Web Components Contributors`,
       logo: {
         alt: 'SAP Logo',
-        src: 'https://ui5.github.io/webcomponents/img/footer/sap-1920-1440.svg',
+        src: `${getFullURL()}img/footer/sap-1920-1440.svg`,
         width: 160,
         height: 51,
       },
