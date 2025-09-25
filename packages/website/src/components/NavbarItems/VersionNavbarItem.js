@@ -5,6 +5,7 @@ import NavbarNavLink from "@theme/NavbarItem/NavbarNavLink";
 import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
 import NavbarItem from "@theme/NavbarItem";
 import packageJson from "../../../package.json";
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
 const packageJsonVersion = packageJson.version;
 
@@ -36,9 +37,20 @@ function getLabel(version) {
     return version;
 }
 
+function getVersionUrls(siteConfig) {
+    const baseUrl = siteConfig.url;
+    return {
+        nightly: `${baseUrl}/webcomponents/nightly`,
+        current: `${baseUrl}/webcomponents`,
+        v1: `${baseUrl}/webcomponents/v1`
+    };
+}
+
 
 
 function VersionNavbarItemDesktop() {
+    const {siteConfig} = useDocusaurusContext();
+    const urls = getVersionUrls(siteConfig);
     const [version, setVersion] = useState(getVersion());
     const [showDropdown, setShowDropdown] = useState(false);
 
@@ -67,7 +79,7 @@ function VersionNavbarItemDesktop() {
                 label="Nightly 🚧"
                 isDropdownItem
                 target="_self"
-                href="https://ui5.github.io/webcomponents/nightly"
+                href={urls.nightly}
                 onClick={() => { setVersion("Nightly") }}
                 className={clsx({ 'menu__link--active': version === "Nightly" })}
             />
@@ -75,7 +87,7 @@ function VersionNavbarItemDesktop() {
                 label="Version 2"
                 isDropdownItem
                 target="_self"
-                href="https://ui5.github.io/webcomponents"
+                href={urls.current}
                 onClick={() => { setVersion("v2") }}
                 className={clsx({ 'menu__link--active': version === "v2" })}
             />
@@ -83,7 +95,7 @@ function VersionNavbarItemDesktop() {
                 label="Version 1"
                 isDropdownItem
                 target="_self"
-                href="https://ui5.github.io/webcomponents/v1"
+                href={urls.v1}
                 onClick={() => { setVersion("v1") }}
                 className={clsx({ 'menu__link--active': version === "v1" })}
             />
@@ -92,6 +104,8 @@ function VersionNavbarItemDesktop() {
 }
 
 function VersionNavbarItemMobile() {
+    const {siteConfig} = useDocusaurusContext();
+    const urls = getVersionUrls(siteConfig);
     const [version, setVersion] = useState(getVersion());
     const [collapsed, setCollapsed] = useState(false)
 
@@ -113,7 +127,7 @@ function VersionNavbarItemMobile() {
                 <NavbarItem
                     label="Nightly 🚧"
                     mobile
-                    href="https://ui5.github.io/webcomponents/nightly"
+                    href={urls.nightly}
                     isDropdownItem
                     onClick={() => { setVersion("nightly") }}
                     className={clsx({ "menu__link--active": version === "nightly" })}
@@ -121,7 +135,7 @@ function VersionNavbarItemMobile() {
                  <NavbarItem
                     label="v1"
                     mobile
-                    href="https://ui5.github.io/webcomponents"
+                    href={urls.current}
                     isDropdownItem
                     onClick={() => { setVersion("v1") }}
                     className={clsx({ "menu__link--active": version === "v1" })}

@@ -8,8 +8,10 @@ console.log("DEPLOYMENT_TYPE", process.env.DEPLOYMENT_TYPE); // eslint-disable-l
 
 const LATEST_URL_PARTH = "/webcomponents/";
 const NIGHTLY_URL_PARTH = "/webcomponents/nightly/";
+const PR_URL_PARTH = `/webcomponents/pr-${process.env.BRANCH_NAME || 'unknown'}/`;
 
 const LATEST_DEPLOYMENT = process.env.DEPLOYMENT_TYPE === "latest";
+const PR_DEPLOYMENT = process.env.DEPLOYMENT_TYPE === "pr";
 const DEVELOPMENT_ENVIRONMENT =  process.env.NODE_ENV === "development";
 
 const getBaseURL = () => {
@@ -18,18 +20,41 @@ const getBaseURL = () => {
     return "/";
   }
 
+  // PR deployment
+  if (PR_DEPLOYMENT) {
+    return PR_URL_PARTH;
+  }
+
   // latest deployment or nightly deployment
   return LATEST_DEPLOYMENT ? LATEST_URL_PARTH : NIGHTLY_URL_PARTH;
 };
 
 const BASE_URL = getBaseURL();
 
+// Dynamically determine repository owner and project name
+const getRepositoryInfo = () => {
+  // In GitHub Actions, GITHUB_REPOSITORY contains "owner/repo"
+  // Fall back to parsing git remote URL if not available
+  let githubRepository = process.env.GITHUB_REPOSITORY;
+  
+  if (!githubRepository) {
+    // This is a fallback for local development - in practice, 
+    // the website deployment should always have GITHUB_REPOSITORY set
+    githubRepository = 'ui5/webcomponents';
+  }
+  
+  const [owner, repo] = githubRepository.split('/');
+  return { owner, repo };
+};
+
+const { owner: REPO_OWNER, repo: REPO_NAME } = getRepositoryInfo();
+
 const getFullURL = () => {
-  return DEVELOPMENT_ENVIRONMENT ? `${BASE_URL}` : `https://ui5.github.io${BASE_URL}`
+  return DEVELOPMENT_ENVIRONMENT ? `${BASE_URL}` : `https://${REPO_OWNER}.github.io${BASE_URL}`
 }
 
-// ["v1", "nightly", "current"]
-const siteVersion = LATEST_DEPLOYMENT ? (packageJson.version.startsWith("1") ? "v1" : "current") : "nightly";
+// ["v1", "nightly", "current", "pr"]
+const siteVersion = LATEST_DEPLOYMENT ? (packageJson.version.startsWith("1") ? "v1" : "current") : (PR_DEPLOYMENT ? "pr" : "nightly");
 
 const config: Config = {
   customFields: {
@@ -42,7 +67,7 @@ const config: Config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://ui5.github.io',
+  url: `https://${REPO_OWNER}.github.io`,
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: BASE_URL,
@@ -51,8 +76,8 @@ const config: Config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'SAP', // Usually your GitHub org/user name.
-  projectName: 'webcomponents', // Usually your repo name.
+  organizationName: REPO_OWNER, // Usually your GitHub org/user name.
+  projectName: REPO_NAME, // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -184,7 +209,7 @@ const config: Config = {
       copyright: `© Copyright ${new Date().getFullYear()}, SAP SE and UI5 Web Components Contributors`,
       logo: {
         alt: 'SAP Logo',
-        src: 'https://ui5.github.io/webcomponents/img/footer/sap-1920-1440.svg',
+        src: `${getFullURL()}img/footer/sap-1920-1440.svg`,
         width: 160,
         height: 51,
       },
