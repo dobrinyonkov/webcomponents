@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunk_ui5_webcomponents_website=self.webpackChunk_ui5_webcomponents_website||[]).push([[8250],{59136:e=>{e.exports=JSON.parse('{"permalink":"/webcomponents/pr-copilot/fix-532f0e2a-2918-41b4-b5af-da23e5b5dc93/blog/tags/jsx","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"blogDescription":"Blog","blogTitle":"Blog"}')}}]);
