@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunk_ui5_webcomponents_website=self.webpackChunk_ui5_webcomponents_website||[]).push([[7714],{54474:e=>{e.exports=JSON.parse('{"permalink":"/webcomponents/pr-copilot/fix-dbd41087-e3d3-41c6-9217-be99c4988ee1/blog/tags/release","page":1,"postsPerPage":10,"totalPages":1,"totalCount":4,"blogDescription":"Blog","blogTitle":"Blog"}')}}]);
