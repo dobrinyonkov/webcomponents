@@ -11,16 +11,21 @@
 	font-size: var(--sapFontSize);
 }
 
-.ui5-shellbar-overflow-popover [ui5-li]:after {
+/* Set positioning context for absolutely positioned badges to ensure consistent display at all list positions */
+.ui5-shellbar-overflow-popover [ui5-li] {
 	position: relative;
+}
+
+.ui5-shellbar-overflow-popover [ui5-li]:after {
+	position: absolute;
 	width: fit-content;
 	height: 1rem;
 	min-width: 1rem;
 	background: var(--sapContent_BadgeBackground);
 	border: var(--_ui5_shellbar_button_badge_border);
 	color: var(--sapContent_BadgeTextColor);
-	bottom: calc(100% + 0.0625rem);
-	left: 1.25rem;
+	top: -0.5rem;
+	right: 1rem;
 	padding: 0 0.3125rem;
 	border-radius: 0.5rem;
 	display: flex;
