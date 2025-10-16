@@ -24,8 +24,8 @@
 	background: var(--sapContent_BadgeBackground);
 	border: var(--_ui5_shellbar_button_badge_border);
 	color: var(--sapContent_BadgeTextColor);
-	top: 0.0625rem;
-	left: 1.25rem;
+	top: -0.5rem;
+	right: 1rem;
 	padding: 0 0.3125rem;
 	border-radius: 0.5rem;
 	display: flex;
