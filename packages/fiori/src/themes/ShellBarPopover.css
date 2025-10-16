@@ -11,7 +11,7 @@
 	font-size: var(--sapFontSize);
 }
 
-/* Set positioning context for absolutely positioned badges */
+/* Set positioning context for absolutely positioned badges to ensure consistent display at all list positions */
 .ui5-shellbar-overflow-popover [ui5-li] {
 	position: relative;
 }
