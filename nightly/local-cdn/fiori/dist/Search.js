@@ -217,6 +217,7 @@ let Search = Search_1 = class Search extends SearchField {
     _handleInput(e) {
         super._handleInput(e);
         this._typedInValue = this.value;
+        this._proposedItem = undefined;
         if (isPhone()) {
             return;
         }

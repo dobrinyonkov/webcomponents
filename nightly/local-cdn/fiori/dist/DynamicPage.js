@@ -125,6 +125,9 @@ let DynamicPage = DynamicPage_1 = class DynamicPage extends UI5Element {
             this.dynamicPageTitle.hasSnappedTitleOnMobile = !!this.hasSnappedTitleOnMobile;
             this.dynamicPageTitle.removeAttribute("hovered");
         }
+        if (this.dynamicPageHeader) {
+            this.dynamicPageHeader._snapped = this._headerSnapped;
+        }
         const titleHeight = this.dynamicPageTitle?.getBoundingClientRect().height || 0;
         const headerHeight = this.dynamicPageHeader?.getBoundingClientRect().height || 0;
         const footerHeight = this.showFooter ? this.footerWrapper?.getBoundingClientRect().height : 0;
@@ -136,6 +139,32 @@ let DynamicPage = DynamicPage_1 = class DynamicPage extends UI5Element {
             else {
                 this.scrollContainer.style.setProperty("scroll-padding-block-start", `${headerHeight + titleHeight}px`);
             }
+        }
+    }
+    onAfterRendering() {
+        if (this.scrollContainer) {
+            if (this._focusInHandler) {
+                this.scrollContainer.removeEventListener("focusin", this._focusInHandler);
+            }
+            this._focusInHandler = (e) => {
+                const target = e.target;
+                if (!target || target === this.scrollContainer) {
+                    return;
+                }
+                if (this.dynamicPageHeader?.contains(target) || this.dynamicPageTitle?.contains(target)) {
+                    return;
+                }
+                requestAnimationFrame(() => {
+                    target.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                });
+            };
+            this.scrollContainer.addEventListener("focusin", this._focusInHandler);
+        }
+    }
+    onExitDOM() {
+        if (this.scrollContainer && this._focusInHandler) {
+            this.scrollContainer.removeEventListener("focusin", this._focusInHandler);
+            this._focusInHandler = undefined;
         }
     }
     get dynamicPageTitle() {
